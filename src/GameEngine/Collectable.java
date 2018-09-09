@@ -1,18 +1,14 @@
 package GameEngine;
 
 public interface Collectable {
-    static int count = 1;
-
+	/**
+	 * getCollected method will add object to inventory class
+	 * It will also check if collectable object can be stacked
+	 */
     public void getCollected();
-
+    
     /**
-     * Get the count of this object in player's
-     * inventory if it is stackable otherwise return 1
-     * @param player the player instance
-     * @return the count of this object
+     * removeObjectMap method will remove the object from map
      */
-    public default int getCount(Player player){
-        return 1;
-    }
-
+    public void removeObjectMap();
 }

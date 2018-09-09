@@ -31,6 +31,6 @@ public class Arrow extends GameObject implements Collectable, Movable{
     @Override
     public void getCollected(GameEngine engine, Inventory playerInventory) {
         playerInventory.addObject(this);
-        // TODO: remove from map
+        engine.getMap().removeObject(this);
     }
 }

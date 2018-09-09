@@ -52,6 +52,7 @@ public class Player extends GameObject implements Movable {
         }
         x = Inventory.getCount(Arrow) - 1;
         Inventory.setCount(Arrow, x);
+        MoveArrow MovingArrow = new MoveArrow();
         return true;
     }
 
@@ -95,6 +96,16 @@ public class Player extends GameObject implements Movable {
     public void removePlyaerEffect(PlayerEffect effect){
         effects.remove(effect);
     }
+
+    /**
+     * Adds inventory to player and amount as well
+     * @param game object and the amount to add in
+     */
+    public void addInventory(String gameObject, int amount) {
+
+    }
+
+
 
     /**
      * Define collision handler for player

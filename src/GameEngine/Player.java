@@ -1,14 +1,14 @@
 package GameEngine;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class Player extends GameObject implements Movable {
-    public static int classID = 0;
-
     private Inventory inventory;
-    private Set<PlayerEffect> states;
+    private Set<PlayerEffect> effects;
+    private Direction facing;
 
 
     /**
@@ -20,18 +20,13 @@ public class Player extends GameObject implements Movable {
         super(location);
     }
 
-    @Override
-    public int getClassId(){
-        return 0;
-    }
-
     /**
      * Get current facing of a movable object
      * @return facing direction
      */
     @Override
     public Direction getFacing(){
-        return Direction.DOWN;
+        return facing;
     }
 
     /**
@@ -76,8 +71,7 @@ public class Player extends GameObject implements Movable {
      * @return list of player effect
      */
     public List<PlayerEffect> getPlayerEffects(){
-
-        return null;
+        return new LinkedList<>(effects);
     }
 
     /**
@@ -86,7 +80,7 @@ public class Player extends GameObject implements Movable {
      * @param effect the effect to be added
      */
     public void addPlayerEffect(PlayerEffect effect){
-
+        effects.add(effect);
     }
 
     /**
@@ -95,7 +89,29 @@ public class Player extends GameObject implements Movable {
      * @param effect the effect to be removed
      */
     public void removePlyaerEffect(PlayerEffect effect){
-
+        effects.remove(effect);
     }
 
+    /**
+     * Define collision handler for player
+     */
+    @Override
+    public void registerCollisionHandler(GameEngine gameEngine){
+        // Register handler for Player collide with Pit
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
+                new CollisionHandler() {
+                    @Override
+                    public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+                        Player player = (Player)obj2;
+                        CollisionResult res = new CollisionResult(0);
+                        if(player.effects.contains(PlayerEffect.HOVER)) {
+                            res.addFlag(CollisionResult.HANDLED);
+                            return res;
+                        } else {
+                            res.addFlag(CollisionResult.LOSE);
+                            return res;
+                        }
+                    }
+                });
+    }
 }

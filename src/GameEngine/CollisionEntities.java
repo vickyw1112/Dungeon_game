@@ -1,8 +1,8 @@
 package GameEngine;
 
 public class CollisionEntities {
-    private int type1;
-    private int type2;
+    private String type1;
+    private String type2;
 
     /**
      * Constructor for CollisionEntities
@@ -11,7 +11,7 @@ public class CollisionEntities {
      * @param type1 classId for first obj
      * @param type2 classId for second obj
      */
-    public CollisionEntities(int type1, int type2) {
+    public CollisionEntities(String type1, String type2) {
 
     }
 

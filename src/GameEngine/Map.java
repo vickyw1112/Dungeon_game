@@ -28,6 +28,8 @@ public class Map {
 
     /**
      * Construct a Map from a saved file
+     * Call each unique object's {@link GameObject#registerCollisionHandler} method
+     * to register collision handler for that type of object
      */
     public Map(File file){
 

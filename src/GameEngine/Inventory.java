@@ -53,8 +53,8 @@ public class Inventory {
      * @param classid type of object
      * @param count number to set
      */
-    public void setCount(int classid, int count){
-
+    public void setCount(String classid, int count){
+    	
     }
 
     /**
@@ -64,6 +64,6 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-
+    	
     }
 }

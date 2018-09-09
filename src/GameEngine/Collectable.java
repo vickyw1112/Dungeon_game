@@ -1,8 +1,9 @@
 package GameEngine;
 
 public interface Collectable {
-    static int count = 1;
-
-    public void getCollected(Player player);
-
+	/**
+	 * getCollected method will add object to inventory class
+	 * It will also check if collectable object can be stacked
+	 */
+    public void getCollected(GameEngine engine, Player player);
 }

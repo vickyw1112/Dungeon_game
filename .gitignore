@@ -29,3 +29,4 @@ out
 
 # Eclipse
 .settings
+/bin/

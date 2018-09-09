@@ -3,8 +3,14 @@ package GameEngine;
 import java.awt.*;
 
 public abstract class GameObject {
+    private static int objCount = 0;
+
     protected int objId;
     protected Point location;
+    /**
+     * State of a object, specific to each type of object
+     */
+    protected int state;
 
 
     /**
@@ -48,6 +54,22 @@ public abstract class GameObject {
         return location;
     }
 
+    /**
+     * Change a new location for an object
+     * return true if the location changed, otherwise false
+     *
+     * @see Map#map
+     * @param point new location
+     * @return whether location changed
+     */
+    public boolean setLocation(Point point){
+        if(location.equals(point)){
+            return false;
+        }
+        this.location = point;
+        return true;
+    }
+
 
     /**
      * Call front end hook
@@ -56,6 +78,7 @@ public abstract class GameObject {
      * @param state
      */
     public void changeState(int state){
+        this.state = state;
         stateChanger.changeState(this, state);
     }
 

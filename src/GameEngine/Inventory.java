@@ -38,7 +38,7 @@ public class Inventory {
     /**
      * Get count for a type of object in the inventory
      *
-     * @param classid type of the object
+     * @param classname type of the object
      * @return count
      */
     public int getCount(String classname){
@@ -50,10 +50,10 @@ public class Inventory {
      * Set the count of a specific type of object to a
      * given number
      *
-     * @param classid type of object
+     * @param classname type of object
      * @param count number to set
      */
-    public void setCount(String classid, int count){
+    public void setCount(String classname, int count){
     	
     }
 
@@ -65,5 +65,16 @@ public class Inventory {
      */
     public void addObject(GameObject obj){
     	
+    }
+
+    /**
+     * Pop a given type of object from the inventory
+     * reduce count of that type by one
+     *
+     * @param classname type of object being popped
+     * @return popped object, if no such type object return null
+     */
+    public GameObject popObject(String classname){
+        return null;
     }
 }

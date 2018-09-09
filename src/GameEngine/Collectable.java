@@ -5,5 +5,5 @@ public interface Collectable {
 	 * getCollected method will add object to inventory class
 	 * It will also check if collectable object can be stacked
 	 */
-    public void getCollected(GameEngine engine, Player player);
+    public void getCollected(GameEngine engine, Inventory playerInventory);
 }

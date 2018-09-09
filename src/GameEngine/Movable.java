@@ -3,18 +3,6 @@ package GameEngine;
 import java.awt.*;
 
 public interface Movable {
-    /**
-     * Set a new location for a movable object
-     * return true if the location changed, otherwise false
-     *
-     * @param point new location
-     * @return whether location changed
-     */
-    default boolean setLocation(Point point){
-        ((GameObject)this).location = point;
-        // TODO fix this
-        return false;
-    }
 
     /**
      * Get current facing of a movable object
@@ -24,7 +12,7 @@ public interface Movable {
 
     /**
      * Get current speed of the movable object
-     * @return speed
+     * @return speed in grid per second
      */
     public double getSpeed();
 }

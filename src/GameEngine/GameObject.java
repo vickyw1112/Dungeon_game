@@ -3,8 +3,6 @@ package GameEngine;
 import java.awt.*;
 
 public abstract class GameObject {
-    private static int objCount = 0;
-
     protected int objId;
     protected Point location;
 
@@ -43,14 +41,6 @@ public abstract class GameObject {
     }
 
     /**
-     * Get class type specific ID
-     *
-     * @return classId
-     */
-    public abstract int getClassId();
-
-
-    /**
      * Get location
      * @return location
      */
@@ -76,6 +66,32 @@ public abstract class GameObject {
      */
     public void registerCollisionHandler(GameEngine gameEngine) {
         // by default do nothing
+    }
+
+    /**
+     * Return class name
+     * Used for finding count for specific type of object
+     * in player's inventory
+     *
+     * @see Inventory#getCount
+     * @return class name
+     */
+    public String getClassName(){
+        return getClass().getSimpleName();
+
+    }
+
+    /**
+     * Return object's category name which could be the class name
+     * of a parent class depends on specific game object
+     * By default, this is same as {@link GameObject#getClassName}
+     * Used for finding collision handler
+     *
+     * @see GameEngine#collisionHandlerMap
+     * @return category name
+     */
+    public String getCategoryName(){
+        return this.getClassName();
     }
 
 }

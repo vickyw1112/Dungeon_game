@@ -7,14 +7,14 @@ public class Inventory {
     /**
      * Maintain the count for each kind of game object
      * in the inventory
-     * Key is the class id, value is the count for that specific
+     * Key is the class name, value is the count for that specific
      * kind of item
      *
      * NOTE: count is not necessary the actual count
      * but a number associated to the object.
      * i.e. Sword's count would mean number of capable hits
      */
-    private HashMap<Integer, Integer> countMap;
+    private HashMap<String, Integer> countMap;
 
     /**
      * Maintain the object instances for all collected items
@@ -41,7 +41,7 @@ public class Inventory {
      * @param classid type of the object
      * @return count
      */
-    public int getCount(int classid){
+    public int getCount(String classname){
 
         return 0;
     }

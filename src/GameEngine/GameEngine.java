@@ -10,6 +10,11 @@ public class GameEngine {
     private Map map;
     private Player player;
     private List<Movable> movingObjects;
+    /**
+     * Map for finding collision handler for two specific type of object
+     * Key is CollisionEntities which contains two string of class name in order
+     * Value is the CollisionHandler
+     */
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
@@ -147,6 +152,18 @@ public class GameEngine {
         GameObject.stateChanger = stateChanger;
     }
 
+
+    /**
+     * Given a entities object, return the corresponding collision handler
+     * from the map
+     *
+     * @param entities
+     * @return collision handler
+     */
+    public CollisionHandler getCollisionHandler(CollisionEntities entities){
+
+        return null;
+    }
 
     public static void main(String[] args){
         GameEngine engine = new GameEngine("123");

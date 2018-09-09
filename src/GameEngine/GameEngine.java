@@ -1,5 +1,6 @@
 package GameEngine;
 
+// TODO: have a own version of Point implementation also used to convert coordinate between front/back end
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,9 +40,8 @@ public class GameEngine {
      *
      * @return if the player have a arrow to shoot
      */
-    public boolean playerShootArrow(){
-
-        return false;
+    public Arrow playerShootArrow(){
+        return player.shootArrow();
     }
 
     /**
@@ -50,9 +50,8 @@ public class GameEngine {
      *
      * @return if the player have a bomb to set
      */
-    public boolean playerSetBomb(){
-
-        return false;
+    public Bomb playerSetBomb(){
+        return player.setBomb(map);
     }
 
     /**
@@ -98,15 +97,24 @@ public class GameEngine {
         return false;
     }
 
-    /**
-     * Wrapper of {@link Player#changeLocation}
-     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
-     * if player moved to another grid
-     *
-     * @param point
-     */
-    public void playerChangeLocation(Point point){
 
+    /**
+     * Wrapper of {@link GameObject#setLocation}
+     * Updates indexes for this object in Map
+     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
+     * if player's location changed
+     *
+     * @param object game object
+     * @param location new location
+     */
+    public void changeObjectLocation(GameObject object, Point location){
+        if(object.setLocation(location)) {
+            map.updateObjectLocation(object, location);
+            if(object instanceof Player){
+                // update monsters' paths here
+                // TODO: avoid using instanceof
+            }
+        }
     }
 
 

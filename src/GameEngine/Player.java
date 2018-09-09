@@ -47,7 +47,11 @@ public class Player extends GameObject implements Movable {
      * @return whether the player has an arrow to shoot
      */
     public boolean shootArrow(){
-
+        if (!Inventory.contains(Arrow)){
+          return false;
+        }
+        x = Inventory.getCount(Arrow) - 1;
+        Inventory.setCount(Arrow, x);
         return true;
     }
 

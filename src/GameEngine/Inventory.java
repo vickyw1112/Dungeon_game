@@ -14,7 +14,7 @@ public class Inventory {
      * but a number associated to the object.
      * i.e. Sword's count would mean number of capable hits
      */
-    private HashMap<Integer, Integer> countMap;
+    private HashMap<String, Integer> inventoryCount;
 
     /**
      * Maintain the object instances for all collected items
@@ -53,8 +53,8 @@ public class Inventory {
      * @param classid type of object
      * @param count number to set
      */
-    public void setCount(int classid, int count){
-
+    public void setCount(String classid, int count){
+    	
     }
 
     /**
@@ -64,6 +64,6 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-
+    	
     }
 }

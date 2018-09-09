@@ -97,5 +97,15 @@ public class Player extends GameObject implements Movable {
     public void removePlyaerEffect(PlayerEffect effect){
 
     }
+    
+    /**
+     * Adds inventory to player and amount as well
+     * @param game object and the amount to add in
+     */
+    public void addInventory(String gameObject, int amount) {
+    		
+    }
+    
+    
 
 }

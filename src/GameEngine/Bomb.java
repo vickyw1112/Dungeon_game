@@ -1,4 +1,7 @@
 
 public class Bomb implements Collectable {
-	// testing git push
+	
+	public void getCollected(Player p) {
+		p.addInventory("Bomb", 1);
+	}
 }

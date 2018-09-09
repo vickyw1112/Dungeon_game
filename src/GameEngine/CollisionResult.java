@@ -20,6 +20,8 @@ public class CollisionResult {
     public static final int REFRESH_EFFECT_TIMER = 0x20;
     public static final int SHOOT_ARROW = 0x40;
     public static final int SET_BOMB = 0x80;
+    public static final int WIN = 0x100;
+    public static final int LOSE = 0x200;
 
     public static final int FLAG_SIZE = 32;
 

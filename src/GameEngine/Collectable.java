@@ -6,7 +6,7 @@ public interface Collectable {
 	 * It will also check if collectable object can be stacked
 	 */
     public void getCollected();
-    
+
     /**
      * removeObjectMap method will remove the object from map
      */

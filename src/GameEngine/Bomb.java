@@ -20,4 +20,9 @@ public class Bomb extends GameObject implements Collectable {
     @Override
 	public void getCollected(GameEngine engine, Inventory playerInventory) {
 	}
+
+	/* TODO: think about how front end should call bomb's explode method in a generic
+     *       way, e.g. could have a interface for all object can be invoke after delaying for some time period
+     *       then override them in individual sub class
+     */
 }

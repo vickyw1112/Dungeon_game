@@ -19,6 +19,10 @@ public class Bomb extends GameObject implements Collectable {
 
     @Override
 	public void getCollected(GameEngine engine, Inventory playerInventory) {
-        
+			
+    		if (this.state == UNLIT) {
+    			playerInventory.addObject(this); // bombs can be added indefinitely
+    			engine.removeGameObject(this);
+    		}
 	}
 }

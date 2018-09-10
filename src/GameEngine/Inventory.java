@@ -31,10 +31,13 @@ public class Inventory {
      * @return if the inventory contains that object
      */
     public boolean contains(GameObject obj){
-
+    	for(GameObject item: items) {
+    		if(item.equals(obj))
+    			return true;
+    	}
         return false;
     }
-
+    
     /**
      * Get count for a type of object in the inventory
      *
@@ -42,8 +45,7 @@ public class Inventory {
      * @return count
      */
     public int getCount(String classname){
-
-        return 0;
+    	return countMap.get(classname);
     }
 
     /**
@@ -54,7 +56,7 @@ public class Inventory {
      * @param count number to set
      */
     public void setCount(String classname, int count){
-    	
+    	countMap.put(classname, count);
     }
 
     /**
@@ -64,7 +66,15 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-    	
+    	this.items.add(obj);
+    	int count;
+    	if(countMap.get(obj.getClassName()) != null) {
+    		count = countMap.get(obj.getClassName());
+    		countMap.replace(obj.getClassName(), count, count++);
+    	}
+    	else {
+    		countMap.put(obj.getClassName(), 1);
+    	}	
     }
 
     /**
@@ -75,6 +85,14 @@ public class Inventory {
      * @return popped object, if no such type object return null
      */
     public GameObject popObject(String classname){
+    	int count;
+        for(GameObject item: items) {
+        	if(item.getClassName().equals(classname)) {
+        		count = this.countMap.get(classname);
+        		this.countMap.replace(classname, count, count - 1);
+        		return item;
+        	}	
+        }
         return null;
     }
 }

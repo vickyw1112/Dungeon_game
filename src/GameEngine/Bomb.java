@@ -19,5 +19,6 @@ public class Bomb extends GameObject implements Collectable {
 
     @Override
 	public void getCollected(GameEngine engine, Inventory playerInventory) {
+        
 	}
 }

@@ -191,7 +191,7 @@ public class Player extends GameObject implements Movable {
                         Player player = (Player)obj2;
                         CollisionResult res = new CollisionResult(0);
                         if(player.effects.contains(PlayerEffect.HOVER)) {
-                            res.addFlag(CollisionResult.HANDLED);
+                            res.addFlag(CollisionResult.HANDLED); // probably don't need this if we just follow default?
                             return res;
                         } else {
                             res.addFlag(CollisionResult.LOSE);
@@ -199,5 +199,22 @@ public class Player extends GameObject implements Movable {
                         }
                     }
                 });
+        
+        // Register handler for Player Collide with Lit and Unlit Bomb
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Bomb.class.getSimpleName()),
+		        new CollisionHandler() {
+		        	@Override
+		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+		        		Bomb bomb = (Bomb) obj1;
+		        		CollisionResult res = new CollisionResult(0);
+		        		if (!bomb.isLit()) { // TODO: create a class for isLit in bomb
+		        			res.addFlag(CollisionResult.REFRESH_INVENTORY); //since thee layout will be bomb[1] player[2] ?? if we are sorting it
+		        			return res;
+		        		} else {
+		        			res.addFlag(CollisionResult.REJECT); // or can we pass over it? 
+		        			return res;
+		        		}
+		        	}
+        		});
     }
 }

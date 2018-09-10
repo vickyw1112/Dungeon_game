@@ -31,11 +31,7 @@ public class Inventory {
      * @return if the inventory contains that object
      */
     public boolean contains(GameObject obj){
-    	for(GameObject item: items) {
-    		if(item.equals(obj))
-    			return true;
-    	}
-        return false;
+    	return items.contains(obj);
     }
     
     /**
@@ -45,6 +41,8 @@ public class Inventory {
      * @return count
      */
     public int getCount(String classname){
+    	if(countMap.get(classname) == null)
+    		return 0;
     	return countMap.get(classname);
     }
 
@@ -70,7 +68,7 @@ public class Inventory {
     	int count;
     	if(countMap.get(obj.getClassName()) != null) {
     		count = countMap.get(obj.getClassName());
-    		countMap.replace(obj.getClassName(), count, count++);
+    		countMap.put(obj.getClassName(), ++count);
     	}
     	else {
     		countMap.put(obj.getClassName(), 1);
@@ -90,10 +88,7 @@ public class Inventory {
         	if(item.getClassName().equals(classname)) {
         		items.remove(item);
         		count = countMap.get(classname);
-        		if(count <= 1)
-        			countMap.remove(classname);
-        		else
-        			countMap.replace(classname, count, count - 1);
+        		countMap.put(classname, --count);
         		return item;
         	}	
         }

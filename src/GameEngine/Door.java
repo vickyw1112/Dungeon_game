@@ -2,14 +2,12 @@ package GameEngine;
 
 public class Door extends GameObject {
 	private Key key;
-	private int status;
 	public static final int OPEN = 1;
 	public static final int CLOSED = 0;
 
-	public Door(Point location, Key key) {
+	public Door(Point location) {
 		super(location);
-		this.status = CLOSED;
-		this.key = key;	
+		this.state = CLOSED;
 	}
 	
 	/**
@@ -24,6 +22,14 @@ public class Door extends GameObject {
 	}
 	
 	/**
+	 * set corresponding key to door
+	 * @param key
+	 */
+	public void setKey(Key key) {
+		this.key = key;
+	}
+	
+	/**
 	 * open door
 	 * check whether the key is match to the door or not
 	 * if matching set door's status to open
@@ -33,13 +39,9 @@ public class Door extends GameObject {
 	 */
 	public boolean openTheDoor(Key key) {
 		if(isMatchKey(key)) {
-			this.status = OPEN;
+			this.changeState(OPEN);
 			return true;
 		}
 		return false;
-	}
-	
-	public int getStatus() {
-		return this.status;
 	}
 }

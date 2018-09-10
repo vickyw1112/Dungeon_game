@@ -81,6 +81,10 @@ public abstract class GameObject {
         this.state = state;
         stateChanger.changeState(this, state);
     }
+    
+    public int getStatus() {
+		return this.state;
+	}
 
     /**
      * Register collision handler related to this object

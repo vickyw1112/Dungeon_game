@@ -9,10 +9,12 @@ public class Key extends GameObject implements Collectable {
 	}
 
 	@Override
-	public void getCollected(GameEngine engine, Inventory playerInventory) {
+	public boolean getCollected(GameEngine engine, Inventory playerInventory) {
 		if(playerInventory.getCount(this.getClassName()) == 0) {
 			playerInventory.addObject(this);
 			engine.removeGameObject(this);
+			return true;
 		}
+		return false;
 	}
 }

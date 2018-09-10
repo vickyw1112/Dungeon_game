@@ -7,8 +7,9 @@ public class Treasure extends GameObject implements Collectable {
 	}
 
 	@Override
-	public void getCollected(GameEngine engine, Inventory playerInventory) {
+	public boolean getCollected(GameEngine engine, Inventory playerInventory) {
 		playerInventory.addObject(this);
 		engine.removeGameObject(this);
+		return true;
 	}
 }

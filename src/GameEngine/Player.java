@@ -211,10 +211,29 @@ public class Player extends GameObject implements Movable {
 		        			res.addFlag(CollisionResult.REFRESH_INVENTORY); //since thee layout will be bomb[1] player[2] ?? if we are sorting it
 		        			return res;
 		        		} else {
-		        			res.addFlag(CollisionResult.REJECT); // or can we pass over it? 
+		        			res.addFlag(CollisionResult.REJECT); // or can we pass over a lit bomb? 
 		        			return res;
 		        		}
 		        	}
         		});
+        
+        
+        
+        // TODO: collision handlers for player
+        
+        // Player and Wall
+       
+        // Player and Arrow
+        
+        // Player and Key
+        
+        // Player and Treasure
+        
+        // Player Boulder
+        
+        // Player and Monster
+        
+        // Player and Potion
+       
     }
 }

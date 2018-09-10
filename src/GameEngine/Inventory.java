@@ -66,7 +66,7 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-    	this.items.add(obj);
+    	items.add(obj);
     	int count;
     	if(countMap.get(obj.getClassName()) != null) {
     		count = countMap.get(obj.getClassName());
@@ -88,8 +88,12 @@ public class Inventory {
     	int count;
         for(GameObject item: items) {
         	if(item.getClassName().equals(classname)) {
-        		count = this.countMap.get(classname);
-        		this.countMap.replace(classname, count, count - 1);
+        		items.remove(item);
+        		count = countMap.get(classname);
+        		if(count <= 1)
+        			countMap.remove(classname);
+        		else
+        			countMap.replace(classname, count, count - 1);
         		return item;
         	}	
         }

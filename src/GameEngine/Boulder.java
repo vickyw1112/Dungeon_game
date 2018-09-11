@@ -1,8 +1,7 @@
 package GameEngine;
 
-public class Boulder extends GameObject implements Movable {
+public class Boulder extends GameObject implements Movable, Blockable {
     private final double SPEED = Player.SPEED / 2;
-    
     private Direction facing;
     private double speed;
 
@@ -78,6 +77,7 @@ public class Boulder extends GameObject implements Movable {
         
        // boulder with monster or door or potion or collectable gameObj
         this.getHandledRes(gameEngine);
+
     }
     
     /**

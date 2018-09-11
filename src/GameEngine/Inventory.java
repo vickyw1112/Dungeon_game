@@ -1,5 +1,6 @@
 package GameEngine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,10 +21,19 @@ public class Inventory {
      * Maintain the object instances for all collected items
      */
     private List<GameObject> items;
-
-
-
+    
     /**
+     * Constructor for Inventory
+     * @param countMap
+     * @param items
+     */
+    public Inventory() {
+		super();
+		this.countMap = new HashMap<String, Integer>();
+		this.items = new ArrayList<GameObject>();
+	}
+
+	/**
      * Check if a specific instance of game object
      * is inside the inventory
      *
@@ -64,12 +74,7 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-    	//Do we need to double up for items on the list?
-    	//example if we collect 20 arrows, is our list 20 individual arrows? I think Key 
-    	//is the only unique item with name?
-    	if (!items.contains(obj)) {
-    		items.add(obj);
-    	}
+    	items.add(obj);
     	
     	int count;
     	if(countMap.get(obj.getClassName()) != null) {

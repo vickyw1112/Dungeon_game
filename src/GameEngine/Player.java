@@ -229,17 +229,19 @@ public class Player extends GameObject implements Movable {
         // Player Boulder
         
         // Player and Monster
-        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Monster.class.getSimpleName()),
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Monster.class),
 		        new CollisionHandler() {
 		        	@Override
 		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-		        		Monster monster = (Monster) (obj1 instanceof Monster?obj1:obj2);
+		        		Player player = (Player) (obj1 instanceof Player?obj1:obj2);
 		        		CollisionResult res = new CollisionResult(0);
                                         if(player.effects.contains(PlayerEffect.INVINCIBLE)) {
-                                            
+                                            res.addFlag(CollisionResult.HANDLED);
+                                            return res;
                                         }
-                                        else if(){
-                                            
+                                        else if(inventory.getCount(Sword.class.getSimpleName())>0){
+                                            int n=inventory.getCount(Sword.class.getSimpleName());
+                                            inventory.setCount(Sword.class.getSimpleName(), n-1);
                                             res.addFlag(CollisionResult.HANDLED);
                                             return res;
                                         }

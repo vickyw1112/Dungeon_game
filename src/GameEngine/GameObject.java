@@ -7,6 +7,10 @@ public abstract class GameObject {
 
     protected int objId;
     protected Point location;
+    /**
+     * State of a object, specific to each type of object
+     */
+    protected int state;
 
 
     /**
@@ -43,19 +47,27 @@ public abstract class GameObject {
     }
 
     /**
-     * Get class type specific ID
-     *
-     * @return classId
-     */
-    public abstract int getClassId();
-
-
-    /**
      * Get location
      * @return location
      */
     public Point getLocation() {
         return location;
+    }
+
+    /**
+     * Change a new location for an object
+     * return true if the location changed, otherwise false
+     *
+     * @see Map#map
+     * @param point new location
+     * @return whether location changed
+     */
+    public boolean setLocation(Point point){
+        if(location.equals(point)){
+            return false;
+        }
+        this.location = point;
+        return true;
     }
 
 
@@ -66,8 +78,13 @@ public abstract class GameObject {
      * @param state
      */
     public void changeState(int state){
+        this.state = state;
         stateChanger.changeState(this, state);
     }
+    
+    public int getState() {
+		return this.state;
+	}
 
     /**
      * Register collision handler related to this object
@@ -76,6 +93,32 @@ public abstract class GameObject {
      */
     public void registerCollisionHandler(GameEngine gameEngine) {
         // by default do nothing
+    }
+
+    /**
+     * Return class name
+     * Used for finding count for specific type of object
+     * in player's inventory
+     *
+     * @see Inventory#getCount
+     * @return class name
+     */
+    public String getClassName(){
+        return getClass().getSimpleName();
+
+    }
+
+    /**
+     * Return object's category name which could be the class name
+     * of a parent class depends on specific game object
+     * By default, this is same as {@link GameObject#getClassName}
+     * Used for finding collision handler
+     *
+     * @see GameEngine#collisionHandlerMap
+     * @return category name
+     */
+    public String getCategoryName(){
+        return this.getClassName();
     }
 
 }

@@ -1,5 +1,6 @@
 package GameEngine;
 
+// TODO: have a own version of Point implementation also used to convert coordinate between front/back end
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,6 +11,11 @@ public class GameEngine {
     private Map map;
     private Player player;
     private List<Movable> movingObjects;
+    /**
+     * Map for finding collision handler for two specific type of object
+     * Key is CollisionEntities which contains two string of class name in order
+     * Value is the CollisionHandler
+     */
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
@@ -34,9 +40,8 @@ public class GameEngine {
      *
      * @return if the player have a arrow to shoot
      */
-    public boolean playerShootArrow(){
-
-        return false;
+    public Arrow playerShootArrow(){
+        return player.shootArrow();
     }
 
     /**
@@ -45,9 +50,8 @@ public class GameEngine {
      *
      * @return if the player have a bomb to set
      */
-    public boolean playerSetBomb(){
-
-        return false;
+    public Bomb playerSetBomb(){
+        return player.setBomb(map);
     }
 
     /**
@@ -93,15 +97,24 @@ public class GameEngine {
         return false;
     }
 
-    /**
-     * Wrapper of {@link Player#changeLocation}
-     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
-     * if player moved to another grid
-     *
-     * @param point
-     */
-    public void playerChangeLocation(Point point){
 
+    /**
+     * Wrapper of {@link GameObject#setLocation}
+     * Updates indexes for this object in Map
+     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
+     * if player's location changed
+     *
+     * @param object game object
+     * @param location new location
+     */
+    public void changeObjectLocation(GameObject object, Point location){
+        if(object.setLocation(location)) {
+            map.updateObjectLocation(object, location);
+            if(object instanceof Player){
+                // update monsters' paths here
+                // TODO: avoid using instanceof
+            }
+        }
     }
 
 
@@ -126,6 +139,7 @@ public class GameEngine {
 
     /**
      * Remove all reference to a given game object
+     * in the backend
      *
      * @see GameEngine#map
      * @see GameEngine#objects
@@ -134,7 +148,10 @@ public class GameEngine {
      * @param obj object to be removed
      */
     public void removeGameObject(GameObject obj){
-
+        map.removeObject(obj);
+        objects.remove(obj.objId);
+        movingObjects.remove(obj);
+        monsters.remove(obj);
     }
 
     /**
@@ -147,6 +164,18 @@ public class GameEngine {
         GameObject.stateChanger = stateChanger;
     }
 
+
+    /**
+     * Given a entities object, return the corresponding collision handler
+     * from the map
+     *
+     * @param entities
+     * @return collision handler
+     */
+    public CollisionHandler getCollisionHandler(CollisionEntities entities){
+
+        return null;
+    }
 
     public static void main(String[] args){
         GameEngine engine = new GameEngine("123");

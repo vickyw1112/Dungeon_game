@@ -7,14 +7,14 @@ public class Inventory {
     /**
      * Maintain the count for each kind of game object
      * in the inventory
-     * Key is the class id, value is the count for that specific
+     * Key is the class name, value is the count for that specific
      * kind of item
      *
      * NOTE: count is not necessary the actual count
      * but a number associated to the object.
      * i.e. Sword's count would mean number of capable hits
      */
-    private HashMap<Integer, Integer> countMap;
+    private HashMap<String, Integer> countMap;
 
     /**
      * Maintain the object instances for all collected items
@@ -31,30 +31,30 @@ public class Inventory {
      * @return if the inventory contains that object
      */
     public boolean contains(GameObject obj){
-
-        return false;
+    	return items.contains(obj);
     }
-
+    
     /**
      * Get count for a type of object in the inventory
      *
-     * @param classid type of the object
+     * @param classname type of the object
      * @return count
      */
-    public int getCount(int classid){
-
-        return 0;
+    public int getCount(String classname){
+    	if(countMap.get(classname) == null)
+    		return 0;
+    	return countMap.get(classname);
     }
 
     /**
      * Set the count of a specific type of object to a
      * given number
      *
-     * @param classid type of object
+     * @param classname type of object
      * @param count number to set
      */
-    public void setCount(int classid, int count){
-
+    public void setCount(String classname, int count){
+    	countMap.put(classname, count);
     }
 
     /**
@@ -64,6 +64,40 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
+    	//Do we need to double up for items on the list?
+    	//example if we collect 20 arrows, is our list 20 individual arrows? I think Key 
+    	//is the only unique item with name?
+    	if (!items.contains(obj)) {
+    		items.add(obj);
+    	}
+    	
+    	int count;
+    	if(countMap.get(obj.getClassName()) != null) {
+    		count = countMap.get(obj.getClassName());
+    		countMap.put(obj.getClassName(), ++count);
+    	}
+    	else {
+    		countMap.put(obj.getClassName(), 1);
+    	}	
+    }
 
+    /**
+     * Pop a given type of object from the inventory
+     * reduce count of that type by one
+     *
+     * @param classname type of object being popped
+     * @return popped object, if no such type object return null
+     */
+    public GameObject popObject(String classname){
+    	int count;
+        for(GameObject item: items) {
+        	if(item.getClassName().equals(classname)) {
+        		items.remove(item);
+        		count = countMap.get(classname);
+        		countMap.put(classname, --count);
+        		return item;
+        	}
+        }
+        return null;
     }
 }

@@ -1,14 +1,22 @@
 package GameEngine;
 
 import java.awt.*;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class Player extends GameObject implements Movable {
-    public static int classID = 0;
+    /**
+     * Default movement speed for player
+     * Unit is grid per second
+     */
+    public static final double SPEED = 2;
 
     private Inventory inventory;
-    private Set<PlayerEffect> states;
+    private Set<PlayerEffect> effects;
+    private Direction facing;
+    private boolean onPushingBoulder;
 
 
     /**
@@ -18,11 +26,11 @@ public class Player extends GameObject implements Movable {
      */
     public Player(Point location){
         super(location);
-    }
-
-    @Override
-    public int getClassId(){
-        return 0;
+        // set default values
+        inventory = new Inventory();
+        effects = new HashSet<>();
+        facing = Direction.UP;
+        onPushingBoulder = false;
     }
 
     /**
@@ -31,8 +39,32 @@ public class Player extends GameObject implements Movable {
      */
     @Override
     public Direction getFacing(){
-        return Direction.DOWN;
+        return facing;
     }
+
+    /**
+     * Update facing when set location
+     *
+     * @pre player's location is consistently changed i.e. one grid at a time
+     * @param point new location
+     * @return whether location changed
+     */
+    @Override
+    public boolean setLocation(Point point) {
+        if(point.getX() > this.location.getX())
+            facing = Direction.RIGHT;
+        else if(point.getX() < this.location.getX())
+            facing = Direction.LEFT;
+        else if(point.getY() > this.location.getY())
+            facing = Direction.DOWN;
+        else if(point.getY() < this.location.getY())
+            facing = Direction.UP;
+        if(this.location == point)
+            return false;
+        this.location = point;
+        return true;
+    }
+
 
     /**
      * Get current speed of the movable object
@@ -40,7 +72,7 @@ public class Player extends GameObject implements Movable {
      */
     @Override
     public double getSpeed(){
-        return 100;
+        return onPushingBoulder ? SPEED / 2 : SPEED;
     }
 
     /**
@@ -51,22 +83,41 @@ public class Player extends GameObject implements Movable {
      * @see GameEngine#playerShootArrow()
      * @return whether the player has an arrow to shoot
      */
-    public boolean shootArrow(){
-
-        return true;
+    public Arrow shootArrow(){
+        Arrow arrow = (Arrow)inventory.popObject(Arrow.class.getSimpleName());
+        if(arrow == null)
+            return null;
+        // setup the arrow
+        arrow.changeState(Arrow.MOVING);
+        arrow.setFacing(this.facing);
+        arrow.setLocation(getFrontGrid());
+        return arrow;
     }
 
     /**
      * Actual handler for setting bomb
      * Decrement the number of unlit bomb in the inventory
-     * returns false if there's no unlit bomb in inventory
+     * Change state of bomb to Lit and return it
+     * returns null if there's no unlit bomb in inventory
+     * or if the there something else in front of the player
      *
      * @see GameEngine#playerSetBomb()
-     * @return whether the player has unlit bomb to shoot
+     * @return the bomb instance or null
      */
-    public boolean setBomb(){
+    public Bomb setBomb(Map map){
+        // if player does not have bomb
+        if(inventory.getCount(Bomb.class.getSimpleName()) == 0)
+            return null;
 
-        return true;
+        // if there is something else in front of player
+        Point setPosition = getFrontGrid();
+        if(map.getObjects(setPosition).size() != 0)
+            return null;
+
+        Bomb bomb = (Bomb)inventory.popObject(Bomb.class.getSimpleName());
+        bomb.setLocation(setPosition);
+        bomb.changeState(Bomb.LIT);
+        return bomb;
     }
 
     /**
@@ -76,8 +127,7 @@ public class Player extends GameObject implements Movable {
      * @return list of player effect
      */
     public List<PlayerEffect> getPlayerEffects(){
-
-        return null;
+        return new LinkedList<>(effects);
     }
 
     /**
@@ -86,7 +136,7 @@ public class Player extends GameObject implements Movable {
      * @param effect the effect to be added
      */
     public void addPlayerEffect(PlayerEffect effect){
-
+        effects.add(effect);
     }
 
     /**
@@ -95,7 +145,58 @@ public class Player extends GameObject implements Movable {
      * @param effect the effect to be removed
      */
     public void removePlyaerEffect(PlayerEffect effect){
-
+        effects.remove(effect);
     }
 
+    /**
+     * Get the grid in front of the player
+     * TODO: move this to Movable?
+     *
+     * @see Player#setBomb
+     * @see Player#shootArrow
+     * TODO: add stategiest path finder here
+     * @return the location of that grid
+     */
+    Point getFrontGrid(){
+        Point res = new Point(this.location);
+        int dx = 0, dy = 0;
+        switch (this.facing){
+            case UP:
+                dy--;
+                break;
+            case DOWN:
+                dy++;
+                break;
+            case LEFT:
+                dx--;
+                break;
+            case RIGHT:
+                dx++;
+                break;
+        }
+        res.translate(dx, dy);
+        return res;
+    }
+    
+
+    /**
+     * Define collision handler for player
+     */
+    @Override
+    public void registerCollisionHandler(GameEngine gameEngine){
+        // Register handler for Player collide with Pit
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
+                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                        // Have to check instance type here
+                        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
+                        CollisionResult res = new CollisionResult(0);
+                        if(player.effects.contains(PlayerEffect.HOVER)) {
+                            res.addFlag(CollisionResult.HANDLED);
+                            return res;
+                        } else {
+                            res.addFlag(CollisionResult.LOSE);
+                            return res;
+                        }
+                });
+    }
 }

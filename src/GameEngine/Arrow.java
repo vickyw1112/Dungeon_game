@@ -4,9 +4,7 @@ import java.awt.*;
 
 public class Arrow extends GameObject implements Collectable, Movable{
     public static final double SPEED = 4;
-
-    public static final int COLLECTABLE = 0;
-    public static final int MOVING = 0;
+    public static final int MOVING = 1;
 
     private Direction facing;
 
@@ -29,8 +27,9 @@ public class Arrow extends GameObject implements Collectable, Movable{
     }
 
     @Override
-    public void getCollected(GameEngine engine, Inventory playerInventory) {
+    public boolean getCollected(GameEngine engine, Inventory playerInventory) {
         playerInventory.addObject(this);
         engine.getMap().removeObject(this);
+        return true;
     }
 }

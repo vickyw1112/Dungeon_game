@@ -154,6 +154,7 @@ public class Player extends GameObject implements Movable {
 
     /**
      * Get the grid in front of the player
+     * TODO: move this to Movable?
      *
      * @see Player#setBomb
      * @see Player#shootArrow
@@ -189,10 +190,9 @@ public class Player extends GameObject implements Movable {
     public void registerCollisionHandler(GameEngine gameEngine){
         // Register handler for Player collide with Pit
         gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
-                new CollisionHandler() {
-                    @Override
-                    public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-                        Player player = (Player)obj2;
+                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                        // Have to check instance type here
+                        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
                         CollisionResult res = new CollisionResult(0);
                         if(player.effects.contains(PlayerEffect.HOVER)) {
                             res.addFlag(CollisionResult.HANDLED); // probably don't need this if we just follow default?
@@ -201,7 +201,6 @@ public class Player extends GameObject implements Movable {
                             res.addFlag(CollisionResult.LOSE);
                             return res;
                         }
-                    }
                 });
         
         // Register handler for Player Collide with Lit and Unlit Bomb
@@ -229,27 +228,12 @@ public class Player extends GameObject implements Movable {
 		        	}
         		});
         
-        // TODO: collision handlers for player
-        
-        // Player and Wall
-        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Wall.class.getSimpleName()),
-		        new CollisionHandler() {
-		        	@Override
-		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-		        		Wall wall = (Wall) obj2;
-		        		CollisionResult res = new CollisionResult(0);
-		        		
-        
-            
-		        	
+        // TODO: collision handlers for player        	
         // Player and Arrow
 		
 		        		
         // Player and Key
-        
-		        		
-		        		
-		        		
+             		
         // Player and Treasure
         
         // Player Boulder

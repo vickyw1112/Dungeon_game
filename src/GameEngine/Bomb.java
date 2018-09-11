@@ -54,6 +54,7 @@ public class Bomb extends GameObject implements Collectable {
     }
     
     @Override
+<<<<<<< HEAD
 	public void getCollected(GameEngine engine, Inventory playerInventory) {		
     		if (this.state == UNLIT) {
     			playerInventory.addObject(this); // bombs can be added indefinitely
@@ -61,4 +62,14 @@ public class Bomb extends GameObject implements Collectable {
     		}
 	}
  
+=======
+	public boolean getCollected(GameEngine engine, Inventory playerInventory){
+    	return true;
+	}
+
+	/* TODO: think about how front end should call bomb's explode method in a generic
+     *       way, e.g. could have a interface for all object can be invoke after delaying for some time period
+     *       then override them in individual sub class
+     */
+>>>>>>> elly.feature
 }

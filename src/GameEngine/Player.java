@@ -184,7 +184,7 @@ public class Player extends GameObject implements Movable {
     @Override
     public void registerCollisionHandler(GameEngine gameEngine){
         // Register handler for Player collide with Pit
-        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
                 new CollisionHandler() {
                     @Override
                     public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
@@ -199,5 +199,12 @@ public class Player extends GameObject implements Movable {
                         }
                     }
                 });
+    }
+    
+    /**
+     * set pushBoulder to true when player intend to push
+     */
+    public void setPushBoulder() {
+        this.onPushingBoulder = true;
     }
 }

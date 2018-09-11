@@ -11,7 +11,7 @@ public class CollisionEntities {
      * @param type1 classId for first obj
      * @param type2 classId for second obj
      */
-    public CollisionEntities(Class type1, Class type2) {
+    public CollisionEntities(Class<?> type1, Class<?> type2) {
 
     }
 

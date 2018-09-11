@@ -34,6 +34,17 @@ public class Boulder extends GameObject implements Movable {
     public double getSpeed() {
         return this.speed;
     }
+    
+    
+
+    /* (non-Javadoc)
+     * @see GameEngine.GameObject#setLocation(GameEngine.Point)
+     */
+    @Override
+    public boolean setLocation(Point point) {
+        // TODO Auto-generated method stub
+        return super.setLocation(point);
+    }
 
     /* 
      * Define collision handler for player
@@ -55,6 +66,16 @@ public class Boulder extends GameObject implements Movable {
         });
         
         // Register handler for boulder collide with player
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class), 
+                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                    Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1 : obj2);
+                    Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
+                    CollisionResult res; 
+                    
+                    this.setSpeed(player.getSpeed());
+                    
+                    
+                });
 
     }
     

@@ -35,18 +35,26 @@ public class Boulder extends GameObject implements Movable {
     }
 
     /* (non-Javadoc)
-     * @see GameEngine.GameObject#registerCollisionHandler(GameEngine.GameEngine)
+     * Define collision handler for player
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
-        // Register handler for boulder collide with player
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClassName(), Player.class.getSimpleName()), new CollisionHandler() {
-            @Override
-            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-                
-                return null;
-            }
+        // Register handler for boulder collide with pit
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClassName(), Pit.class.getSimpleName()),
+                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                    // check instance type here
+                    Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1: obj2);
+                    gameEngine.removeGameObject(boulder);
+                    CollisionResult res; 
+                    if(obj1 instanceof Boulder)
+                        res = new CollisionResult(CollisionResult.DELETE_FIRST);
+                    else
+                        res = new CollisionResult(CollisionResult.DELETE_SECOND);
+                    return res;
         });
+        
+        // Register handler for boulder collide with player
+        
     }
     
     

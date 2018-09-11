@@ -139,6 +139,7 @@ public class GameEngine {
 
     /**
      * Remove all reference to a given game object
+     * in the backend
      *
      * @see GameEngine#map
      * @see GameEngine#objects
@@ -147,7 +148,10 @@ public class GameEngine {
      * @param obj object to be removed
      */
     public void removeGameObject(GameObject obj){
-
+        map.removeObject(obj);
+        objects.remove(obj.objId);
+        movingObjects.remove(obj);
+        monsters.remove(obj);
     }
 
     /**

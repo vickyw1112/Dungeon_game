@@ -18,7 +18,7 @@ public class Player extends GameObject implements Movable {
     private Direction facing;
     private boolean onPushingBoulder;
 
-
+    
     /**
      * Constructor for Player
      *
@@ -32,8 +32,20 @@ public class Player extends GameObject implements Movable {
         facing = Direction.UP;
         onPushingBoulder = false;
     }
-
+    
+    
     /**
+     * getter for Inventory
+     * @return inventory
+     */
+
+    public Inventory getInventory() {
+		return inventory;
+	}
+
+
+
+	/**
      * Get current facing of a movable object
      * @return facing direction
      */
@@ -150,6 +162,7 @@ public class Player extends GameObject implements Movable {
 
     /**
      * Get the grid in front of the player
+     * TODO: move this to Movable?
      *
      * @see Player#setBomb
      * @see Player#shootArrow
@@ -185,10 +198,9 @@ public class Player extends GameObject implements Movable {
     public void registerCollisionHandler(GameEngine gameEngine){
         // Register handler for Player collide with Pit
         gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
-                new CollisionHandler() {
-                    @Override
-                    public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-                        Player player = (Player)obj2;
+                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                        // Have to check instance type here
+                        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
                         CollisionResult res = new CollisionResult(0);
                         if(player.effects.contains(PlayerEffect.HOVER)) {
                             res.addFlag(CollisionResult.HANDLED);
@@ -197,7 +209,6 @@ public class Player extends GameObject implements Movable {
                             res.addFlag(CollisionResult.LOSE);
                             return res;
                         }
-                    }
                 });
     }
 }

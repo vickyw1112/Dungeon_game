@@ -38,8 +38,6 @@ public class Arrow extends GameObject implements Collectable, Movable{
     public void registerCollisionHandler(GameEngine gameEngine) {
 	    gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
             (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                // Leaving the boulder conditional incase of future change to methodology
-                Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1 : obj2);
                 Arrow arrow = (Arrow)(obj1 instanceof Arrow ? obj1 : obj2);
 
                 CollisionResult res = new CollisionResult(0);

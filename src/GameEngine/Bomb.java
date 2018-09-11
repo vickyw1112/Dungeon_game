@@ -18,7 +18,8 @@ public class Bomb extends GameObject implements Collectable {
 
 
     @Override
-	public void getCollected(GameEngine engine, Inventory playerInventory) {
+	public boolean getCollected(GameEngine engine, Inventory playerInventory){
+    	return true;
 	}
 
 	/* TODO: think about how front end should call bomb's explode method in a generic

@@ -55,7 +55,12 @@ public class Boulder extends GameObject implements Movable {
         });
         
         // Register handler for boulder collide with player
-
+        
+        
+        
+        
+        
+        
     }
     
     

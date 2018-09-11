@@ -23,10 +23,13 @@
 hs_err_pid*
 
 out
+bin
 
 # Intellij
 .idea
 
 # Eclipse
 .settings
-/bin/
+.classpath
+.project
+*.DS_Store

@@ -1,6 +1,6 @@
 package GameEngine;
 
-public class Boulder extends GameObject implements Movable {
+public class Boulder extends GameObject implements Movable, Blockable {
     private Direction facing;
     private double speed;
 
@@ -53,14 +53,7 @@ public class Boulder extends GameObject implements Movable {
                         res = new CollisionResult(CollisionResult.DELETE_SECOND);
                     return res;
         });
-        
-        // Register handler for boulder collide with player
-        
-        
-        
-        
-        
-        
+
     }
     
     

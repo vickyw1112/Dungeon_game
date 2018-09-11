@@ -42,13 +42,31 @@ public class Point {
 		this.y = y;
 	}
 	
-	public void translate(int dx, int dy) {
+	public Point translate(int dx, int dy) {
 		this.x += dx;
 		this.y += dy;
+		return this;
 	}
 
     @Override
     public String toString() {
         return String.format("(%d, %d)", x, y);
+    }
+
+	@Override
+	public boolean equals(Object obj) {
+	    if(obj == null || !(obj instanceof Point))
+	    	return false;
+	    return this.x == ((Point) obj).x && this.y == ((Point) obj).y;
+	}
+
+
+	@Override
+    public int hashCode(){
+	    return Integer.hashCode(x) ^ Integer.hashCode(y);
+    }
+
+	public Point clone(){
+	    return new Point(this);
     }
 }

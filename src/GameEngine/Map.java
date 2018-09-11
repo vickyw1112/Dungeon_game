@@ -1,10 +1,11 @@
 package GameEngine;
 
-import javafx.geometry.Pos;
-
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Map {
     public static final int DUNGEON_SIZE_X = 10;
@@ -17,7 +18,9 @@ public class Map {
      */
     public Map(){
         this.map = new List[DUNGEON_SIZE_X][DUNGEON_SIZE_Y];
-        // TODO: init all lists
+        for(int i = 0; i < DUNGEON_SIZE_X; i++)
+            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
+                map[i][j] = new LinkedList<>();
     }
 
     /**
@@ -70,4 +73,25 @@ public class Map {
         obj.setLocation(location);
     }
 
+    public List<Point> getNonBlockAdjacentPoints(Point point){
+        List<Point> ret = new LinkedList<>();
+        // enumerate all adjacent point
+        Point[] points = new Point[4];
+        points[0] = point.clone().translate(1, 0);
+        points[1] = point.clone().translate(-1, 0);
+        points[2] = point.clone().translate(0, 1);
+        points[3] = point.clone().translate(0, -1);
+        for(Point curr : points) {
+            if(curr.getX() < 0 || curr.getX() >= DUNGEON_SIZE_X ||
+                    curr.getY() < 0 || curr.getY() >= DUNGEON_SIZE_Y)
+                continue;
+
+            // check if there's blockable obj in that point
+            if (getObjects(curr).stream()
+                    .filter(o -> (o instanceof Blockable)) // TODO: change this later
+                    .collect(Collectors.toList()).size() == 0)
+                ret.add(curr);
+        }
+        return ret;
+    }
 }

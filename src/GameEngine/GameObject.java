@@ -92,7 +92,8 @@ public abstract class GameObject {
      * @param gameEngine the game engine
      */
     public void registerCollisionHandler(GameEngine gameEngine) {
-        // by default do nothing
+        // defult do sth
+        
     }
 
     /**

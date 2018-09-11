@@ -6,6 +6,7 @@ public class Boulder extends GameObject implements Movable {
 
     public Boulder(Point location) {
         super(location);
+        this.speed = 0;
     }
 
     @Override
@@ -34,13 +35,13 @@ public class Boulder extends GameObject implements Movable {
         return this.speed;
     }
 
-    /* (non-Javadoc)
+    /* 
      * Define collision handler for player
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
         // Register handler for boulder collide with pit
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClassName(), Pit.class.getSimpleName()),
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     // check instance type here
                     Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1: obj2);
@@ -54,7 +55,7 @@ public class Boulder extends GameObject implements Movable {
         });
         
         // Register handler for boulder collide with player
-        
+
     }
     
     

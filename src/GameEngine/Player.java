@@ -237,7 +237,7 @@ public class Player extends GameObject implements Movable {
     /**
      * set pushBoulder to true when player intend to push
      */
-    public void setPushBoulder() {
-        this.onPushingBoulder = true;
+    public void setPushBoulder(Boolean toogle) {
+        this.onPushingBoulder = toogle;
     }
 }

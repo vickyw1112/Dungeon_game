@@ -64,7 +64,13 @@ public class Inventory {
      * @param obj the object being added
      */
     public void addObject(GameObject obj){
-    	items.add(obj);
+    	//Do we need to double up for items on the list?
+    	//example if we collect 20 arrows, is our list 20 individual arrows? I think Key 
+    	//is the only unique item with name?
+    	if (!items.contains(obj)) {
+    		items.add(obj);
+    	}
+    	
     	int count;
     	if(countMap.get(obj.getClassName()) != null) {
     		count = countMap.get(obj.getClassName());
@@ -90,7 +96,7 @@ public class Inventory {
         		count = countMap.get(classname);
         		countMap.put(classname, --count);
         		return item;
-        	}	
+        	}
         }
         return null;
     }

@@ -44,12 +44,13 @@ public class CollisionResult {
      * @param flags initial flags
      */
     public CollisionResult(int flags){
-
+    	
     }
 
 
     /**
      * Set a specific bit of flags to true
+     * BITWISE OR
      * @param flag
      */
     public void addFlag(int flag) {

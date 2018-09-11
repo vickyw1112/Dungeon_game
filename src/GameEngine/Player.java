@@ -126,12 +126,16 @@ public class Player extends GameObject implements Movable {
         if(map.getObjects(setPosition).size() != 0)
             return null;
 
+        // case when bomb is planted
         Bomb bomb = (Bomb)inventory.popObject(Bomb.class.getSimpleName());
-        bomb.setLocation(setPosition);
-        bomb.changeState(Bomb.LIT);
-        return bomb;
+        bomb.setLocation(setPosition);   
+        bomb.changeState(bomb.ALMOSTLIT);
+        return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front end deals with most of this)
+        
     }
 
+    
+    
     /**
      * Get a list of all player effects that the player
      * is carrying currently
@@ -203,12 +207,52 @@ public class Player extends GameObject implements Movable {
                         Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
                         CollisionResult res = new CollisionResult(0);
                         if(player.effects.contains(PlayerEffect.HOVER)) {
-                            res.addFlag(CollisionResult.HANDLED);
+                            res.addFlag(CollisionResult.HANDLED); // probably don't need this if we just follow default?
                             return res;
                         } else {
                             res.addFlag(CollisionResult.LOSE);
                             return res;
                         }
                 });
+        
+        // Register handler for Player Collide with Lit and Unlit Bomb
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Bomb.class.getSimpleName()),
+		        new CollisionHandler() {
+		        	@Override
+		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+		        		Bomb bomb = (Bomb) obj1;
+		        		CollisionResult res = new CollisionResult(0);
+		        		
+		        		// UNLIT BOMB
+		        		if (bomb.getState() == 0) {
+		        			bomb.getCollected();
+		        			res.addFlag(CollisionResult.REFRESH_INVENTORY); //since thee layout will be bomb[1] player[2] ?? if we are sorting it
+		        			return res;
+		        		// ALMOST LIT BOMB
+		        		} else if (bomb.getState() == 1) {
+		        			res.addFlag(CollisionResult.HANDLED); // we can just pass over it whilst it is abnout to explode
+		        			return res;
+		        		// LIT BOMB
+		        		} else {
+		        			res.addFlag(CollisionResult.LOSE);
+		        			return res;
+		        		}
+		        	}
+        		});
+        
+        // TODO: collision handlers for player        	
+        // Player and Arrow
+		
+		        		
+        // Player and Key
+             		
+        // Player and Treasure
+        
+        // Player Boulder
+        
+        // Player and Monster
+        
+        // Player and Potion
+       
     }
 }

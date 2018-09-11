@@ -51,7 +51,10 @@ public class GameEngine {
      * @return if the player have a bomb to set
      */
     public Bomb playerSetBomb(){
-        return player.setBomb(map);
+    	
+    	
+    	
+    	return player.setBomb(map);
     }
 
     /**
@@ -173,7 +176,8 @@ public class GameEngine {
      * @return collision handler
      */
     public CollisionHandler getCollisionHandler(CollisionEntities entities){
-
+    	
+    	
         return null;
     }
 

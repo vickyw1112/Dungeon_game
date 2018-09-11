@@ -1,6 +1,6 @@
 package GameEngine;
 
-public class Boulder extends GameObject implements Movable {
+public class Boulder extends GameObject implements Movable, Blockable {
     private Direction facing;
     private double speed;
 

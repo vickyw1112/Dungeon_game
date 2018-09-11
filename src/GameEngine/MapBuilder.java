@@ -23,6 +23,7 @@ public class MapBuilder {
      * @param location
      */
     public void addObject(GameObject obj, Point location){
+        obj.location = location;
 
     }
 

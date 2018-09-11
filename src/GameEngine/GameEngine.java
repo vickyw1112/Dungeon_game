@@ -36,6 +36,7 @@ public class GameEngine {
         map = new Map();
         player = new Player(new Point(1,2));
         movingObjects = new LinkedList<>();
+        monsters = new LinkedList<>();
 
 
         // register collisionHandler for (GameObject, GameObject) for default handler here
@@ -221,11 +222,10 @@ public class GameEngine {
         System.out.println(engine.getCollisionHandler(new CollisionEntities(Key.class, Pit.class)));
         
         //Checking moving arrow collision
+        Arrow a = new Arrow(new Point (3,4));
         CollisionEntities eMV = new CollisionEntities(Arrow.class, Boulder.class);
         CollisionEntities eMV1 = new CollisionEntities(Arrow.class, Monster.class);
         CollisionEntities eMV2 = new CollisionEntities(Arrow.class, Door.class);
-        
-        Arrow a = new Arrow(new Point (3,4));
         a.changeState(Arrow.MOVING);
         a.registerCollisionHandler(engine);
         

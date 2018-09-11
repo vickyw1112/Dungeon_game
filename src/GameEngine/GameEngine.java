@@ -129,8 +129,11 @@ public class GameEngine {
     public void changeObjectLocation(GameObject object, Point location){
         if(object.setLocation(location)) {
             map.updateObjectLocation(object, location);
+            // TODO: think of better way to do this
             if(object instanceof Player){
-                // TODO: put update monsters' path in player.setLocation
+                for(Monster monster : monsters){
+                    monster.updatePath(map, player);
+                }
             }
         }
     }
@@ -217,6 +220,16 @@ public class GameEngine {
         System.out.println(engine.getCollisionHandler(ent2));
         System.out.println(engine.getCollisionHandler(new CollisionEntities(Key.class, Pit.class)));
 
+        engine.map.map[5][2].add(new Wall(new Point(5, 2)));
+
+//        engine.map.map[6][9].add(new Wall(new Point(6, 9)));
+        engine.map.map[4][9].add(new Wall(new Point(6, 9)));
+        engine.map.map[5][8].add(new Wall(new Point(6, 9)));
+
+        Monster mon = new Hunter(new Point(5, 9));
+        System.out.println(mon.pathGenerator.generatePath(engine.map, mon, p.location));
+
+
         List<GameObject> testObjs = new LinkedList<GameObject>();
         engine.setStateChanger(new StateChanger() {
             @Override
@@ -236,7 +249,7 @@ public class GameEngine {
         } catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println(testObjs);
+//        System.out.println(testObjs);
     }
 
 }

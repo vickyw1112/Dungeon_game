@@ -114,12 +114,22 @@ public class Player extends GameObject implements Movable {
         if(map.getObjects(setPosition).size() != 0)
             return null;
 
+        // case when bomb is planted
         Bomb bomb = (Bomb)inventory.popObject(Bomb.class.getSimpleName());
-        bomb.setLocation(setPosition);
-        bomb.changeState(Bomb.LIT);
+        bomb.setLocation(setPosition);   
+        bomb.changeState(bomb.ALMOSTLIT);
+        Thread.sleep(bomb.TIMER);
+        bomb.changeState(Bomb.LIT)
+ 
         return bomb;
     }
 
+    
+    
+    
+    
+    
+    
     /**
      * Get a list of all player effects that the player
      * is carrying currently
@@ -207,16 +217,24 @@ public class Player extends GameObject implements Movable {
 		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
 		        		Bomb bomb = (Bomb) obj1;
 		        		CollisionResult res = new CollisionResult(0);
-		        		if (!bomb.isLit()) { // TODO: create a class for isLit in bomb
+		        		
+		        		// UNLIT BOMB
+		        		if (bomb.getState() == 0) {
 		        			res.addFlag(CollisionResult.REFRESH_INVENTORY); //since thee layout will be bomb[1] player[2] ?? if we are sorting it
 		        			return res;
+		        		// ALMOST LIT BOMB
+		        		} else if (bomb.getState() == 1) {
+		        			res.addFlag(CollisionResult.HANDLED); // we can just pass over it whilst it is abnout to explode
+		        			return res;
+		        		// LIT BOMB
 		        		} else {
-		        			res.addFlag(CollisionResult.REJECT); // or can we pass over a lit bomb? 
+		        			res.addFlag(CollisionResult.LOSE);
 		        			return res;
 		        		}
 		        	}
         		});
         
+        // register player colliding with bomb radius
         
         
         // TODO: collision handlers for player

@@ -1,6 +1,6 @@
 package GameEngine;
 
-public class Door extends GameObject {
+public class Door extends GameObject implements CollisionHandler {
 	private Key key;
 	public static final int OPEN = 1;
 	public static final int CLOSED = 0;
@@ -30,6 +30,13 @@ public class Door extends GameObject {
 	}
 	
 	/**
+	 * 
+	 */
+	public Key getKey() {
+		return this.key;
+	}
+	
+	/**
 	 * open door
 	 * check whether the key is match to the door or not
 	 * if matching set door's status to open
@@ -43,5 +50,43 @@ public class Door extends GameObject {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Collision handle method override for Player/Door interaction
+	 */
+	@Override
+	public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+		// Have to check instance type here
+        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
+        CollisionResult res = new CollisionResult(0);
+        
+        //Check if obj1 is the door && Door is closed
+        if (obj1 instanceof Door && obj1.getState() == CLOSED) {
+        	//Collision result regardless if player has key is REJECT
+    		res.addFlag(CollisionResult.REJECT);
+    		Key key = getKey();
+    		Inventory inventory = player.getInventory();
+    		if(inventory.contains(key)) {
+    			openTheDoor(key);
+    			return res;
+    		} else {
+    			return res;
+    		}
+    	//Check if obj2 is the door && Door is closed
+        } else if (obj2 instanceof Door && obj2.getState() == CLOSED) {
+        	//Collision result regardless if player has key is REJECT
+    		res.addFlag(CollisionResult.REJECT);
+    		Key key = getKey();
+    		Inventory inventory = player.getInventory();
+    		if(inventory.contains(key)) {
+    			openTheDoor(key);
+    			return res;
+    		} else {
+    			return res;
+    		}
+        }
+        res.addFlag(CollisionResult.HANDLED);
+        return res;
 	}
 }

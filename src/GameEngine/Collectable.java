@@ -13,7 +13,7 @@ public interface Collectable {
 	 */
     public default boolean getCollected(GameEngine engine, Inventory playerInventory) {
     	playerInventory.addObject((GameObject) this);
-        engine.getMap().removeObject((GameObject) this);
+        engine.removeGameObject((GameObject) this);
         return true;
     }
 }

@@ -18,7 +18,7 @@ public class Player extends GameObject implements Movable {
     private Direction facing;
     private boolean onPushingBoulder;
 
-
+    
     /**
      * Constructor for Player
      *
@@ -32,8 +32,20 @@ public class Player extends GameObject implements Movable {
         facing = Direction.UP;
         onPushingBoulder = false;
     }
-
+    
+    
     /**
+     * getter for Inventory
+     * @return inventory
+     */
+
+    public Inventory getInventory() {
+		return inventory;
+	}
+
+
+
+	/**
      * Get current facing of a movable object
      * @return facing direction
      */

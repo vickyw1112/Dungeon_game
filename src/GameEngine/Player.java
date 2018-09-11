@@ -233,8 +233,23 @@ public class Player extends GameObject implements Movable {
 		        new CollisionHandler() {
 		        	@Override
 		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-		        		Monster monster = (Monster) obj2;
+		        		Monster monster = (Monster) (obj1 instanceof Monster?obj1:obj2);
 		        		CollisionResult res = new CollisionResult(0);
+                                        if(player.effects.contains(PlayerEffect.INVINCIBLE)) {
+                                            
+                                        }
+                                        else if(){
+                                            
+                                            res.addFlag(CollisionResult.HANDLED);
+                                            return res;
+                                        }
+                                        else
+                                        {
+                                            res.addFlag(CollisionResult.LOSE);
+                                            return res;
+                                        }
+                                            
+                            
 		        		
 		        		
 		        	}

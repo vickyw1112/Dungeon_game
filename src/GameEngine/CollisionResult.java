@@ -53,7 +53,7 @@ public class CollisionResult {
      * @param flag
      */
     public void addFlag(int flag) {
-    	this.flag |= flag;
+    	this.flags |= flag;
     }
 
     /**

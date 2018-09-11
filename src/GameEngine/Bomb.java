@@ -19,8 +19,40 @@ public class Bomb extends GameObject implements Collectable {
         super(location);
         state = UNLIT;
     }
-
-
+    
+    /**
+     * Checks if any objects can be destroyed in radius and removes them
+     * this class should only gets called if we set a bomb.
+     * going to ignore the front end implementation of sending the message
+     */
+    public void destroy(GameEngine ge, Map m, Point p) {
+    	
+    	// get the location of the bomb
+    	Point p = this.getLocation();
+    	int x = p.getX();
+    	int y = p.getY();
+    	
+    	// list of positions maybe implement this function in point class (get surrounding points)
+    	ArrayList<Point> checkPositions = new ArrayList<Point>
+    	checkPositions.add(new Point(x + 1, y));
+    	checkPositions.add(new Point (x-1, y));
+    	checkPositions.add(new Point(x, y + 1));
+    	checkPositions.add(new Point(x, y - 1));
+    	
+    	// cycle through each position
+    	for (Point p: checkPositions) {
+    		for (GameObject go: m.getObjects(p)) {
+    			if (go.getSampleName().isEquals("Boulder")) {
+    				m.updateObjectLocation(go, p);
+    			} else if (go.getSampleName().isEquals("Monster")) {
+    				m.updateObjectLocation(go, p);
+    			} else if (go.getSimpleName().isEquals("Player")) {
+    				// send an instant game over message?
+    			}
+    		}
+    	}
+    }
+    
     @Override
 	public void getCollected(GameEngine engine, Inventory playerInventory) {		
     		if (this.state == UNLIT) {
@@ -28,8 +60,5 @@ public class Bomb extends GameObject implements Collectable {
     			engine.removeGameObject(this);
     		}
 	}
-    
-    
-    
-    
+ 
 }

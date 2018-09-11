@@ -118,16 +118,10 @@ public class Player extends GameObject implements Movable {
         Bomb bomb = (Bomb)inventory.popObject(Bomb.class.getSimpleName());
         bomb.setLocation(setPosition);   
         bomb.changeState(bomb.ALMOSTLIT);
-        Thread.sleep(bomb.TIMER);
-        bomb.changeState(Bomb.LIT)
- 
-        return bomb;
+        return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front end deals with most of this)
+        
     }
 
-    
-    
-    
-    
     
     
     /**
@@ -220,6 +214,7 @@ public class Player extends GameObject implements Movable {
 		        		
 		        		// UNLIT BOMB
 		        		if (bomb.getState() == 0) {
+		        			bomb.getCollected();
 		        			res.addFlag(CollisionResult.REFRESH_INVENTORY); //since thee layout will be bomb[1] player[2] ?? if we are sorting it
 		        			return res;
 		        		// ALMOST LIT BOMB
@@ -234,17 +229,27 @@ public class Player extends GameObject implements Movable {
 		        	}
         		});
         
-        // register player colliding with bomb radius
-        
-        
         // TODO: collision handlers for player
         
         // Player and Wall
-       
-        // Player and Arrow
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Wall.class.getSimpleName()),
+		        new CollisionHandler() {
+		        	@Override
+		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+		        		Wall wall = (Wall) obj2;
+		        		CollisionResult res = new CollisionResult(0);
+		        		
         
+            
+		        	
+        // Player and Arrow
+		
+		        		
         // Player and Key
         
+		        		
+		        		
+		        		
         // Player and Treasure
         
         // Player Boulder

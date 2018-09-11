@@ -1,15 +1,13 @@
 package GameEngine;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bomb extends GameObject implements Collectable {
-    public static final int UNLIT = 0;
     public static final int ALMOSTLIT = 1; // will find a better name
     public static final int LIT = 2;
     public static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
 
-    
-    private int state;
     /**
      * Constructor for bomb
      *
@@ -17,59 +15,56 @@ public class Bomb extends GameObject implements Collectable {
      */
     public Bomb(Point location){
         super(location);
-        state = UNLIT;
+        state = Collectable.COLLECTABLESTATE;
     }
     
     /**
      * Checks if any objects can be destroyed in radius and removes them
      * this class should only gets called if we set a bomb.
      * going to ignore the front end implementation of sending the message
+     *
+     * @param engine game engine
+     * @param map game map
+     * @return list of object that gets destroyed during explosion
+     *         return empty list if no objects are destroyed
+     *         return null if player is died during explosion
      */
-    public void destroy(GameEngine ge, Map m, Point p) {
-    	
-    	// get the location of the bomb
-    	Point p = this.getLocation();
-    	int x = p.getX();
-    	int y = p.getY();
-    	
-    	// list of positions maybe implement this function in point class (get surrounding points)
-    	ArrayList<Point> checkPositions = new ArrayList<Point>
-    	checkPositions.add(new Point(x + 1, y));
-    	checkPositions.add(new Point (x-1, y));
-    	checkPositions.add(new Point(x, y + 1));
-    	checkPositions.add(new Point(x, y - 1));
-    	
-    	// cycle through each position
-    	for (Point p: checkPositions) {
-    		for (GameObject go: m.getObjects(p)) {
-    			if (go.getSampleName().isEquals("Boulder")) {
-    				m.updateObjectLocation(go, p);
-    			} else if (go.getSampleName().isEquals("Monster")) {
-    				m.updateObjectLocation(go, p);
-    			} else if (go.getSimpleName().isEquals("Player")) {
-    				// send an instant game over message?
-    			}
-    		}
-    	}
-    }
-    
-    @Override
-<<<<<<< HEAD
-	public void getCollected(GameEngine engine, Inventory playerInventory) {		
-    		if (this.state == UNLIT) {
-    			playerInventory.addObject(this); // bombs can be added indefinitely
-    			engine.removeGameObject(this);
-    		}
-	}
- 
-=======
-	public boolean getCollected(GameEngine engine, Inventory playerInventory){
-    	return true;
-	}
-
 	/* TODO: think about how front end should call bomb's explode method in a generic
      *       way, e.g. could have a interface for all object can be invoke after delaying for some time period
      *       then override them in individual sub class
      */
->>>>>>> elly.feature
+    public List<GameObject> explode(GameEngine engine, Map map) {
+    	
+    	int x = this.location.getX();
+    	int y = this.location.getY();
+    	
+    	// list of positions maybe implement this function in point class (get surrounding points)
+    	Point[] checkPositions = new Point[4];
+    	checkPositions[0] = new Point(x + 1, y);
+    	checkPositions[1] = new Point (x-1, y);
+    	checkPositions[2] = new Point(x, y + 1);
+    	checkPositions[3] = new Point(x, y - 1);
+
+    	ArrayList<GameObject> adjacentObj = new ArrayList<>();
+
+    	// cycle through each position
+        for (Point currPos: checkPositions) {
+            adjacentObj.addAll(map.getObjects(currPos));
+    	}
+
+    	List<GameObject> ret = new ArrayList<>();
+
+        for (GameObject obj: adjacentObj) {
+            if (obj instanceof Boulder ||
+                    obj instanceof Monster) {
+                engine.removeGameObject(obj);
+                ret.add(obj);
+
+            } else if (obj instanceof Player) {
+                return null; // game over
+            }
+        }
+        return ret;
+    }
+
 }

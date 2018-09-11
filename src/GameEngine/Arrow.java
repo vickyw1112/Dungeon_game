@@ -1,7 +1,5 @@
 package GameEngine;
 
-import java.awt.*;
-
 public class Arrow extends GameObject implements Collectable, Movable{
     public static final double SPEED = 4;
     public static final int MOVING = 1;
@@ -29,7 +27,7 @@ public class Arrow extends GameObject implements Collectable, Movable{
     @Override
     public boolean getCollected(GameEngine engine, Inventory playerInventory) {
         playerInventory.addObject(this);
-        engine.getMap().removeObject(this);
+        engine.removeGameObject(this);
         return true;
     }
 }

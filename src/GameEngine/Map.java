@@ -48,14 +48,14 @@ public class Map {
      * Get list of object in specific grid
      */
     public List<GameObject> getObjects(Point location){
-        return map[location.x][location.y];
+        return map[location.getX()][location.getY()];
     }
 
     /**
      * Remove a specific object from the map
      */
     public void removeObject(GameObject obj){
-        map[obj.location.x][obj.location.y].remove(obj);
+        map[obj.location.getX()][obj.location.getY()].remove(obj);
     }
 
     /**
@@ -66,7 +66,8 @@ public class Map {
      */
     public void updateObjectLocation(GameObject obj, Point location){
         removeObject(obj);
-        map[location.x][location.y].add(obj);
+        map[location.getX()][location.getY()].add(obj);
+        obj.setLocation(location);
     }
 
 }

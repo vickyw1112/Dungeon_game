@@ -1,6 +1,7 @@
 package GameEngine;
 
 public interface Collectable {
+	static final int CollectableState = 0;
 	/**
 	 * getCollected method will add object to inventory class
 	 * It will also check if collectable object can be stacked

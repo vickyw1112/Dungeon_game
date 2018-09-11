@@ -36,6 +36,7 @@ public class GameEngine {
         map = new Map();
         player = new Player(new Point(1,2));
         movingObjects = new LinkedList<>();
+        monsters = new LinkedList<>();
 
 
         // register collisionHandler for (GameObject, GameObject) for default handler here
@@ -208,15 +209,31 @@ public class GameEngine {
     public static void main(String[] args) throws Exception{
         CollisionEntities ent = new CollisionEntities(Player.class, Pit.class);
         CollisionEntities ent2 = new CollisionEntities(Player.class, Wall.class);
+        
         System.out.println(ent.getParentEntities());
         GameEngine engine = new GameEngine("123");
         Player p = new Player(new Point(1,2));
         p.registerCollisionHandler(engine);
 
+        GameObject.stateChanger = (GameObject obj, int state) -> {};
+        
         System.out.println(engine.getCollisionHandler(ent));
         System.out.println(engine.getCollisionHandler(ent2));
         System.out.println(engine.getCollisionHandler(new CollisionEntities(Key.class, Pit.class)));
-
+        
+        //Checking moving arrow collision
+        Arrow a = new Arrow(new Point (3,4));
+        CollisionEntities eMV = new CollisionEntities(Arrow.class, Boulder.class);
+        CollisionEntities eMV1 = new CollisionEntities(Arrow.class, Monster.class);
+        CollisionEntities eMV2 = new CollisionEntities(Arrow.class, Door.class);
+        a.changeState(Arrow.MOVING);
+        a.registerCollisionHandler(engine);
+        
+        System.out.println(engine.getCollisionHandler(eMV));
+        System.out.println(engine.getCollisionHandler(eMV1));
+        System.out.println(engine.getCollisionHandler(eMV2));
+        
+        
         List<GameObject> testObjs = new LinkedList<GameObject>();
         engine.setStateChanger(new StateChanger() {
             @Override

@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Map {
@@ -16,7 +17,12 @@ public class Map {
      * Empty arg constructor
      */
     public Map(){
-        this.map = new List[DUNGEON_SIZE_X][DUNGEON_SIZE_Y];
+        this.map = new ArrayList[DUNGEON_SIZE_X][DUNGEON_SIZE_Y];
+        for(int i = 0; i < DUNGEON_SIZE_X; i++) {
+            for(int j = 0; j < DUNGEON_SIZE_Y; j++) {
+            	map[i][j] = new ArrayList<>();
+            }
+        }
         // TODO: init all lists
     }
 

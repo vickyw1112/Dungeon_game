@@ -53,8 +53,6 @@ public class Boulder extends GameObject implements Movable {
                         res = new CollisionResult(CollisionResult.DELETE_SECOND);
                     return res;
         });
-        
-        // Register handler for boulder collide with player
 
     }
     

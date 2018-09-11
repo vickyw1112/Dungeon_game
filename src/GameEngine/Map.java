@@ -1,5 +1,8 @@
 package GameEngine;
 
+import javafx.geometry.Pos;
+
+import java.awt.*;
 import java.io.File;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class Map {
     /**
      * Constructor from a map builder
      *
-     * @param mapBuilder
+     * @param m
      */
     public Map(MapBuilder mapBuilder){
 
@@ -41,5 +44,30 @@ public class Map {
 
     }
 
+    /**
+     * Get list of object in specific grid
+     */
+    public List<GameObject> getObjects(Point location){
+        return map[location.getX()][location.getY()];
+    }
+
+    /**
+     * Remove a specific object from the map
+     */
+    public void removeObject(GameObject obj){
+        map[obj.location.getX()][obj.location.getY()].remove(obj);
+    }
+
+    /**
+     * Update an object's location
+     *
+     * @param obj game object
+     * @param location new location
+     */
+    public void updateObjectLocation(GameObject obj, Point location){
+        removeObject(obj);
+        map[location.getX()][location.getY()].add(obj);
+        obj.setLocation(location);
+    }
 
 }

@@ -1,6 +1,5 @@
 package GameEngine;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +9,11 @@ public class GameEngine {
     private Map map;
     private Player player;
     private List<Movable> movingObjects;
+    /**
+     * Map for finding collision handler for two specific type of object
+     * Key is CollisionEntities which contains two string of class name in order
+     * Value is the CollisionHandler
+     */
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
@@ -25,7 +29,19 @@ public class GameEngine {
      * @param file map file
      */
     public GameEngine(String file){
+        // init
+        // TODO init different thing in different places
+        objects = new HashMap<>();
+        collisionHandlerMap = new HashMap<>();
+        map = new Map();
+        player = new Player(new Point(1,2));
+        movingObjects = new LinkedList<>();
 
+
+        // register collisionHandler for (GameObject, GameObject) for default handler here
+        // fall back mechanism see GameEngine#getCollisionHandler
+        registerCollisionHandler(new CollisionEntities(GameObject.class, GameObject.class),
+                new DefaultHandler());
     }
 
     /**
@@ -34,9 +50,8 @@ public class GameEngine {
      *
      * @return if the player have a arrow to shoot
      */
-    public boolean playerShootArrow(){
-
-        return false;
+    public Arrow playerShootArrow(){
+        return player.shootArrow();
     }
 
     /**
@@ -45,9 +60,11 @@ public class GameEngine {
      *
      * @return if the player have a bomb to set
      */
-    public boolean playerSetBomb(){
-
-        return false;
+    public Bomb playerSetBomb(){
+    	
+    	
+    	
+    	return player.setBomb(map);
     }
 
     /**
@@ -67,41 +84,55 @@ public class GameEngine {
      */
     public List<Movable> getMovingObjects(){
         // filter out all obj with speed 0
-        return null;
+        List<Movable> res = new LinkedList<>(movingObjects);
+        res.removeIf(o -> o.getSpeed() == 0);
+        return res;
     }
 
     /**
      * Find the handler for given two object and call
      * to handle the collision
+     * and return the collision result to front end
      * @param obj1 first game obj
      * @param obj2 second game obj
      *
-     * @return flags for instruction for front end
-     *          TODO specify format here
+     * @see CollisionResult
+     * @return CollisionResult
      */
-    public CollisionResult handleCollision(GameObject obj1, GameObject obj2){
+    public CollisionResult handleCollision(GameObject obj1, GameObject obj2) throws CollisionHandlerNotImplement{
+        CollisionHandler handler =
+            getCollisionHandler(new CollisionEntities(obj1.getClass(), obj2.getClass()));
 
-        return null;
+        return handler.handle(this, obj1, obj2);
     }
 
     /**
      * Check if the player is wining the game now
      *
-     * @return
+     * @return whether the player has won the game
      */
     public boolean checkWiningCondition(){
+        // TODO
         return false;
     }
 
-    /**
-     * Wrapper of {@link Player#changeLocation}
-     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
-     * if player moved to another grid
-     *
-     * @param point
-     */
-    public void playerChangeLocation(Point point){
 
+    /**
+     * Wrapper of {@link GameObject#setLocation}
+     * Updates indexes for this object in Map
+     * Call {@link Monster#updatePath} for each {@link GameEngine#monsters}
+     * if player's location changed
+     *
+     * @param object game object
+     * @param location new location
+     */
+    public void changeObjectLocation(GameObject object, Point location){
+        if(object.setLocation(location)) {
+            map.updateObjectLocation(object, location);
+            if(object instanceof Player){
+                // TODO: put update monsters' path in player.setLocation
+            }
+        }
     }
 
 
@@ -117,15 +148,10 @@ public class GameEngine {
     }
 
 
-    /**
-     * Interface to register a collision handler for given entities
-     */
-    protected void registerCollisionHandler(CollisionEntities entities, CollisionHandler hander){
-
-    }
 
     /**
      * Remove all reference to a given game object
+     * in the backend
      *
      * @see GameEngine#map
      * @see GameEngine#objects
@@ -134,7 +160,10 @@ public class GameEngine {
      * @param obj object to be removed
      */
     public void removeGameObject(GameObject obj){
-
+        map.removeObject(obj);
+        objects.remove(obj.objId);
+        movingObjects.remove(obj);
+        monsters.remove(obj);
     }
 
     /**
@@ -148,8 +177,46 @@ public class GameEngine {
     }
 
 
-    public static void main(String[] args){
+    /**
+     * Interface to register a collision handler for given entities
+     */
+    protected void registerCollisionHandler(CollisionEntities entities, CollisionHandler handler){
+        collisionHandlerMap.put(entities, handler);
+    }
+
+
+    /**
+     * Given a entities object, return the corresponding collision handler
+     * from the map
+     * If entities are not present in the key
+     * try to get the entities of parent classes
+     * If no handler can be found throw exception
+     *
+     * @throws CollisionHandlerNotImplement
+     * @param entities
+     * @return collision handler
+     */
+    public CollisionHandler getCollisionHandler(CollisionEntities entities) throws CollisionHandlerNotImplement{
+        for(CollisionEntities ent: entities.getParentEntities()){
+            if(collisionHandlerMap.containsKey(ent)){
+                return collisionHandlerMap.get(ent);
+            }
+        }
+        throw new CollisionHandlerNotImplement("test");
+    }
+
+    public static void main(String[] args) throws Exception{
+        CollisionEntities ent = new CollisionEntities(Player.class, Pit.class);
+        CollisionEntities ent2 = new CollisionEntities(Player.class, Wall.class);
+        System.out.println(ent.getParentEntities());
         GameEngine engine = new GameEngine("123");
+        Player p = new Player(new Point(1,2));
+        p.registerCollisionHandler(engine);
+
+        System.out.println(engine.getCollisionHandler(ent));
+        System.out.println(engine.getCollisionHandler(ent2));
+        System.out.println(engine.getCollisionHandler(new CollisionEntities(Key.class, Pit.class)));
+
         List<GameObject> testObjs = new LinkedList<GameObject>();
         engine.setStateChanger(new StateChanger() {
             @Override
@@ -160,7 +227,6 @@ public class GameEngine {
         });
         // TODO: check lambda?
         // engine.setStateChanger((obj, state) -> testObjs.add(((GameObject) obj)));
-        Player p = new Player(new Point(2,3));
         p.changeState(1);
         p.changeState(2);
         try {

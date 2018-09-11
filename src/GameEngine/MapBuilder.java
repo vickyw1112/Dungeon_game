@@ -43,5 +43,6 @@ public class MapBuilder {
      */
     public GameObject getObj(Point location){
 
+        return null;
     }
 }

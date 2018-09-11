@@ -229,6 +229,16 @@ public class Player extends GameObject implements Movable {
         // Player Boulder
         
         // Player and Monster
+        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Monster.class.getSimpleName()),
+		        new CollisionHandler() {
+		        	@Override
+		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+		        		Monster monster = (Monster) obj2;
+		        		CollisionResult res = new CollisionResult(0);
+		        		
+		        		
+		        	}
+        		});
         
         // Player and Potion
        

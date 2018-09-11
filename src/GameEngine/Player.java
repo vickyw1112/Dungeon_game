@@ -1,6 +1,5 @@
 package GameEngine;
 
-import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -185,18 +184,18 @@ public class Player extends GameObject implements Movable {
     @Override
     public void registerCollisionHandler(GameEngine gameEngine){
         // Register handler for Player collide with Pit
-        gameEngine.registerCollisionHandler(new CollisionEntities(getClassName(), Pit.class.getSimpleName()),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                        // Have to check instance type here
-                        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
-                        CollisionResult res = new CollisionResult(0);
-                        if(player.effects.contains(PlayerEffect.HOVER)) {
-                            res.addFlag(CollisionResult.HANDLED);
-                            return res;
-                        } else {
-                            res.addFlag(CollisionResult.LOSE);
-                            return res;
-                        }
-                });
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
+            (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                // Have to check instance type here
+                Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
+                CollisionResult res = new CollisionResult(0);
+                if(player.effects.contains(PlayerEffect.HOVER)) {
+                    res.addFlag(CollisionResult.HANDLED);
+                    return res;
+                } else {
+                    res.addFlag(CollisionResult.LOSE);
+                    return res;
+                }
+            });
     }
 }

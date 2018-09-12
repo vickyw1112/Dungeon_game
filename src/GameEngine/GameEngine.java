@@ -17,8 +17,6 @@ public class GameEngine {
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
-
-
     /**
      * Constructor for GameEngine
      * Load the map from saving

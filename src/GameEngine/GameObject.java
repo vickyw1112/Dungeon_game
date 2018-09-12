@@ -1,7 +1,5 @@
 package GameEngine;
 
-import java.awt.*;
-
 public abstract class GameObject {
     private static int objCount = 0;
 

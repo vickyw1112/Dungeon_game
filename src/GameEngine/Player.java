@@ -12,7 +12,10 @@ public class Player extends GameObject implements Movable {
      */
     public static final double SPEED = 2;
 
-    private Inventory inventory;
+    // player inventory should be newly instantiated when loading map
+    // not loading from serialized file
+    private transient Inventory inventory;
+
     private Set<PlayerEffect> effects;
     private Direction facing;
     private boolean onPushingBoulder;
@@ -26,13 +29,17 @@ public class Player extends GameObject implements Movable {
     public Player(Point location){
         super(location);
         // set default values
-        inventory = new Inventory();
-        effects = new HashSet<>();
         facing = Direction.UP;
         onPushingBoulder = false;
     }
-    
-    
+
+    @Override
+    public void initialize(){
+        inventory = new Inventory();
+        effects = new HashSet<>();
+        onPushingBoulder = false;
+    }
+
     /**
      * getter for Inventory
      * @return inventory

@@ -19,7 +19,5 @@ public class FloorSwitch extends GameObject{
                     this.state = TRIGGERED;
                     return new CollisionResult(CollisionResult.HANDLED);
         }); 
-    }
-
-    
+    }   
 }

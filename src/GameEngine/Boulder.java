@@ -57,9 +57,9 @@ public class Boulder extends GameObject implements Movable, Blockable {
                     // check instance type here
                     Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1: obj2);
                     gameEngine.removeGameObject(boulder);
-                    CollisionResult res; 
+                    CollisionResult res = new CollisionResult(0); 
                     if(obj1 instanceof Boulder)
-                        res = new CollisionResult(CollisionResult.DELETE_FIRST);
+                        res.addFlag(CollisionResult.DELETE_FIRST);
                     else
                         res = new CollisionResult(CollisionResult.DELETE_SECOND);
                     return res;
@@ -69,7 +69,8 @@ public class Boulder extends GameObject implements Movable, Blockable {
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class), 
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
-                    CollisionResult res = new CollisionResult(CollisionResult.REJECT); 
+                    CollisionResult res = new CollisionResult(0); 
+                    res.addFlag(CollisionResult.REJECT);
                     player.setPushBoulder(true);
                     this.setSpeed(SPEED);
                     return res;
@@ -88,25 +89,25 @@ public class Boulder extends GameObject implements Movable, Blockable {
     private void getHandledRes(GameEngine gameEngine) {
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), GameObject.class), 
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(CollisionResult.HANDLED);
+                    CollisionResult res = new CollisionResult(0);
                     
                     // handler for door with boulder
                     if(obj1 instanceof Door || obj2 instanceof Door) {
                         Door door = (Door)(obj1 instanceof Door ? obj1 : obj2);
                         if(door.getState() == Door.CLOSED) {
-                            res = new CollisionResult(CollisionResult.REJECT);
+                            res.addFlag(CollisionResult.REJECT);
                         } else if(door.getState() == Door.OPEN)
-                            res = new CollisionResult(CollisionResult.HANDLED);
+                            res.addFlag(CollisionResult.HANDLED);
                     }
                     
                     // hndler for boulder with wall or boulder or monster
                     else if(obj1 instanceof Boulder || obj2 instanceof Boulder || obj2 instanceof Monster 
                             || obj1 instanceof Monster)
-                        res = new CollisionResult(CollisionResult.REJECT);
+                        res.addFlag(CollisionResult.REJECT);
                     
                     // handler for boulder with key or potion
                     else if(obj1 instanceof Potion || obj2 instanceof Potion || obj2 instanceof Collectable || obj1 instanceof Collectable)
-                        res = new CollisionResult(CollisionResult.HANDLED);
+                        res.addFlag(CollisionResult.HANDLED);
                     
                     return res;
                 });

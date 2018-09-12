@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class Map implements Serializable {
      * Remove a specific object from the map
      */
     public void removeObject(GameObject obj){
-        map[obj.location.getX()][obj.location.getY()].remove(obj);
+        map[obj.getLocation().getX()][obj.getLocation().getY()].remove(obj);
     }
 
     /**

@@ -1,6 +1,6 @@
 package GameEngine;
 
-public interface Collectable {
+public interface Collectable extends GameObject {
 	
 	/**
 	 * Constant
@@ -12,8 +12,8 @@ public interface Collectable {
 	 * It will also check if collectable object can be stacked
 	 */
     public default boolean getCollected(GameEngine engine, Inventory playerInventory) {
-    	playerInventory.addObject((GameObject) this);
-        engine.removeGameObject((GameObject) this);
+    	playerInventory.addObject(this);
+        engine.removeGameObject(this);
         return true;
     }
 }

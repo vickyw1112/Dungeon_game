@@ -1,10 +1,9 @@
-package GameEngineTest;
+package GameEngine;
 
 import static org.junit.Assert.*;
 
+import GameEngine.utils.Point;
 import org.junit.BeforeClass;
-
-import GameEngine.*;
 
 import org.junit.Test;
 

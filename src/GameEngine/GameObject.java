@@ -1,67 +1,28 @@
 package GameEngine;
 
-import java.io.Serializable;
+import GameEngine.utils.Point;
 
-public abstract class GameObject implements Serializable {
-    private static int objCount = 0;
-
-    protected int objId;
-    protected Point location;
-    /**
-     * State of a object, specific to each type of object
-     */
-    protected int state;
-
-
-    /**
-     * Constructor for GameObject
-     * Auto generate objId
-     *
-     * @param location initial location of the object
-     */
-    public GameObject(Point location) {
-        this.location = location;
-        this.objId = objCount++;
-    }
-
+public interface GameObject {
     /**
      * This is called when the game actual load the dungeon in
      * the first mode
      * Rather than GameObject being instantiated.
      */
-    public void initialize(){
+    default void initialize(){
 
     }
-
-
-    // debug only
-    @Override
-    public String toString() {
-        return String.format("<%s|%s>", this.getClass().getName(), this.location.toString());
-    }
-
-
-    /**
-     * Front end provided hook to change a state (view/style)
-     * of a GameObject
-     */
-    static StateChanger stateChanger;
 
     /**
      * Get object id
      * @return objID
      */
-    public int getObjID() {
-        return objId;
-    }
+    int getObjID();
 
     /**
      * Get location
      * @return location
      */
-    public Point getLocation() {
-        return location;
-    }
+    public Point getLocation();
 
     /**
      * Change a new location for an object
@@ -71,14 +32,7 @@ public abstract class GameObject implements Serializable {
      * @param point new location
      * @return whether location changed
      */
-    public boolean setLocation(Point point){
-        if(location.equals(point)){
-            return false;
-        }
-        this.location = point;
-        return true;
-    }
-
+    public boolean setLocation(Point point);
 
     /**
      * Call front end hook
@@ -86,24 +40,21 @@ public abstract class GameObject implements Serializable {
      *
      * @param state
      */
-    public void changeState(int state){
-        this.state = state;
-//        stateChanger.changeState(this, state);
-    }
-    
-    public int getState() {
-		return this.state;
-	}
+    public void changeState(int state);
+
+    /**
+     * Get the Object's current state
+     *
+     * @return state
+     */
+    public int getState();
 
     /**
      * Register collision handler related to this object
      *
      * @param gameEngine the game engine
      */
-    public void registerCollisionHandler(GameEngine gameEngine) {
-        // defult do sth
-        
-    }
+    public void registerCollisionHandler(GameEngine gameEngine);
 
     /**
      * Return class name
@@ -113,22 +64,7 @@ public abstract class GameObject implements Serializable {
      * @see Inventory#getCount
      * @return class name
      */
-    public String getClassName(){
+    default String getClassName(){
         return getClass().getSimpleName();
-
     }
-
-    /**
-     * Return object's category name which could be the class name
-     * of a parent class depends on specific game object
-     * By default, this is same as {@link GameObject#getClassName}
-     * Used for finding collision handler
-     *
-     * @see GameEngine#collisionHandlerMap
-     * @return category name
-     */
-    public String getCategoryName(){
-        return this.getClassName();
-    }
-
 }

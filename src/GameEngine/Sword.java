@@ -1,6 +1,8 @@
 package GameEngine;
 
-public class Sword extends GameObject implements Collectable {
+import GameEngine.utils.Point;
+
+public class Sword extends StandardObject implements Collectable {
 	public static final int ATTACKNUM = 5;
 
 	public Sword(Point location) {

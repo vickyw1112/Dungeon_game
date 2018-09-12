@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 /**
  * Builder for map used in second mode of the game
  * where the player gradually construct a map

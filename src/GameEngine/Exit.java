@@ -2,8 +2,9 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.utils.Point;
 
-public class Exit extends GameObject {
+public class Exit extends StandardObject {
     public Exit(Point location) {
             super(location);
         }

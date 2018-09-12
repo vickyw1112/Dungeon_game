@@ -1,8 +1,11 @@
 package GameEngine;
 
+import GameEngine.utils.Direction;
+import GameEngine.utils.Point;
+
 import java.util.LinkedList;
 
-public abstract class Monster extends GameObject implements Movable {
+public abstract class Monster extends StandardObject implements Movable {
     public static final double SPEED = 2;
 
     private LinkedList<Point> pathToDestination;

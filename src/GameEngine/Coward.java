@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 public class Coward extends Monster {
     public Coward(Point location){
         super(location);

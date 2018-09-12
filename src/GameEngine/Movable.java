@@ -1,8 +1,8 @@
 package GameEngine;
 
-import java.awt.*;
+import GameEngine.utils.Direction;
 
-public interface Movable {
+public interface Movable extends GameObject {
 
     /**
      * Get current facing of a movable object

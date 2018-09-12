@@ -1,9 +1,11 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bomb extends GameObject implements Collectable {
+public class Bomb extends StandardObject implements Collectable {
     public static final int ALMOSTLIT = 1; // will find a better name
     public static final int LIT = 2;
     public static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.

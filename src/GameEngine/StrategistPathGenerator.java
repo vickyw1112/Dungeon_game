@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 import java.util.LinkedList;
 
 public class StrategistPathGenerator implements PathGenerator {

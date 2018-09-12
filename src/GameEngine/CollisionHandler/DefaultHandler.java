@@ -1,7 +1,6 @@
-package GameEngine;
+package GameEngine.CollisionHandler;
 
-import GameEngine.CollisionHandler.CollisionHandler;
-import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.*;
 
 public class DefaultHandler implements CollisionHandler {
     @Override

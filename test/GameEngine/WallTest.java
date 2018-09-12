@@ -1,9 +1,9 @@
-package GameEngineTest;
+package GameEngine;
 
+import GameEngine.utils.Point;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import GameEngine.*;
 import GameEngine.CollisionHandler.*;
 
 public class WallTest {
@@ -40,7 +40,6 @@ public class WallTest {
    
         // test collision results on boulder and wall
         CollisionResult cr1 = ch1.handle(ge, wall, boulder);
-        System.out.println(cr1.getFlags() + " and " + CollisionResult.REJECT);
         assertEquals(cr1.getFlags(), CollisionResult.REJECT);
 
         // test collision results on arrow and wall

@@ -1,10 +1,9 @@
-package GameEngineTest;
+package GameEngine;
 
 import static org.junit.Assert.*;
 
+import GameEngine.utils.Point;
 import org.junit.Test;
-
-import GameEngine.*;
 
 public class KeyUnitTest {
 
@@ -13,9 +12,8 @@ public class KeyUnitTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void getCollectedTest() throws Exception {
+	public void getCollectedTest() {
 		Key key = new Key(new Point(1,1));
-		Player p = new Player(new Point(2,2));
 		GameEngine engine = new GameEngine(new Map());
 		Inventory inv = new Inventory();
 		key.getCollected(engine, inv);

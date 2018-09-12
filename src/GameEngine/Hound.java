@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 public class Hound extends Monster implements Pairable {
     /**
      * Paired hunter

@@ -1,6 +1,8 @@
 package GameEngine;
 
-public class Treasure extends GameObject implements Collectable {
+import GameEngine.utils.Point;
+
+public class Treasure extends StandardObject implements Collectable {
 
 	public Treasure(Point location) {
 		super(location);

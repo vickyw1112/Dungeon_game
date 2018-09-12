@@ -51,8 +51,9 @@ public class Inventory {
      * @return count
      */
     public int getCount(String classname){
-    	if(countMap.get(classname) == null)
+    	if(countMap.get(classname) == null) {
     		return 0;
+    	}
     	return countMap.get(classname);
     }
 
@@ -79,7 +80,7 @@ public class Inventory {
     	int count;
     	if(countMap.get(obj.getClassName()) != null) {
     		count = countMap.get(obj.getClassName());
-    		countMap.put(obj.getClassName(), ++count);
+    		countMap.put(obj.getClassName(), count + 1);
     	}
     	else {
     		countMap.put(obj.getClassName(), 1);

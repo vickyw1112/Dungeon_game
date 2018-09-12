@@ -8,6 +8,10 @@ public class Hound extends Monster implements Pairable {
 
     public Hound(Point location){
         super(location);
+    }
+
+    @Override
+    public void initialize() {
         this.pathGenerator = new HoundPathGenerator();
     }
 

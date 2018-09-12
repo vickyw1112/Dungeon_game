@@ -26,7 +26,7 @@ public class GameEngine {
      *
      * @param file map file
      */
-    public GameEngine(String file){
+    public GameEngine(String file) {
         // init
         // TODO init different thing in different places
         objects = new HashMap<>();
@@ -36,6 +36,9 @@ public class GameEngine {
         movingObjects = new LinkedList<>();
         monsters = new LinkedList<>();
 
+        // initialize all GameObjects
+        for(GameObject obj: objects.values())
+            obj.initialize();
 
         // register collisionHandler for (GameObject, GameObject) for default handler here
         // fall back mechanism see GameEngine#getCollisionHandler

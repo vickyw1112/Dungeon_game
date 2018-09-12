@@ -208,6 +208,7 @@ public class GameEngine {
     }
 
     public static void main(String[] args) throws Exception{
+
         CollisionEntities ent = new CollisionEntities(Player.class, Pit.class);
         CollisionEntities ent2 = new CollisionEntities(Player.class, Wall.class);
         

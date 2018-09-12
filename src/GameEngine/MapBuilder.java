@@ -1,7 +1,5 @@
 package GameEngine;
 
-import java.awt.*;
-
 /**
  * Builder for map used in second mode of the game
  * where the player gradually construct a map
@@ -22,9 +20,8 @@ public class MapBuilder {
      * @param obj
      * @param location
      */
-    public void addObject(GameObject obj, Point location){
-        obj.location = location;
-
+    public void addObject(GameObject obj){
+        map[obj.getLocation().getX()][obj.getLocation().getY()] = obj;
     }
 
     /**
@@ -32,8 +29,9 @@ public class MapBuilder {
      *
      * @param location
      */
-    public void deleteObj(Point location){
-
+    public void deleteObject(Point location){
+        // simply delete the reference
+        map[location.getX()][location.getY()] = null;
     }
 
     /**
@@ -42,8 +40,11 @@ public class MapBuilder {
      * @param location
      * @return the game object
      */
-    public GameObject getObj(Point location){
+    public GameObject getObject(Point location){
+        return map[location.getX()][location.getY()];
+    }
 
-        return null;
+    public GameObject[][] getMap(){
+        return map;
     }
 }

@@ -226,34 +226,44 @@ public class Player extends GameObject implements Movable {
                 }
             });
         
-        // Register handler for Player Collide with Lit and Unlit Bomb
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Bomb.class),
-                new CollectablesCollisionHandler());     
+        // Register handler for Player Collide with collectables
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Collectable.class),
+                new CollectablesCollisionHandler());
+        
+        // TODO: collision handlers for player        	
+        // Player and Arrow
+		
+		        		
+        // Player and Key
+             		
+        // Player and Treasure
+        
+        // Player Boulder
         
         // Player and Monster
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Monster.class),
-		        new CollisionHandler() {
-		        	@Override
-		            public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-		        		Player player = (Player) (obj1 instanceof Player?obj1:obj2);
-		        		CollisionResult res = new CollisionResult(0);
-                                        if(player.effects.contains(PlayerEffect.INVINCIBLE)) {
-                                            res.addFlag(CollisionResult.HANDLED);
-                                            return res;
-                                        }
-                                        else if(inventory.getCount(Sword.class.getSimpleName())>0){
-                                            int n=inventory.getCount(Sword.class.getSimpleName());
-                                            inventory.setCount(Sword.class.getSimpleName(), n-1);
-                                            res.addFlag(CollisionResult.HANDLED);
-                                            return res;
-                                        }
-                                        else
-                                        {
-                                            res.addFlag(CollisionResult.LOSE);
-                                            return res;
-                                        }                                                         		        				        		
-		        	}
-        		});
+                new CollisionHandler() {
+                    @Override
+                    public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
+                        Player player = (Player) (obj1 instanceof Player?obj1:obj2);
+                        CollisionResult res = new CollisionResult(0);
+                        if(player.effects.contains(PlayerEffect.INVINCIBLE)) {
+                            res.addFlag(CollisionResult.HANDLED);
+                            return res;
+                        }
+                        else if(inventory.getCount(Sword.class.getSimpleName())>0){
+                            int n=inventory.getCount(Sword.class.getSimpleName());
+                            inventory.setCount(Sword.class.getSimpleName(), n-1);
+                            res.addFlag(CollisionResult.HANDLED);
+                            return res;
+                        }
+                        else
+                        {
+                            res.addFlag(CollisionResult.LOSE);
+                            return res;
+                        }
+                    }
+                });
 
         // Player and Potion
        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Potion.class), 

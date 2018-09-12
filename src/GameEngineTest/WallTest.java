@@ -1,8 +1,7 @@
 package GameEngineTest;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import GameEngine.Arrow;
 import GameEngine.Boulder;

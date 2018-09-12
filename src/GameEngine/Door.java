@@ -1,6 +1,7 @@
 package GameEngine;
 
-public class Door extends GameObject {
+
+public class Door extends GameObject implements Pairable {
 	private Key key;
 	public static final int OPEN = 1;
 	public static final int CLOSED = 0;
@@ -20,6 +21,15 @@ public class Door extends GameObject {
 			return true;
 		return false;
 	}
+
+    public GameObject getPair(){
+	    return key;
+    }
+
+    public void setPair(GameObject pair){
+	    key = (Key) pair;
+    }
+
 	
 	/**
 	 * set corresponding key to door

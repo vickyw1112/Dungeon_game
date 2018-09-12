@@ -38,7 +38,7 @@ public class ArrowUnitTest {
 	@Test
 	public void checkStateTest() throws Exception {
 		Arrow arrow = new Arrow(new Point(1,1));
-		assert(arrow.getState() == Arrow.COLLECTABLESTATE);
+		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 	}
 	
 	/**
@@ -49,11 +49,14 @@ public class ArrowUnitTest {
 	public void getCollectedTest() throws Exception {
 		
 		Arrow arrow = new Arrow(new Point(1,1));
-		assert(arrow.getState() == Arrow.COLLECTABLESTATE);
+		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 		GameEngine engine = new GameEngine("CHESTER");
 		Player p = new Player(new Point(2,2));
 		Inventory inv = new Inventory();
 		arrow.getCollected(engine, inv);
+		
+		assertTrue(inv.contains(arrow));
+		assertEquals(inv.getCount(arrow.getClassName()), 1);
 	}
 	
 	/**
@@ -69,7 +72,6 @@ public class ArrowUnitTest {
 		
 		Boulder boulder = new Boulder(new Point(5,5));
 		Arrow arrow1 = new Arrow(new Point(1,1));
-		assert(arrow1.getState() == Arrow.COLLECTABLESTATE);
 		
 		CollisionEntities bMV = new CollisionEntities(Arrow.class, Boulder.class);
         CollisionEntities bMV1 = new CollisionEntities(Arrow.class, Monster.class);

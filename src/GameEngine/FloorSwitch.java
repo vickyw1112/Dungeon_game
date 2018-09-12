@@ -17,7 +17,9 @@ public class FloorSwitch extends GameObject{
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class), 
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     this.state = TRIGGERED;
-                    return new CollisionResult(CollisionResult.HANDLED);
+                    CollisionResult res = new CollisionResult(0);
+                    res.addFlag(CollisionResult.HANDLED);
+                    return res;
         }); 
     }   
 }

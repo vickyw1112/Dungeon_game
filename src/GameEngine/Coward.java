@@ -3,6 +3,10 @@ package GameEngine;
 public class Coward extends Monster {
     public Coward(Point location){
         super(location);
+    }
+
+    @Override
+    public void initialize() {
         // Coward use ShortestPathGenerator by default
         // but change to RunAwayPathGenerator after getting close to player
         pathGenerator = new ShortestPathGenerator();

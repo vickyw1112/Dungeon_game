@@ -1,6 +1,8 @@
 package GameEngine;
 
-public abstract class GameObject {
+import java.io.Serializable;
+
+public abstract class GameObject implements Serializable {
     private static int objCount = 0;
 
     protected int objId;
@@ -20,6 +22,15 @@ public abstract class GameObject {
     public GameObject(Point location) {
         this.location = location;
         this.objId = objCount++;
+    }
+
+    /**
+     * This is called when the game actual load the dungeon in
+     * the first mode
+     * Rather than GameObject being instantiated.
+     */
+    public void initialize(){
+
     }
 
 

@@ -11,9 +11,13 @@ public abstract class Monster extends GameObject implements Movable {
 
     public Monster(Point location){
         super(location);
-        pathToDestination = new LinkedList<>();
     }
 
+
+    @Override
+    public void initialize() {
+        pathToDestination = new LinkedList<>();
+    }
 
     /**
      * Get current facing by looking at where to go for

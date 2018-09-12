@@ -99,13 +99,13 @@ public class Boulder extends GameObject implements Movable, Blockable {
                             res = new CollisionResult(CollisionResult.HANDLED);
                     }
                     
-                    // hndler for boulder with wall or boulder
-                    else if(obj1 instanceof Boulder || obj2 instanceof Boulder)
+                    // hndler for boulder with wall or boulder or monster
+                    else if(obj1 instanceof Boulder || obj2 instanceof Boulder || obj2 instanceof Monster 
+                            || obj1 instanceof Monster)
                         res = new CollisionResult(CollisionResult.REJECT);
                     
-                    // handler for boulder with key or monster or potion
-                    else if(obj1 instanceof Potion || obj2 instanceof Potion || obj2 instanceof Monster 
-                            || obj1 instanceof Monster || obj2 instanceof Collectable || obj1 instanceof Collectable)
+                    // handler for boulder with key or potion
+                    else if(obj1 instanceof Potion || obj2 instanceof Potion || obj2 instanceof Collectable || obj1 instanceof Collectable)
                         res = new CollisionResult(CollisionResult.HANDLED);
                     
                     return res;

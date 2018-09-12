@@ -32,7 +32,8 @@ public class Map implements Serializable {
         GameObject[][] builderMap = mapBuilder.getMap();
         for(int i = 0; i < DUNGEON_SIZE_X; i++)
             for(int j = 0; j < DUNGEON_SIZE_Y; j++)
-                map[i][j].add(builderMap[i][j]);
+                if(builderMap[i][j] != null)
+                    map[i][j].add(builderMap[i][j]);
     }
 
     /**
@@ -109,5 +110,13 @@ public class Map implements Serializable {
     public static boolean isValidPoint(Point p){
         return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X &&
                 p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
+    }
+
+    public List<GameObject> getAllObjects(){
+        List<GameObject> ret = new LinkedList<>();
+        for(int i = 0; i < DUNGEON_SIZE_X; i++)
+            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
+                    ret.addAll(map[i][j]);
+        return ret;
     }
 }

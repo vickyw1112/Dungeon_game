@@ -4,32 +4,27 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import GameEngine.Arrow;
-import GameEngine.Boulder;
-import GameEngine.CollisionEntities;
-import GameEngine.CollisionHandler;
-import GameEngine.CollisionHandlerNotImplement;
-import GameEngine.CollisionResult;
-import GameEngine.Door;
-import GameEngine.GameEngine;
-import GameEngine.Inventory;
-import GameEngine.Key;
-import GameEngine.Player;
-import GameEngine.Point;
-import GameEngine.Wall;
+import GameEngine.*;
+import GameEngine.CollisionHandler.*;
 
-public class DoorAndKeyTest {
+public class OpenDoorTest {
     
     // check when door and key are collision
     @Test
     public void doorAndKeyMatch() throws CollisionHandlerNotImplement {
-        GameEngine ge = new GameEngine("yo");
         Point p1 = new Point(1, 2);
-        Key k1 = new Key(p1);
-        Player player = new Player(p1);
-        Door door = new Door(p1);
-        door.setKey(k1);
-        player.getInventory().addObject(k1);
+        Key key = new Key(p1);
+        Player player = new Player(new Point(1, 1));
+        Door door = new Door(new Point(2, 2));
+
+        MapBuilder mapBuilder = new MapBuilder();
+        mapBuilder.addObject(player);
+        mapBuilder.addObject(key);
+        mapBuilder.addObject(door);
+
+        GameEngine ge = new GameEngine(new Map(mapBuilder));
+        door.setKey(key);
+        player.getInventory().addObject(key);
         player.registerCollisionHandler(ge);
         assertEquals(door.getState(), Door.CLOSED);
         
@@ -43,7 +38,7 @@ public class DoorAndKeyTest {
     
     @Test
     public void doorAndKeyNotMatch() throws CollisionHandlerNotImplement {
-        GameEngine ge = new GameEngine("yo");
+        GameEngine ge = new GameEngine(new Map());
         Point p2 = new Point(3, 4);
         Key k2 = new Key(p2);
         Player player = new Player(p2);

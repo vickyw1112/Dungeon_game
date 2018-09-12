@@ -1,4 +1,6 @@
-package GameEngine;
+package GameEngine.CollisionHandler;
+
+import GameEngine.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;

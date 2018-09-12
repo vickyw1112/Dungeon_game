@@ -16,7 +16,7 @@ public class KeyUnitTest {
 	public void getCollectedTest() throws Exception {
 		Key key = new Key(new Point(1,1));
 		Player p = new Player(new Point(2,2));
-		GameEngine engine = new GameEngine("CHESTER");
+		GameEngine engine = new GameEngine(new Map());
 		Inventory inv = new Inventory();
 		key.getCollected(engine, inv);
 		

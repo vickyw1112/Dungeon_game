@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import GameEngine.*;
+import GameEngine.CollisionHandler.*;
 
 public class GetCollisionHandlerTest {
     static GameEngine engine;
@@ -11,7 +12,7 @@ public class GetCollisionHandlerTest {
 
     @BeforeClass
     static public void beforeTest(){
-        engine = new GameEngine("123");
+        engine = new GameEngine(new Map());
         player = new Player(new Point(5,5));
     }
 

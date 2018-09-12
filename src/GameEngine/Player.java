@@ -1,5 +1,10 @@
 package GameEngine;
 
+import GameEngine.CollisionHandler.CollectablesCollisionHandler;
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionHandler;
+import GameEngine.CollisionHandler.CollisionResult;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;

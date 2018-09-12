@@ -1,5 +1,8 @@
 package GameEngine;
 
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionResult;
+
 public class Boulder extends GameObject implements Movable, Blockable {
     private final double SPEED = Player.SPEED / 2;
     private Direction facing;
@@ -51,9 +54,9 @@ public class Boulder extends GameObject implements Movable, Blockable {
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class), 
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class),
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(0);                  
+                    CollisionResult res = new CollisionResult(0);
                     res.addFlag(CollisionResult.REJECT);                                       
                     return res;
                 });

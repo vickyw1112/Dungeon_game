@@ -1,6 +1,9 @@
 package GameEngine;
 
 
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionResult;
+
 public class Door extends GameObject implements Pairable {
 	private Key key;
 	public static final int OPEN = 1;

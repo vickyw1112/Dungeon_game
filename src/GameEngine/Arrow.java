@@ -1,5 +1,8 @@
 package GameEngine;
 
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionResult;
+
 public class Arrow extends GameObject implements Collectable, Movable{
     public static final double SPEED = 4;
     public static final int MOVING = 1;

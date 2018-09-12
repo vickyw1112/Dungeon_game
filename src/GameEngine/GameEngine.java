@@ -1,5 +1,10 @@
 package GameEngine;
 
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionHandler;
+import GameEngine.CollisionHandler.CollisionHandlerNotImplement;
+import GameEngine.CollisionHandler.CollisionResult;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,19 +31,27 @@ public class GameEngine {
      *
      * @param file map file
      */
-    public GameEngine(String file) {
+    public GameEngine(Map map) {
         // init
         // TODO init different thing in different places
-        objects = new HashMap<>();
-        collisionHandlerMap = new HashMap<>();
-        map = new Map();
-        player = new Player(new Point(1,2));
-        movingObjects = new LinkedList<>();
-        monsters = new LinkedList<>();
+        this.map = map;
+        this.objects = new HashMap<>();
+        this.movingObjects = new LinkedList<>();
+        this.monsters = new LinkedList<>();
 
-        // initialize all GameObjects
-        for(GameObject obj: objects.values())
+        for(GameObject obj : map.getAllObjects()){
             obj.initialize();
+            if(obj instanceof Player)
+                this.player = (Player) obj;
+            if(obj instanceof Movable)
+                this.movingObjects.add((Movable) obj);
+            if(obj instanceof Monster)
+                this.monsters.add((Monster) obj);
+
+            this.objects.put(obj.getObjID(), obj);
+        }
+
+        this.collisionHandlerMap = new HashMap<>();
 
         // register collisionHandler for (GameObject, GameObject) for default handler here
         // fall back mechanism see GameEngine#getCollisionHandler
@@ -101,7 +114,7 @@ public class GameEngine {
      * @see CollisionResult
      * @return CollisionResult
      */
-    public CollisionResult handleCollision(GameObject obj1, GameObject obj2) throws CollisionHandlerNotImplement{
+    public CollisionResult handleCollision(GameObject obj1, GameObject obj2) throws CollisionHandlerNotImplement {
         CollisionHandler handler =
             getCollisionHandler(new CollisionEntities(obj1.getClass(), obj2.getClass()));
 
@@ -216,7 +229,7 @@ public class GameEngine {
         CollisionEntities ent2 = new CollisionEntities(Player.class, Wall.class);
         
         System.out.println(ent.getParentEntities());
-        GameEngine engine = new GameEngine("123");
+        GameEngine engine = new GameEngine(new Map());
         Player p = new Player(new Point(1,2));
         p.registerCollisionHandler(engine);
 
@@ -247,6 +260,7 @@ public class GameEngine {
         engine.map.map[5][8].add(new Wall(new Point(6, 9)));
 
         Monster mon = new Hunter(new Point(5, 9));
+        mon.initialize();
         System.out.println(mon.pathGenerator.generatePath(engine.map, mon, p.location));
 
 

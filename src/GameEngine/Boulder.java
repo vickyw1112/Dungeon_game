@@ -51,42 +51,6 @@ public class Boulder extends GameObject implements Movable, Blockable {
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
-        // Register handler for boulder collide with pit
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    // check instance type here
-                    Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1: obj2);
-                    gameEngine.removeGameObject(boulder);
-                    CollisionResult res = new CollisionResult(0); 
-                    if(obj1 instanceof Boulder)
-                        res.addFlag(CollisionResult.DELETE_FIRST);
-                    else
-                        res = new CollisionResult(CollisionResult.DELETE_SECOND);
-                    return res;
-        });
-        
-        // Register handler for boulder collide with player
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class), 
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
-                    CollisionResult res = new CollisionResult(0); 
-                    res.addFlag(CollisionResult.REJECT);
-                    player.setPushBoulder(true);
-                    this.setSpeed(SPEED);
-                    return res;
-                });
-        
-       // boulder with monster or door or potion or collectable gameObj
-        this.getHandledRes(gameEngine);
-
-    }
-    
-    /**
-     * helper function for register handler
-     * just for boulder
-     * @param gameEngine
-     */
-    private void getHandledRes(GameEngine gameEngine) {
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), GameObject.class), 
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     CollisionResult res = new CollisionResult(0);
@@ -108,6 +72,25 @@ public class Boulder extends GameObject implements Movable, Blockable {
                     // handler for boulder with key or potion
                     else if(obj1 instanceof Potion || obj2 instanceof Potion || obj2 instanceof Collectable || obj1 instanceof Collectable)
                         res.addFlag(CollisionResult.HANDLED);
+                    
+                    // handler for boulder with pit
+                    else if(obj1 instanceof Pit || obj2 instanceof Pit) {
+                     // check instance type here
+                        Boulder boulder = (Boulder)(obj1 instanceof Boulder ? obj1: obj2);
+                        gameEngine.removeGameObject(boulder);
+                        if(obj1 instanceof Boulder)
+                            res.addFlag(CollisionResult.DELETE_FIRST);
+                        else
+                            res.addFlag(CollisionResult.DELETE_SECOND);
+                    }
+                    
+                    // handler for boulder with player
+                    else if(obj1 instanceof Player || obj2 instanceof Player) {
+                        Player player = (Player)(obj1 instanceof Player ? obj1 : obj2); 
+                        res.addFlag(CollisionResult.REJECT);
+                        player.setPushBoulder(true);
+                        this.setSpeed(SPEED);
+                    }
                     
                     return res;
                 });

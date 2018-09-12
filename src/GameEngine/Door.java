@@ -76,5 +76,17 @@ public class Door extends GameObject {
                 }
                 return res;
             });
+	    
+	    // closed door should reject a
+	    gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), GameObject.class),
+	            (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+	                CollisionResult res = new CollisionResult(0);
+	                Door door = (Door)(obj1 instanceof Door ? obj1 : obj2);
+	                if(door.state == CLOSED)
+	                    res.addFlag(CollisionResult.REJECT);
+	                else
+	                    res.addFlag(CollisionResult.HANDLED);
+	                return res;
+	            });
     }
 }

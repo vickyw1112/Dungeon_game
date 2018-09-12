@@ -1,8 +1,19 @@
-package GameEngine;
+package GameEngineTest;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import GameEngine.Arrow;
+import GameEngine.Boulder;
+import GameEngine.CollisionEntities;
+import GameEngine.CollisionHandler;
+import GameEngine.CollisionHandlerNotImplement;
+import GameEngine.CollisionResult;
+import GameEngine.GameEngine;
+import GameEngine.Player;
+import GameEngine.Point;
+import GameEngine.Wall;
 
 public class WallTest {
     

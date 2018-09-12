@@ -44,8 +44,6 @@ public class Player extends GameObject implements Movable {
 		return inventory;
 	}
 
-    
-
 	/**
      * Get current facing of a movable object
      * @return facing direction
@@ -77,7 +75,6 @@ public class Player extends GameObject implements Movable {
         this.location = point;
         return true;
     }
-
 
     /**
      * Get current speed of the movable object
@@ -134,9 +131,7 @@ public class Player extends GameObject implements Movable {
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front end deals with most of this)
         
     }
-
-    
-    
+ 
     /**
      * Get a list of all player effects that the player
      * is carrying currently
@@ -216,6 +211,21 @@ public class Player extends GameObject implements Movable {
                 }
             });
         
+        // Register handler for Player collide with moving arrow
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Arrow.class),
+            (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                // Have to check instance type here
+                Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
+                CollisionResult res = new CollisionResult(0);
+                if(player.effects.contains(PlayerEffect.HOVER)) {
+                    res.addFlag(CollisionResult.HANDLED);
+                    return res;
+                } else {
+                    res.addFlag(CollisionResult.LOSE);
+                    return res;
+                }
+            });
+        
         // Register handler for Player Collide with Lit and Unlit Bomb
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Bomb.class),
                 new CollectablesCollisionHandler());     
@@ -253,12 +263,10 @@ public class Player extends GameObject implements Movable {
                        res.addFlag(CollisionResult.DELETE_FIRST);
                    else
                        res.addFlag(CollisionResult.DELETE_SECOND);
-                   if(obj1 instanceof HoverPotion || obj2 instanceof HoverPotion) {
+                   if(obj1 instanceof HoverPotion || obj2 instanceof HoverPotion)
                        this.effects.add(PlayerEffect.HOVER);
-                   }
-                   else {
+                   else
                        this.effects.add(PlayerEffect.INVINCIBLE);
-                   }
                    return res;
                });
     }

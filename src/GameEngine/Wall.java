@@ -28,26 +28,8 @@ public class Wall extends GameObject implements Blockable {
                 		return res;
                 	}
                 });
-        
-        // Handler for wall and Player
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class), 
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(0);
-                    res.addFlag(CollisionResult.REJECT);
-                    return res;
-                });
-        
-        
-        // Handler
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(0);
-                    res.addFlag(CollisionResult.REJECT);
-                    return res;
-                });           
-            
        
-        // this should be the reject handler which haven't been implemented yet
+        // this should be the reject handler
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class),
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     CollisionResult res = new CollisionResult(0);

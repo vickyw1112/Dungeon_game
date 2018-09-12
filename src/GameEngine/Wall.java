@@ -1,5 +1,8 @@
 package GameEngine;
 
+import GameEngine.CollisionHandler.CollisionEntities;
+import GameEngine.CollisionHandler.CollisionResult;
+
 public class Wall extends GameObject implements Blockable {
 
 	public Wall (Point location) {

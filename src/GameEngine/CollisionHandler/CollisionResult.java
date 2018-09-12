@@ -1,4 +1,6 @@
-package GameEngine;
+package GameEngine.CollisionHandler;
+
+import GameEngine.*;
 
 /**
  * Result of a collision

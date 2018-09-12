@@ -1,6 +1,8 @@
 package GameEngine;
 
 
+import GameEngine.CollisionHandler.CollisionResult;
+
 /**
  * An interface provided to front end
  * to universally register handler for handling collision on the front end

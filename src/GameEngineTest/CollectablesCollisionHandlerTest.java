@@ -3,6 +3,7 @@ package GameEngineTest;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import GameEngine.*;
+import GameEngine.CollisionHandler.*;
 
 public class CollectablesCollisionHandlerTest {
 
@@ -12,7 +13,7 @@ public class CollectablesCollisionHandlerTest {
 	 */
 	@Test
 	public void collectablesCollisionHandlerTest() throws Exception {
-		GameEngine engine = new GameEngine("CHESTER");
+		GameEngine engine = new GameEngine(new Map());
 		Player p = new Player(new Point(1,1));
 		
 		Arrow arrow = new Arrow(new Point(1,1));

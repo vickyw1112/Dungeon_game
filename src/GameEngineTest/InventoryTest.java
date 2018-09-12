@@ -16,7 +16,7 @@ public class InventoryTest {
 
     @BeforeClass
     static public void beforeTest(){
-        engine = new GameEngine("123");
+        engine = new GameEngine(new Map());
         player = new Player(new Point(5,5));
         inv = new Inventory();
     }

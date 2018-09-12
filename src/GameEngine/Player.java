@@ -10,6 +10,8 @@ public class Player extends GameObject implements Movable {
      * Default movement speed for player
      * Unit is grid per second
      */
+    // TODO: set onPushingBoulder to false
+    
     public static final double SPEED = 2;
 
     private Inventory inventory;
@@ -42,7 +44,7 @@ public class Player extends GameObject implements Movable {
 		return inventory;
 	}
 
-
+    
 
 	/**
      * Get current facing of a movable object
@@ -216,17 +218,7 @@ public class Player extends GameObject implements Movable {
         
         // Register handler for Player Collide with Lit and Unlit Bomb
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Bomb.class),
-                new CollectablesCollisionHandler());
-        
-        // TODO: collision handlers for player        	
-        // Player and Arrow
-		
-		        		
-        // Player and Key
-             		
-        // Player and Treasure
-        
-        // Player Boulder
+                new CollectablesCollisionHandler());     
         
         // Player and Monster
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Monster.class),
@@ -249,17 +241,26 @@ public class Player extends GameObject implements Movable {
                                         {
                                             res.addFlag(CollisionResult.LOSE);
                                             return res;
-                                        }
-                                            
-                            
-		        		
-		        		
+                                        }                                                         		        				        		
 		        	}
         		});
 
-        
         // Player and Potion
-       
+       gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Potion.class), 
+               (GameEngine engine, GameObject obj1, GameObject obj2) -> {
+                   CollisionResult res = new CollisionResult(0);
+                   if(obj1 instanceof Potion)
+                       res.addFlag(CollisionResult.DELETE_FIRST);
+                   else
+                       res.addFlag(CollisionResult.DELETE_SECOND);
+                   if(obj1 instanceof HoverPotion || obj2 instanceof HoverPotion) {
+                       this.effects.add(PlayerEffect.HOVER);
+                   }
+                   else {
+                       this.effects.add(PlayerEffect.INVINCIBLE);
+                   }
+                   return res;
+               });
     }
     
     /**

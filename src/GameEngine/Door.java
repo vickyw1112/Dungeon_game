@@ -77,7 +77,8 @@ public class Door extends GameObject {
                 return res;
             });
 	    
-	    // closed door should reject a
+	    // closed door should reject all movable object
+	    // for all movable object: can through open door
 	    gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class),
 	            (GameEngine engine, GameObject obj1, GameObject obj2) -> {
 	                CollisionResult res = new CollisionResult(0);

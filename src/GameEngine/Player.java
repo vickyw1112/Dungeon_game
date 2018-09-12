@@ -250,10 +250,6 @@ public class Player extends GameObject implements Movable {
                                             res.addFlag(CollisionResult.LOSE);
                                             return res;
                                         }
-                                            
-                            
-		        		
-		        		
 		        	}
         		});
 

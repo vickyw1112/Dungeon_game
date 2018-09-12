@@ -79,7 +79,7 @@ public abstract class GameObject {
      */
     public void changeState(int state){
         this.state = state;
-        stateChanger.changeState(this, state);
+//        stateChanger.changeState(this, state);
     }
     
     public int getState() {

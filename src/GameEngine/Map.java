@@ -88,8 +88,7 @@ public class Map implements Serializable {
         points[2] = point.clone().translate(0, 1);
         points[3] = point.clone().translate(0, -1);
         for(Point curr : points) {
-            if(curr.getX() < 0 || curr.getX() >= DUNGEON_SIZE_X ||
-                    curr.getY() < 0 || curr.getY() >= DUNGEON_SIZE_Y)
+            if(!isValidPoint(curr))
                 continue;
 
             // check if there's blockable obj in that point
@@ -107,4 +106,8 @@ public class Map implements Serializable {
     }
 
 
+    public static boolean isValidPoint(Point p){
+        return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X &&
+                p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
+    }
 }

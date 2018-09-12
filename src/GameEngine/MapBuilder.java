@@ -20,9 +20,8 @@ public class MapBuilder {
      * @param obj
      * @param location
      */
-    public void addObject(GameObject obj, Point location){
-        obj.location = location;
-        map[location.getX()][location.getY()] = obj;
+    public void addObject(GameObject obj){
+        map[obj.getLocation().getX()][obj.getLocation().getY()] = obj;
     }
 
     /**

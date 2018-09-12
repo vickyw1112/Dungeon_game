@@ -214,8 +214,8 @@ public class Player extends GameObject implements Movable {
                 }
             });
         
-        // Register handler for Player Collide with Lit and Unlit Bomb
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Bomb.class),
+        // Register handler for Player Collide with collectables
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Collectable.class),
                 new CollectablesCollisionHandler());
         
         // TODO: collision handlers for player        	

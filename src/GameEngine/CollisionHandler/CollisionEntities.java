@@ -98,11 +98,12 @@ public class CollisionEntities {
         } while (!currLvl.contains(GameObject.class));
 
         for(int lvl = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++){
-            for(int base = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++) {
+            for(int base = 0; base < clsAParents.size() || base < clsBParents.size(); base++) {
                 // mix base B with top lvl A
                 final int ATopLvl = Integer.min(lvl, clsAParents.size() - 1);
-                if(base <= ATopLvl){
-                    clsBParents.get(base).forEach(clsB ->
+                int baseB = Integer.min(base, clsBParents.size() - 1);
+                if(baseB <= ATopLvl){
+                    clsBParents.get(baseB).forEach(clsB ->
                         clsAParents.get(ATopLvl).forEach(clsA ->
                             ret.add(new CollisionEntities(clsA, clsB))
                         )
@@ -111,8 +112,9 @@ public class CollisionEntities {
 
                 // mix base A with top lvl B
                 final int BTopLvl = Integer.min(lvl, clsBParents.size() - 1);
-                if(base <= ATopLvl){
-                    clsAParents.get(base).forEach(clsA ->
+                int baseA = Integer.min(base, clsAParents.size() - 1);
+                if(baseA <= ATopLvl){
+                    clsAParents.get(baseA).forEach(clsA ->
                             clsBParents.get(BTopLvl).forEach(clsB ->
                                     ret.add(new CollisionEntities(clsA, clsB))
                             )

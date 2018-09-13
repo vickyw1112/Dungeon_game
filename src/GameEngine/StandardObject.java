@@ -6,6 +6,8 @@ import GameEngine.utils.Point;
 import java.io.Serializable;
 
 public abstract class StandardObject implements GameObject, Serializable {
+    public static final int DEFAULT_STATE = 0;
+
     static int objCount = 0;
     protected int objId;
     protected Point location;
@@ -23,6 +25,7 @@ public abstract class StandardObject implements GameObject, Serializable {
     public StandardObject(Point location) {
         this.location = location;
         this.objId = objCount++;
+        this.state = DEFAULT_STATE;
     }
 
     // debug only

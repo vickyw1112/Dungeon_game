@@ -80,8 +80,7 @@ import GameEngine.CollisionHandler.*;
                 boulder.registerCollisionHandler(ge);
 
                 assertTrue(boulder.getSpeed() == 0);
-                CollisionEntities ce1 = new CollisionEntities(Boulder.class, Player.class);
-                CollisionHandler ch = ge.getCollisionHandler(ce1);
+                CollisionHandler ch = new PlayerBoulderCollisionHandler();
                 CollisionResult res = ch.handle(ge, boulder, player);
 
                 assertTrue(boulder.getSpeed() > 0);

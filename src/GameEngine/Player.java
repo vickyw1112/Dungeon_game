@@ -228,7 +228,7 @@ public class Player extends StandardObject implements Movable {
                 new PlayerPotionCollisionHandler());
 
         // Player Boulder
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
                 new PlayerBoulderCollisionHandler());
     }
 

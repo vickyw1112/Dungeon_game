@@ -14,7 +14,8 @@ public class GetCollisionHandlerTest {
     static Sword sword;
     static Treasure treasure;
     static Bomb bomb;
-    static Hunter hunter = new Hunter(new Point(1,1));
+    static Hunter hunter;
+    static Boulder boulder;
 
     @BeforeClass
     static public void beforeTest(){
@@ -26,6 +27,7 @@ public class GetCollisionHandlerTest {
         treasure = new Treasure(new Point(4,4));
         bomb = new Bomb(new Point(1,1));
         hunter = new Hunter(new Point(1,1));
+        boulder = new Boulder(new Point(1, 1));
 
         player.registerCollisionHandler(engine);
         key.registerCollisionHandler(engine);
@@ -34,6 +36,7 @@ public class GetCollisionHandlerTest {
         treasure.registerCollisionHandler(engine);
         bomb.registerCollisionHandler(engine);
         hunter.registerCollisionHandler(engine);
+        boulder.registerCollisionHandler(engine);
     }
 
     /**
@@ -75,6 +78,12 @@ public class GetCollisionHandlerTest {
         
         CollisionEntities MANKEY = new CollisionEntities(arrow.getClass(), key.getClass());
         assertTrue(engine.getCollisionHandler(MANKEY) instanceof DefaultHandler);
+    }
+
+    @Test
+    public void playerBoulderHandlerTest() throws Exception {
+        CollisionEntities ent = new CollisionEntities(player.getClass(), boulder.getClass());
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerBoulderCollisionHandler);
     }
     
     

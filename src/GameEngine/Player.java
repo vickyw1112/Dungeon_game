@@ -209,83 +209,27 @@ public class Player extends StandardObject implements Movable {
     public void registerCollisionHandler(GameEngine gameEngine) {
         // Register handler for Player collide with Pit
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    // Have to check instance type here
-                    Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
-                    CollisionResult res = new CollisionResult(0);
-                    if (player.effects.contains(PlayerEffect.HOVER)) {
-                        res.addFlag(CollisionResult.HANDLED);
-                        return res;
-                    } else {
-                        res.addFlag(CollisionResult.LOSE);
-                        return res;
-                    }
-                });
+                new PlayerPitCollisionHandler());
 
         // Register handler for Player collide with moving arrow
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Arrow.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    // Have to check instance type here
-                    Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
-                    CollisionResult res = new CollisionResult(0);
-                    if (player.effects.contains(PlayerEffect.HOVER)) {
-                        res.addFlag(CollisionResult.HANDLED);
-                        return res;
-                    } else {
-                        res.addFlag(CollisionResult.LOSE);
-                        return res;
-                    }
-                });
+               new PlayerMovingArrowCollisionHandler());
 
         // Register handler for Player Collide with collectables
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Collectable.class),
                 new CollectablesCollisionHandler());
 
-        // TODO: collision handlers for player
-        // Player and Arrow
-
-        // Player and Key
-
-        // Player and Treasure
-
-        // Player Boulder
-
         // Player and Monster
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Monster.class),
-                new CollisionHandler() {
-                    @Override
-                    public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
-                        Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
-                        CollisionResult res = new CollisionResult(0);
-                        if (player.effects.contains(PlayerEffect.INVINCIBLE)) {
-                            res.addFlag(CollisionResult.HANDLED);
-                            return res;
-                        } else if (inventory.getCount(Sword.class.getSimpleName()) > 0) {
-                            int n = inventory.getCount(Sword.class.getSimpleName());
-                            inventory.setCount(Sword.class.getSimpleName(), n - 1);
-                            res.addFlag(CollisionResult.HANDLED);
-                            return res;
-                        } else {
-                            res.addFlag(CollisionResult.LOSE);
-                            return res;
-                        }
-                    }
-                });
+              new PlayerMonsterCollisionHandler());
 
         // Player and Potion
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Potion.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(0);
-                    if (obj1 instanceof Potion)
-                        res.addFlag(CollisionResult.DELETE_FIRST);
-                    else
-                        res.addFlag(CollisionResult.DELETE_SECOND);
-                    if (obj1 instanceof HoverPotion || obj2 instanceof HoverPotion)
-                        this.effects.add(PlayerEffect.HOVER);
-                    else
-                        this.effects.add(PlayerEffect.INVINCIBLE);
-                    return res;
-                });
+                new PlayerPotionCollisionHandler());
+
+        // Player Boulder
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
+                new PlayerBoulderCollisionHandler());
     }
 
     /**

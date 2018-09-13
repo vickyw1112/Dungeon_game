@@ -3,16 +3,13 @@ package GameEngine.CollisionHandler;
 import GameEngine.*;
 
 /**
- * Result of a collision
- * An instance of this class is returned back to front end
- * upon a finished backend handling of collision
- * which contains information on how the front end should
- * update the View
+ * Result of a collision An instance of this class is returned back to front end
+ * upon a finished backend handling of collision which contains information on
+ * how the front end should update the View
  */
 public class CollisionResult {
     /**
-     * Bit flags
-     * Handled means equivalent to collision has not happened
+     * Bit flags Handled means equivalent to collision has not happened
      */
     public static final int HANDLED = 0x00;
     public static final int DELETE_FIRST = 0x01;
@@ -34,36 +31,35 @@ public class CollisionResult {
     private int flags;
 
     /**
-     * Array of length 2
-     * Two objects being collided
+     * Array of length 2 Two objects being collided
      */
     public GameObject[] collisionObjects;
-
 
     /**
      * Constructor of CollisionResult
      *
-     * @param flags initial flags
+     * @param flags
+     *            initial flags
      */
-    public CollisionResult(int flags){
-    	
+    public CollisionResult(int flags) {
+
     }
 
-
     /**
-     * Set a specific bit of flags to true
-     * BITWISE OR
+     * Set a specific bit of flags to true BITWISE OR
+     * 
      * @param flag
      */
     public void addFlag(int flag) {
-    	this.flags |= flag;
+        this.flags |= flag;
     }
 
     /**
      * Get flags
+     * 
      * @return flags
      */
-    public int getFlags(){
+    public int getFlags() {
         return flags;
     }
 }

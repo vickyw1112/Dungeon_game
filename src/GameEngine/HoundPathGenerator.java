@@ -1,6 +1,5 @@
 package GameEngine;
 
-
 import GameEngine.utils.Point;
 
 import java.util.LinkedList;

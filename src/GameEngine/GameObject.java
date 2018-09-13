@@ -68,4 +68,17 @@ public interface GameObject {
     default String getClassName() {
         return getClass().getSimpleName();
     }
+
+
+    /**
+     * Test if the current GameObject is blocking movements of other objects
+     * This gets overwritten by boulder and wall to return true
+     * also overwritten by Door which the return value will depends on the state of the door
+     *
+     * @see Door#isBlocking()
+     * @return boolean value
+     */
+    default boolean isBlocking() {
+        return false;
+    }
 }

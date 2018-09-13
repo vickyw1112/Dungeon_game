@@ -51,8 +51,7 @@ public class GetCollisionHandlerTest {
         assertTrue(engine.getCollisionHandler(KeyNPlayer) instanceof CollectablesCollisionHandler);
 
         CollisionEntities ArrowNPlayer = new CollisionEntities(arrow.getClass(), player.getClass());
-        // TODO: fix this - player/arrow have a specific collision handler
-        // assertTrue(engine.getCollisionHandler(ArrowNPlayer) instanceof CollectablesCollisionHandler);
+        assertTrue(engine.getCollisionHandler(ArrowNPlayer) instanceof CollectablesCollisionHandler);
         
         CollisionEntities SwordNPlayer = new CollisionEntities(sword.getClass(), player.getClass());
         assertTrue(engine.getCollisionHandler(SwordNPlayer) instanceof CollectablesCollisionHandler);
@@ -71,13 +70,13 @@ public class GetCollisionHandlerTest {
     @Test
     public void DefaultHandlerTest() throws Exception {
         CollisionEntities ArrowNKey = new CollisionEntities(key.getClass(), arrow.getClass());
-        assertTrue(engine.getCollisionHandler(ArrowNKey) instanceof DefaultHandler);
+        assertTrue(engine.getCollisionHandler(ArrowNKey) instanceof ArrowGameObjectCollisionHandler);
 
         CollisionEntities KeyNM = new CollisionEntities(key.getClass(), hunter.getClass());
         assertTrue(engine.getCollisionHandler(KeyNM) instanceof DefaultHandler);
         
         CollisionEntities MANKEY = new CollisionEntities(arrow.getClass(), key.getClass());
-        assertTrue(engine.getCollisionHandler(MANKEY) instanceof DefaultHandler);
+        assertTrue(engine.getCollisionHandler(MANKEY) instanceof ArrowGameObjectCollisionHandler);
     }
 
     @Test

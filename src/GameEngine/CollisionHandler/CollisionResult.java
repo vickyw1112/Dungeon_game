@@ -42,7 +42,14 @@ public class CollisionResult {
      *            initial flags
      */
     public CollisionResult(int flags) {
+        this.flags = flags;
+    }
 
+    /**
+     * Empty constructor
+     */
+    public CollisionResult() {
+        this.flags = 0;
     }
 
     /**

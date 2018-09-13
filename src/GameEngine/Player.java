@@ -13,7 +13,6 @@ public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player Unit is grid per second
      */
-    // TODO: set onPushingBoulder to false
 
     public static final double SPEED = 2;
 
@@ -69,12 +68,12 @@ public class Player extends StandardObject implements Movable {
      * Update facing when set location
      *
      * @pre player's location is consistently changed i.e. one grid at a time
-     * @param point
-     *            new location
+     * @param point new location
      * @return whether location changed
      */
     @Override
     public boolean setLocation(Point point) {
+        this.onPushingBoulder = false;
         if (point.getX() > this.location.getX())
             facing = Direction.RIGHT;
         else if (point.getX() < this.location.getX())
@@ -211,10 +210,6 @@ public class Player extends StandardObject implements Movable {
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
                 new PlayerPitCollisionHandler());
 
-        // Register handler for Player collide with moving arrow
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Arrow.class),
-               new PlayerMovingArrowCollisionHandler());
-
         // Register handler for Player Collide with collectables
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Collectable.class),
                 new CollectablesCollisionHandler());
@@ -235,7 +230,7 @@ public class Player extends StandardObject implements Movable {
     /**
      * set pushBoulder to true when player intend to push
      */
-    public void setPushBoulder(Boolean toogle) {
-        this.onPushingBoulder = toogle;
+    public void setPushBoulder(Boolean val) {
+        this.onPushingBoulder = val;
     }
 }

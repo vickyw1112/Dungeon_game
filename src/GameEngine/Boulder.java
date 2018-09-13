@@ -4,7 +4,7 @@ import GameEngine.CollisionHandler.*;
 import GameEngine.utils.Direction;
 import GameEngine.utils.Point;
 
-public class Boulder extends StandardObject implements Movable, Blockable {
+public class Boulder extends StandardObject implements Movable{
     public static final double SPEED = Player.SPEED / 2;
     private Direction facing;
     private double speed;
@@ -12,6 +12,11 @@ public class Boulder extends StandardObject implements Movable, Blockable {
     public Boulder(Point location) {
         super(location);
         this.speed = 0;
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 
     @Override

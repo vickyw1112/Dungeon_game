@@ -4,10 +4,15 @@ import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
 import GameEngine.utils.Point;
 
-public class Wall extends StandardObject implements Blockable {
+public class Wall extends StandardObject {
 
     public Wall(Point location) {
         super(location);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 
     /**
@@ -16,7 +21,7 @@ public class Wall extends StandardObject implements Blockable {
 
     public void registerCollisionHandler(GameEngine gameEngine) {
         // Register handler for wall and arrow
-        // need to see implemntation of movable to know how it works
+        // need to see implementation of movable to know how it works
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Arrow.class),
                 (GameEngine engine, GameObject obj1, GameObject obj2) -> {
                     CollisionResult res = new CollisionResult(0);

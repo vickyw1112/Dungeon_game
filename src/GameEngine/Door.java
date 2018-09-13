@@ -67,6 +67,11 @@ public class Door extends StandardObject implements Pairable {
         return false;
     }
 
+    @Override
+    public boolean isBlocking() {
+        return this.state == Door.CLOSED;
+    }
+
     /**
      * Collision handle method override for Player/Door interaction
      */

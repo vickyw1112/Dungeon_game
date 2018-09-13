@@ -14,7 +14,7 @@ public class CollectablesCollisionHandler implements CollisionHandler {
         Collectable collectable = (Collectable) (obj1 instanceof Collectable ? obj1 : obj2);
         collectable.getCollected(engine, player.getInventory());
 
-        CollisionResult res = new CollisionResult(10);
+        CollisionResult res = new CollisionResult();
         res.addFlag(obj1 instanceof Collectable ? CollisionResult.DELETE_FIRST : CollisionResult.DELETE_SECOND);
         res.addFlag(CollisionResult.REFRESH_INVENTORY);
 

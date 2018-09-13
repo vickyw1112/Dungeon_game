@@ -1,24 +1,12 @@
-package GameEngineTest;
+package GameEngine;
 
 import static org.junit.Assert.*;
 
+import GameEngine.utils.Point;
 import org.junit.Test;
+import GameEngine.CollisionHandler.*;
 
-import GameEngine.Arrow;
-import GameEngine.Boulder;
-import GameEngine.CollisionEntities;
-import GameEngine.CollisionHandler;
-import GameEngine.CollisionHandlerNotImplement;
-import GameEngine.CollisionResult;
-import GameEngine.Door;
-import GameEngine.GameEngine;
-import GameEngine.GameObject;
-import GameEngine.Inventory;
-import GameEngine.Monster;
-import GameEngine.Player;
-import GameEngine.Point;
-
-public class ArrowUnitTest {
+public class ArrowTest {
 
 	/**
 	 * Construction unit test, test the created arrow location is set to the right location
@@ -50,7 +38,7 @@ public class ArrowUnitTest {
 		
 		Arrow arrow = new Arrow(new Point(1,1));
 		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
-		GameEngine engine = new GameEngine("CHESTER");
+		GameEngine engine = new GameEngine(new Map());
 		Player p = new Player(new Point(2,2));
 		Inventory inv = new Inventory();
 		arrow.getCollected(engine, inv);
@@ -66,7 +54,7 @@ public class ArrowUnitTest {
 	@Test
 	public void arrowCollisionHandlerTest() throws Exception {
 		
-		GameEngine engine = new GameEngine("CHESTER");
+		GameEngine engine = new GameEngine(new Map());
 		Player p = new Player(new Point(2,2));
 		Inventory inv = new Inventory();
 		

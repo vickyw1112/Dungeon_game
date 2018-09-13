@@ -1,18 +1,10 @@
-package GameEngineTest;
+package GameEngine;
 
+import GameEngine.utils.Point;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import GameEngine.Arrow;
-import GameEngine.Boulder;
-import GameEngine.CollisionEntities;
-import GameEngine.CollisionHandler;
-import GameEngine.CollisionHandlerNotImplement;
-import GameEngine.CollisionResult;
-import GameEngine.GameEngine;
-import GameEngine.Player;
-import GameEngine.Point;
-import GameEngine.Wall;
+import GameEngine.CollisionHandler.*;
 
 public class WallTest {
     
@@ -27,7 +19,7 @@ public class WallTest {
     @Test
     // check if the correct message is sent to the front end
     public void WallCollision() throws CollisionHandlerNotImplement {
-        GameEngine ge = new GameEngine("yo");
+        GameEngine ge = new GameEngine(new Map());
         
         Point p = new Point (1, 2);
         //testing these
@@ -46,21 +38,17 @@ public class WallTest {
         CollisionHandler ch2 = ge.getCollisionHandler(ce2);
         CollisionHandler ch3 = ge.getCollisionHandler(ce3);
    
-            // test collision results on boulder and wall
-            CollisionResult cr1 = ch1.handle(ge, wall, boulder);
-            System.out.println(cr1.getFlags() + " and " + CollisionResult.REJECT);
-            assertEquals(cr1.getFlags(), CollisionResult.REJECT);
-            
-            // test collision results on arrow and wall
-            CollisionResult cr2 = ch2.handle(ge, wall, arrow);
-            assertEquals(cr2.getFlags(), CollisionResult.DELETE_FIRST);
-            
-            // test collision results on player and wall
-            CollisionResult cr3 = ch3.handle(ge, wall, player);
-            assertEquals(cr3.getFlags(), CollisionResult.REJECT);
-            
-            
-            
+        // test collision results on boulder and wall
+        CollisionResult cr1 = ch1.handle(ge, wall, boulder);
+        assertEquals(cr1.getFlags(), CollisionResult.REJECT);
+
+        // test collision results on arrow and wall
+        CollisionResult cr2 = ch2.handle(ge, wall, arrow);
+        assertEquals(cr2.getFlags(), CollisionResult.DELETE_FIRST);
+
+        // test collision results on player and wall
+        CollisionResult cr3 = ch3.handle(ge, wall, player);
+        assertEquals(cr3.getFlags(), CollisionResult.REJECT);
 
     }
 }

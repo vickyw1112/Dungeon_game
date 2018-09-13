@@ -1,5 +1,7 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +17,10 @@ public class Map implements Serializable {
     /**
      * Empty arg constructor
      */
-    public Map(){
+    public Map() {
         this.map = new List[DUNGEON_SIZE_X][DUNGEON_SIZE_Y];
-        for(int i = 0; i < DUNGEON_SIZE_X; i++)
-            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
+        for (int i = 0; i < DUNGEON_SIZE_X; i++)
+            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
                 map[i][j] = new LinkedList<>();
     }
 
@@ -27,12 +29,13 @@ public class Map implements Serializable {
      *
      * @param mapBuilder
      */
-    public Map(MapBuilder mapBuilder){
+    public Map(MapBuilder mapBuilder) {
         this();
         GameObject[][] builderMap = mapBuilder.getMap();
-        for(int i = 0; i < DUNGEON_SIZE_X; i++)
-            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
-                map[i][j].add(builderMap[i][j]);
+        for (int i = 0; i < DUNGEON_SIZE_X; i++)
+            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+                if (builderMap[i][j] != null)
+                    map[i][j].add(builderMap[i][j]);
     }
 
     /**
@@ -48,38 +51,40 @@ public class Map implements Serializable {
     /**
      * Get list of object in specific grid
      */
-    public List<GameObject> getObjects(Point location){
+    public List<GameObject> getObjects(Point location) {
         return map[location.getX()][location.getY()];
     }
 
     /**
      * Remove a specific object from the map
      */
-    public void removeObject(GameObject obj){
-        map[obj.location.getX()][obj.location.getY()].remove(obj);
+    public void removeObject(GameObject obj) {
+        map[obj.getLocation().getX()][obj.getLocation().getY()].remove(obj);
     }
 
     /**
      * Update an object's location
      *
-     * @param obj game object
-     * @param location new location
+     * @param obj
+     *            game object
+     * @param location
+     *            new location
      */
-    public void updateObjectLocation(GameObject obj, Point location){
+    public void updateObjectLocation(GameObject obj, Point location) {
         removeObject(obj);
         map[location.getX()][location.getY()].add(obj);
         obj.setLocation(location);
     }
 
     /**
-     * Interface for monster to find path
-     * Return a list of point adjacent to given point that does
-     * not contains an object that blocks monsters' movement
+     * Interface for monster to find path Return a list of point adjacent to given
+     * point that does not contains an object that blocks monsters' movement
      *
-     * @param point current point
+     * @param point
+     *            current point
      * @return adjacent movable points
      */
-    public List<Point> getNonBlockAdjacentPoints(Point point){
+    public List<Point> getNonBlockAdjacentPoints(Point point) {
         List<Point> ret = new LinkedList<>();
         // enumerate all adjacent point
         Point[] points = new Point[4];
@@ -87,13 +92,12 @@ public class Map implements Serializable {
         points[1] = point.clone().translate(-1, 0);
         points[2] = point.clone().translate(0, 1);
         points[3] = point.clone().translate(0, -1);
-        for(Point curr : points) {
-            if(!isValidPoint(curr))
+        for (Point curr : points) {
+            if (!isValidPoint(curr))
                 continue;
 
             // check if there's blockable obj in that point
-            if (getObjects(curr).stream()
-                    .filter(o -> (o instanceof Blockable)) // TODO: change this later
+            if (getObjects(curr).stream().filter(o -> (o instanceof Blockable)) // TODO: change this later
                     .collect(Collectors.toList()).size() == 0)
                 ret.add(curr);
         }
@@ -105,9 +109,20 @@ public class Map implements Serializable {
         out.writeObject(this.map);
     }
 
-
-    public static boolean isValidPoint(Point p){
-        return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X &&
-                p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
+    public static boolean isValidPoint(Point p) {
+        return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X && p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
     }
+
+    public List<GameObject> getAllObjects() {
+        List<GameObject> ret = new LinkedList<>();
+        for (int i = 0; i < DUNGEON_SIZE_X; i++)
+            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+                ret.addAll(map[i][j]);
+        return ret;
+    }
+
+
+
+
+
 }

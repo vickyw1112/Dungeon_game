@@ -1,10 +1,10 @@
 package GameEngine;
 
-import java.awt.*;
+import GameEngine.utils.Point;
 
-public class Pit extends GameObject {
+public class Pit extends StandardObject {
 
-    public Pit(Point location){
+    public Pit(Point location) {
         super(location);
     }
 

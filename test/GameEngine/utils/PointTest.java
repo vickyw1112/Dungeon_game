@@ -1,10 +1,9 @@
-package GameEngineTest;
+package GameEngine.utils;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import GameEngine.Point;
 
 public class PointTest {
     Point p1 = new Point(1, 2);

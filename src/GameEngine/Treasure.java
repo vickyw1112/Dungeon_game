@@ -1,15 +1,17 @@
 package GameEngine;
 
-public class Treasure extends GameObject implements Collectable {
+import GameEngine.utils.Point;
 
-	public Treasure(Point location) {
-		super(location);
-	}
+public class Treasure extends StandardObject implements Collectable {
 
-	@Override
-	public boolean getCollected(GameEngine engine, Inventory playerInventory) {
-		playerInventory.addObject(this);
-		engine.removeGameObject(this);
-		return true;
-	}
+    public Treasure(Point location) {
+        super(location);
+    }
+
+    @Override
+    public boolean getCollected(GameEngine engine, Inventory playerInventory) {
+        playerInventory.addObject(this);
+        engine.removeGameObject(this);
+        return true;
+    }
 }

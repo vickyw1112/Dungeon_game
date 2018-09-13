@@ -1,8 +1,10 @@
 package GameEngine;
 
+import GameEngine.utils.Point;
+
 public class Strategist extends Monster {
 
-    public Strategist(Point location){
+    public Strategist(Point location) {
         super(location);
     }
 

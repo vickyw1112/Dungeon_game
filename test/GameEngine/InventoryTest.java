@@ -1,12 +1,9 @@
-package GameEngineTest;
+package GameEngine;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-
+import GameEngine.utils.Point;
 import org.junit.BeforeClass;
-
-import GameEngine.*;
 
 import org.junit.Test;
 
@@ -18,7 +15,7 @@ public class InventoryTest {
 
     @BeforeClass
     static public void beforeTest(){
-        engine = new GameEngine("123");
+        engine = new GameEngine(new Map());
         player = new Player(new Point(5,5));
         inv = new Inventory();
     }

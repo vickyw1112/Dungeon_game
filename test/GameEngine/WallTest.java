@@ -34,17 +34,18 @@ public class WallTest {
         CollisionEntities ce2 = new CollisionEntities(Wall.class, Arrow.class);
         CollisionEntities ce3 = new CollisionEntities(Wall.class, Player.class);
 
-        CollisionHandler ch1 = ge.getCollisionHandler(ce1);
-        CollisionHandler ch2 = ge.getCollisionHandler(ce2);
-        CollisionHandler ch3 = ge.getCollisionHandler(ce3);
+        CollisionHandler ch1 = new GameObjectMovableCollisionHandler();
+        CollisionHandler ch2 = new ArrowGameObjectCollisionHandler();
+        CollisionHandler ch3 = new GameObjectMovableCollisionHandler();
    
         // test collision results on boulder and wall
         CollisionResult cr1 = ch1.handle(ge, wall, boulder);
         assertEquals(cr1.getFlags(), CollisionResult.REJECT);
 
+        arrow.changeState(Arrow.MOVING);
         // test collision results on arrow and wall
         CollisionResult cr2 = ch2.handle(ge, wall, arrow);
-        assertEquals(cr2.getFlags(), CollisionResult.DELETE_FIRST);
+        assertEquals(cr2.getFlags(), CollisionResult.DELETE_SECOND);
 
         // test collision results on player and wall
         CollisionResult cr3 = ch3.handle(ge, wall, player);

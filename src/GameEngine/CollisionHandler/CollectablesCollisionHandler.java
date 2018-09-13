@@ -12,6 +12,9 @@ public class CollectablesCollisionHandler implements CollisionHandler {
         // Have to check instance type here
         Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
         Collectable collectable = (Collectable) (obj1 instanceof Collectable ? obj1 : obj2);
+        if(collectable.getState() != Collectable.COLLECTABLESTATE)
+            return new CollisionResult(CollisionResult.HANDLED);
+
         collectable.getCollected(engine, player.getInventory());
 
         CollisionResult res = new CollisionResult();

@@ -66,10 +66,8 @@ public class InventoryTest {
     @Test
     public void setCountTest() throws Exception {
         Inventory inv1 = new Inventory();
-        inv1.setCount("Arrow", 3);
-        //Print to debug the actual count
-        System.out.println(inv.getCount("Arrow"));
-        assertEquals(inv.getCount("Arrow"), 3);
+        inv1.setCount("Arrow", 3);  
+        assertEquals(inv1.getCount("Arrow"), 3);
         
     }
     

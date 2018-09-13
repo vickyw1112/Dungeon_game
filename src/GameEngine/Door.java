@@ -2,6 +2,8 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.CollisionHandler.DoorMovableCollisionHandler;
+import GameEngine.CollisionHandler.DoorPlayerCollisionHandler;
 import GameEngine.utils.Point;
 
 public class Door extends StandardObject implements Pairable {
@@ -70,37 +72,14 @@ public class Door extends StandardObject implements Pairable {
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
+
+        //player and door
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    // Have to check instance type here
-                    Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
-                    Door door = (Door) (obj1 instanceof Door ? obj1 : obj2);
-
-                    CollisionResult res = new CollisionResult(0);
-
-                    // Check if obj1 is the door && Door is closed
-                    if (door.getState() == CLOSED) {
-                        // Collision result regardless if player has key is REJECT
-                        res.addFlag(CollisionResult.REJECT);
-                        Key key = getKey();
-                        Inventory inventory = player.getInventory();
-                        if (inventory.contains(key))
-                            openTheDoor(key);
-                    }
-                    return res;
-                });
+              new DoorPlayerCollisionHandler());
 
         // closed door should reject all movable object
         // for all movable object: can through open door
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    CollisionResult res = new CollisionResult(0);
-                    Door door = (Door) (obj1 instanceof Door ? obj1 : obj2);
-                    if (door.state == CLOSED)
-                        res.addFlag(CollisionResult.REJECT);
-                    else
-                        res.addFlag(CollisionResult.HANDLED);
-                    return res;
-                });
+                new DoorMovableCollisionHandler());
     }
 }

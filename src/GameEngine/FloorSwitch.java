@@ -2,6 +2,7 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.CollisionHandler.SwitchBoulderCollisionHandler;
 import GameEngine.utils.Point;
 
 public class FloorSwitch extends StandardObject {
@@ -24,11 +25,6 @@ public class FloorSwitch extends StandardObject {
         // long
         // colliding with the switch, rely on GameEngine#checkWinning instead
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
-                (GameEngine engine, GameObject obj1, GameObject obj2) -> {
-                    this.state = TRIGGERED;
-                    CollisionResult res = new CollisionResult(0);
-                    res.addFlag(CollisionResult.HANDLED);
-                    return res;
-                });
+                new SwitchBoulderCollisionHandler());
     }
 }

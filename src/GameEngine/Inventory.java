@@ -17,18 +17,14 @@ public class Inventory {
     /**
      * Maintain the object instances for all collected items
      */
-    private List<GameObject> items;
+    private List<Collectable> items;
 
     /**
      * Constructor for Inventory
-     * 
-     * @param countMap
-     * @param items
      */
     public Inventory() {
-        super();
-        this.countMap = new HashMap<String, Integer>();
-        this.items = new ArrayList<GameObject>();
+        this.countMap = new HashMap<>();
+        this.items = new ArrayList<>();
     }
 
     /**
@@ -38,7 +34,7 @@ public class Inventory {
      *            the instance being checked
      * @return if the inventory contains that object
      */
-    public boolean contains(GameObject obj) {
+    public boolean contains(Collectable obj) {
         return items.contains(obj);
     }
 
@@ -74,7 +70,7 @@ public class Inventory {
      * @param obj
      *            the object being added
      */
-    public void addObject(GameObject obj) {
+    public void addObject(Collectable obj) {
         items.add(obj);
 
         int count;
@@ -94,9 +90,9 @@ public class Inventory {
      *            type of object being popped
      * @return popped object, if no such type object return null
      */
-    public GameObject popObject(String classname) {
+    public Collectable popObject(String classname) {
         int count;
-        for (GameObject item : items) {
+        for (Collectable item : items) {
             if (item.getClassName().equals(classname)) {
                 items.remove(item);
                 count = countMap.get(classname);

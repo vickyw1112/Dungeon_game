@@ -6,6 +6,9 @@ public class InvinciblePotion extends Potion {
 
     public InvinciblePotion(Point location) {
         super(location);
+        this.playerEffect = PlayerEffect.INVINCIBLE;
+        this.duration = -1;
     }
+
 
 }

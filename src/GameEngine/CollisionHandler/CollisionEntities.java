@@ -72,36 +72,54 @@ public class CollisionEntities {
     public Collection<CollisionEntities> getAllParentEntities() {
         Set<CollisionEntities> ret = new LinkedHashSet<>();
 
-        Set<Class<?>> currALvl = new LinkedHashSet<>(), currBLvl = new LinkedHashSet<>();
-        Set<Class<?>> nextALvl = new LinkedHashSet<>(), nextBLvl = new LinkedHashSet<>();
-        currALvl.add(cls1);
-        currBLvl.add(cls2);
+        List<Set<Class<?>>> clsAParents = new ArrayList<>();
+        List<Set<Class<?>>> clsBParents = new ArrayList<>();
 
-        while (!(currALvl.contains(GameObject.class) && currBLvl.contains(GameObject.class))) {
+        clsAParents.add(Collections.singleton(cls1));
+        clsBParents.add(Collections.singleton(cls2));
 
-            // mix classes in curr A Level and classes in nextB level
-            for (Class<?> currA : currALvl) {
-                nextBLvl = currBLvl.stream().flatMap(CollisionEntities::getParentTypes).collect(Collectors.toSet());
-                nextBLvl.forEach(currB -> ret.add(new CollisionEntities(currA, currB)));
-            }
+        // init all parent type levels up to GameObject for cls1
+        Set<Class<?>> currLvl = clsAParents.get(0);
+        do {
+            currLvl = currLvl.stream()
+                    .flatMap(CollisionEntities::getParentTypes)
+                    .collect(Collectors.toSet());
+            clsAParents.add(currLvl);
+        } while (!currLvl.contains(GameObject.class));
 
-            // mix classes in curr B Level and classes in nextA level
-            for (Class<?> currB : currBLvl) {
-                nextALvl = currALvl.stream().flatMap(CollisionEntities::getParentTypes).collect(Collectors.toSet());
-                nextALvl.forEach(currA -> ret.add(new CollisionEntities(currA, currB)));
-            }
+        // init all parent type levels up to GameObject for cls2
+        currLvl = clsBParents.get(0);
+        do {
+            currLvl = currLvl.stream()
+                    .flatMap(CollisionEntities::getParentTypes)
+                    .collect(Collectors.toSet());
+            clsBParents.add(currLvl);
+        } while (!currLvl.contains(GameObject.class));
 
-            // increment curr level to next level if it has not reached end
-            if (!currALvl.contains(GameObject.class)) {
-                currALvl = nextALvl;
-            }
+        for(int lvl = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++){
+            for(int base = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++) {
+                // mix base B with top lvl A
+                final int ATopLvl = Integer.min(lvl, clsAParents.size() - 1);
+                if(base <= ATopLvl){
+                    clsBParents.get(base).forEach(clsB ->
+                        clsAParents.get(ATopLvl).forEach(clsA ->
+                            ret.add(new CollisionEntities(clsA, clsB))
+                        )
+                    );
+                }
 
-            if (!currBLvl.contains(GameObject.class)) {
-                currBLvl = nextBLvl;
+                // mix base A with top lvl B
+                final int BTopLvl = Integer.min(lvl, clsBParents.size() - 1);
+                if(base <= ATopLvl){
+                    clsAParents.get(base).forEach(clsA ->
+                            clsBParents.get(BTopLvl).forEach(clsB ->
+                                    ret.add(new CollisionEntities(clsA, clsB))
+                            )
+                    );
+                }
             }
         }
-
-        ret.add(new CollisionEntities(GameObject.class, GameObject.class));
+        ret.add(new CollisionEntities(GameObject.class, GameObject.class)); // Fall back
         return ret;
     }
 
@@ -118,5 +136,4 @@ public class CollisionEntities {
 
         return parents.stream().filter(GameObject.class::isAssignableFrom);
     }
-
 }

@@ -1,13 +1,12 @@
-package GameEngineTest;
+package GameEngine;
 
 import static org.junit.Assert.*;
 
+import GameEngine.utils.Point;
 import org.junit.Test;
-
-import GameEngine.*;
 import GameEngine.CollisionHandler.*;
 
-public class ArrowUnitTest {
+public class ArrowTest {
 
 	/**
 	 * Construction unit test, test the created arrow location is set to the right location

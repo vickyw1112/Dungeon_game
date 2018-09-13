@@ -1,9 +1,10 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollisionEntities;
-import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.CollisionHandler.*;
+import GameEngine.utils.Direction;
+import GameEngine.utils.Point;
 
-public class Boulder extends GameObject implements Movable, Blockable {
+public class Boulder extends StandardObject implements Movable, Blockable {
     private final double SPEED = Player.SPEED / 2;
     private Direction facing;
     private double speed;
@@ -39,8 +40,8 @@ public class Boulder extends GameObject implements Movable, Blockable {
         return this.speed;
     }
     
-    /* 
-     * set bpoulder's speed to 0
+    /**
+     * set boulder's speed to 0
      * and s
      */
     @Override
@@ -49,7 +50,7 @@ public class Boulder extends GameObject implements Movable, Blockable {
         return super.setLocation(point);
     }
 
-    /* 
+    /**
      * Define collision handler for boulder
      */
     @Override
@@ -84,6 +85,5 @@ public class Boulder extends GameObject implements Movable, Blockable {
                         res.addFlag(CollisionResult.DELETE_SECOND);
                     return res;
                 });
-        
     }
 }

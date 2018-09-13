@@ -2,8 +2,10 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.utils.Direction;
+import GameEngine.utils.Point;
 
-public class Arrow extends GameObject implements Collectable, Movable{
+public class Arrow extends StandardObject implements Collectable, Movable{
     public static final double SPEED = 4;
     public static final int MOVING = 1;
 

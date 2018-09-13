@@ -1,4 +1,4 @@
-package GameEngine;
+package GameEngine.utils;
 
 import java.io.Serializable;
 

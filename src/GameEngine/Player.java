@@ -1,16 +1,15 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollectablesCollisionHandler;
-import GameEngine.CollisionHandler.CollisionEntities;
-import GameEngine.CollisionHandler.CollisionHandler;
-import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.CollisionHandler.*;
+import GameEngine.utils.Direction;
+import GameEngine.utils.Point;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class Player extends GameObject implements Movable {
+public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player
      * Unit is grid per second

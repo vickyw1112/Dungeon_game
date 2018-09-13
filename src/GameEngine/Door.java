@@ -3,8 +3,9 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.utils.Point;
 
-public class Door extends GameObject implements Pairable {
+public class Door extends StandardObject implements Pairable {
 	private Key key;
 	public static final int OPEN = 1;
 	public static final int CLOSED = 0;

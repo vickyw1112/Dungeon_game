@@ -1,8 +1,8 @@
 package GameEngine;
 
-import java.util.List;
+import GameEngine.utils.Point;
 
-public class Key extends GameObject implements Collectable {
+public class Key extends StandardObject implements Collectable {
 
 	public Key(Point location) {
 		super(location);

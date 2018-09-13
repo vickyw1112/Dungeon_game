@@ -1,7 +1,6 @@
-package GameEngineTest;
+package GameEngine;
 
-import GameEngine.*;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import GameEngine.utils.Point;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -165,7 +164,7 @@ public class MapTest {
         map.serialize(output);
         byte[] buffer = output.toByteArray();
 
-        ByteArrayInputStream input  = new ByteInputStream(buffer, buffer.length);
+        ByteArrayInputStream input  = new ByteArrayInputStream(buffer);
         map = new Map(input);
         // check new map is the same
         key = (Key) map.getObjects(keyLocation).get(0);

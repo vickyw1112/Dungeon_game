@@ -1,10 +1,10 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollisionEntities;
-import GameEngine.CollisionHandler.CollisionHandler;
-import GameEngine.CollisionHandler.CollisionHandlerNotImplement;
-import GameEngine.CollisionHandler.CollisionResult;
+import GameEngine.CollisionHandler.*;
+import GameEngine.utils.Point;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +21,11 @@ public class GameEngine {
      */
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
+
+
+    public GameEngine(InputStream input) throws IOException, ClassNotFoundException {
+        this(new Map(input));
+    }
 
     /**
      * Constructor for GameEngine
@@ -179,7 +184,7 @@ public class GameEngine {
      */
     public void removeGameObject(GameObject obj){
         map.removeObject(obj);
-        objects.remove(obj.objId);
+        objects.remove(obj.getObjID());
         movingObjects.remove(obj);
         monsters.remove(obj);
     }
@@ -188,10 +193,11 @@ public class GameEngine {
      * Interface for front end to provide hook
      * for changing states of game objects
      *
+     * @deprecated use observer pattern now
      * @param stateChanger hook class
      */
     public void setStateChanger(StateChanger stateChanger){
-        GameObject.stateChanger = stateChanger;
+        // GameObject.stateChanger = stateChanger;
     }
 
 
@@ -215,75 +221,17 @@ public class GameEngine {
      * @return collision handler
      */
     public CollisionHandler getCollisionHandler(CollisionEntities entities) throws CollisionHandlerNotImplement{
-        for(CollisionEntities ent: entities.getParentEntities()){
+        // check if there's handler registered matching exactly given entities
+        if(collisionHandlerMap.containsKey(entities)){
+            return collisionHandlerMap.get(entities);
+        }
+
+        // get entities' super types to fall back
+        for(CollisionEntities ent: entities.getAllParentEntities()){
             if(collisionHandlerMap.containsKey(ent)){
                 return collisionHandlerMap.get(ent);
             }
         }
-        throw new CollisionHandlerNotImplement("test");
+        throw new CollisionHandlerNotImplement(entities.toString());
     }
-
-    public static void main(String[] args) throws Exception{
-
-        CollisionEntities ent = new CollisionEntities(Player.class, Pit.class);
-        CollisionEntities ent2 = new CollisionEntities(Player.class, Wall.class);
-        
-        System.out.println(ent.getParentEntities());
-        GameEngine engine = new GameEngine(new Map());
-        Player p = new Player(new Point(1,2));
-        p.registerCollisionHandler(engine);
-
-        GameObject.stateChanger = (GameObject obj, int state) -> {};
-        
-        System.out.println(engine.getCollisionHandler(ent));
-        System.out.println(engine.getCollisionHandler(ent2));
-        System.out.println(engine.getCollisionHandler(new CollisionEntities(Key.class, Pit.class)));
-        
-        //Checking moving arrow collision
-        Arrow a = new Arrow(new Point (3,4));
-        CollisionEntities eMV = new CollisionEntities(Arrow.class, Boulder.class);
-        CollisionEntities eMV1 = new CollisionEntities(Arrow.class, Monster.class);
-        CollisionEntities eMV2 = new CollisionEntities(Arrow.class, Door.class);
-        a.changeState(Arrow.MOVING);
-        a.registerCollisionHandler(engine);
-        
-        System.out.println(engine.getCollisionHandler(eMV));
-        System.out.println(engine.getCollisionHandler(eMV1));
-        System.out.println(engine.getCollisionHandler(eMV2));
-        
-        
-
-        engine.map.map[5][2].add(new Wall(new Point(5, 2)));
-
-//        engine.map.map[6][9].add(new Wall(new Point(6, 9)));
-        engine.map.map[4][9].add(new Wall(new Point(6, 9)));
-        engine.map.map[5][8].add(new Wall(new Point(6, 9)));
-
-        Monster mon = new Hunter(new Point(5, 9));
-        mon.initialize();
-        System.out.println(mon.pathGenerator.generatePath(engine.map, mon, p.location));
-
-
-        List<GameObject> testObjs = new LinkedList<GameObject>();
-        engine.setStateChanger(new StateChanger() {
-            @Override
-            public void changeState(GameObject obj, int state) {
-                // Test closure
-                testObjs.add(obj);
-            }
-        });
-        // TODO: check lambda?
-        // engine.setStateChanger((obj, state) -> testObjs.add(((GameObject) obj)));
-        p.changeState(1);
-        p.changeState(2);
-        try {
-            Object obj = Class.forName("GameEngine.Player").getConstructor(Point.class).newInstance(new Point(1, 2));
-            Player p2 = (Player)obj;
-            p2.changeState(3);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-//        System.out.println(testObjs);
-    }
-
 }

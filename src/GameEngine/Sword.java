@@ -11,7 +11,7 @@ public class Sword extends StandardObject implements Collectable {
 
     @Override
     public boolean getCollected(GameEngine engine, Inventory playerInventory) {
-        playerInventory.setCount(Sword.class.getSimpleName(), ATTACKNUM);
+        playerInventory.setCount(Sword.class, ATTACKNUM);
         engine.removeGameObject(this);
         return true;
     }

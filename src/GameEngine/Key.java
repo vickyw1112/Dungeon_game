@@ -10,7 +10,7 @@ public class Key extends StandardObject implements Collectable {
 
     @Override
     public boolean getCollected(GameEngine engine, Inventory playerInventory) {
-        if (playerInventory.getCount(this.getClassName()) == 0) {
+        if (playerInventory.getCount(this.getClass()) == 0) {
             playerInventory.addObject(this);
             engine.removeGameObject(this);
             return true;

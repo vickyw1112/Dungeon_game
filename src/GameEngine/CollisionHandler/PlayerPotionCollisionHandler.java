@@ -1,6 +1,7 @@
 package GameEngine.CollisionHandler;
 
 import GameEngine.*;
+import GameEngine.utils.PlayerEffect;
 
 public class PlayerPotionCollisionHandler implements CollisionHandler {
     @Override

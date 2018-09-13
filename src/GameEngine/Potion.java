@@ -1,5 +1,6 @@
 package GameEngine;
 
+import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 
 public abstract class Potion extends StandardObject {

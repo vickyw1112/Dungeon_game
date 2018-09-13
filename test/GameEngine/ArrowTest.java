@@ -44,7 +44,7 @@ public class ArrowTest {
 		arrow.getCollected(engine, inv);
 		
 		assertTrue(inv.contains(arrow));
-		assertEquals(inv.getCount(arrow.getClassName()), 1);
+		assertEquals(inv.getCount(arrow.getClass()), 1);
 	}
 	
 	/**

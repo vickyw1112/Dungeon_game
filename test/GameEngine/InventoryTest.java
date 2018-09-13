@@ -40,14 +40,13 @@ public class InventoryTest {
     @Test
     public void getCountTest() {
         Arrow arrow = new Arrow(new Point(2,2));
-        assertEquals(inv.getCount("Arrow"), 0);
+        assertEquals(inv.getCount(arrow.getClass()), 0);
         
         inv.addObject(arrow);
-        assertEquals(inv.getCount("Arrow"), 1);
+        assertEquals(inv.getCount(arrow.getClass()), 1);
         
-        //popObject takes in string?
-        inv.popObject("Arrow");
-        assertEquals(inv.getCount("Arrow"), 0);
+        inv.popObject(arrow.getClass());
+        assertEquals(inv.getCount(arrow.getClass()), 0);
     }
     
     /**
@@ -57,8 +56,8 @@ public class InventoryTest {
     @Test
     public void setCountTest() {
         Inventory inv1 = new Inventory();
-        inv1.setCount("Arrow", 3);  
-        assertEquals(inv1.getCount("Arrow"), 3);
+        inv1.setCount(Arrow.class, 3);
+        assertEquals(inv1.getCount(Arrow.class), 3);
         
     }
     
@@ -71,7 +70,7 @@ public class InventoryTest {
     public void addObjectTest() {
         Treasure t = new Treasure(new Point(1,1));
         inv.addObject(t);
-        assertEquals(inv.getCount("Treasure"), 1);
+        assertEquals(inv.getCount(t.getClass()), 1);
     }
     
     
@@ -83,6 +82,6 @@ public class InventoryTest {
     public void popObjectTest() {
         Sword sword = new Sword(new Point(1,1));
         inv.addObject(sword);
-        assertEquals(inv.popObject("Sword"), sword);
+        assertEquals(inv.popObject(sword.getClass()), sword);
     }
 }

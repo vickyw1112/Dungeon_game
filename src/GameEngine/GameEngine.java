@@ -41,6 +41,7 @@ public class GameEngine {
         this.movingObjects = new LinkedList<>();
         this.monsters = new LinkedList<>();
 
+
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
             obj.addObserver(observer);
@@ -59,6 +60,10 @@ public class GameEngine {
         // register collisionHandler for (GameObject, GameObject) for default handler
         // fall back mechanism see GameEngine#getCollisionHandler
         registerCollisionHandler(new CollisionEntities(GameObject.class, GameObject.class), new DefaultHandler());
+
+        // register collisionHandler for (GameObject, Movable) for GameObjectMovableCollisionHandler
+        registerCollisionHandler(new CollisionEntities(GameObject.class, Movable.class),
+                new GameObjectMovableCollisionHandler());
     }
 
     /**

@@ -7,14 +7,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class StandardObject implements GameObject, Serializable {
+    public static final int DEFAULT_STATE = 0;
+
     private static int objCount = 0;
     private int objId;
     protected Point location;
     private transient List<GameObjectObserver> observers;
+
     /**
      * State of a object, specific to each type of object
      */
     protected int state;
+
 
     /**
      * Constructor for GameObject Auto generate objId
@@ -31,6 +35,7 @@ public abstract class StandardObject implements GameObject, Serializable {
     @Override
     public void initialize() {
         observers = new LinkedList<>();
+        this.state = DEFAULT_STATE;
     }
 
     @Override

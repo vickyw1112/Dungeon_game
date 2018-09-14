@@ -72,6 +72,7 @@ import java.util.List;
 
             // Should have added boulder to the list of things to delete
             assertEquals(list.size(), 1);
+
             // need to consider edge cases (wall next to bomb)
 
 

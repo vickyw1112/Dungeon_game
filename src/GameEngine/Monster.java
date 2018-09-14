@@ -66,6 +66,12 @@ public abstract class Monster extends StandardObject implements Movable {
         return ret;
     }
 
+    /**
+     * Update monster's path by its strategy
+     * TODO: also update when somewhere on the path gets blocked!
+     * @param map
+     * @param player
+     */
     public void updatePath(Map map, Player player) {
         pathToDestination = pathGenerator.generatePath(map, this, player.location);
     }

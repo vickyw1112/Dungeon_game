@@ -2,97 +2,109 @@ package GameEngine;
 import static org.junit.Assert.*;
 
 import GameEngine.utils.Point;
+import org.junit.Before;
 import org.junit.Test;
 import GameEngine.CollisionHandler.*;
 
 
+public class BoulderTest {
+    private GameEngine ge;
+    private Boulder boulder;
+    private Player player;
 
-    public class BoulderTest {
-            /**
-             * Test that the boulder collides with a wall and is rejected when attempted to
-             */
-            @Test
-            public void testBoulderCollisionWall() throws CollisionHandlerNotImplement {
-                GameEngine ge = new GameEngine(new Map());
-                Wall wall = new Wall(new Point(1, 2));
-                Boulder boulder = new Boulder(new Point(1, 1));
-                wall.registerCollisionHandler(ge);
+    @Before
+    public void setup(){
+        ge = new GameEngine();
+        boulder = new Boulder(new Point(0, 1));
+        player = new Player(new Point(1, 1));
+    }
 
-                CollisionEntities ce1 = new CollisionEntities(Boulder.class, Wall.class);
-                CollisionHandler ch = ge.getCollisionHandler(ce1);
-                CollisionResult res = ch.handle(ge, wall, boulder);
+    /**
+     * Test that the boulder collides with a wall and is rejected when attempted to
+     */
+    @Test
+    public void testBoulderCollisionWall() {
+        Wall wall = new Wall(new Point(1, 2));
+        wall.registerCollisionHandler(ge);
 
-                // tests thats a boulder rejects a wall
-                assertEquals(res.getFlags(), CollisionResult.REJECT);
-            }
+        CollisionHandler ch = new GameObjectMovableCollisionHandler();
+        CollisionResult res = ch.handle(ge, wall, boulder);
 
-
-            /**
-             * Test that boulder collides with any collectable object and it should result in handle
-             */
-
-            @Test
-            public void testBoulderCollisionCollectable() throws CollisionHandlerNotImplement{
-                GameEngine ge = new GameEngine(new Map());
-                Key key = new Key(new Point(1,1));
-                Boulder boulder = new Boulder(new Point(1,1));
-                boulder.registerCollisionHandler(ge);
-
-                CollisionEntities ce1 = new CollisionEntities(Boulder.class, Key.class);
-                CollisionHandler ch = ge.getCollisionHandler(ce1);
-                CollisionResult res = ch.handle(ge, key, boulder);
-
-                // Boulders should just go over a collectable item (keys and such)
-                assertEquals(res.getFlags(), CollisionResult.HANDLED);
-            }
-
-            /**
-             * Testing that the boulder disappears when entering a pit
-             * @throws CollisionHandlerNotImplement
-             */
-
-            @Test
-            public void testBoulderCollisionPit() throws CollisionHandlerNotImplement{
-                GameEngine ge = new GameEngine(new Map());
-                Pit pit = new Pit(new Point(1,1));
-                Boulder boulder = new Boulder(new Point(1,1));
-                boulder.registerCollisionHandler(ge);
-
-                CollisionEntities ce1 = new CollisionEntities(Boulder.class, Pit.class);
-                CollisionHandler ch = ge.getCollisionHandler(ce1);
-                CollisionResult res = ch.handle(ge, boulder, pit);
-
-                // tests that a boulder disappears when collided with pit
-                assertEquals(res.getFlags(), CollisionResult.DELETE_FIRST);
-                }
+        // tests that Wall reject Boulder
+        assertEquals(res.getFlags(), CollisionResult.REJECT);
+    }
 
 
-            /**
-             * When a boulder collides with a player, the SPEED should be updated (not zero anymore)
-              */
+    /**
+     * Test that boulder collides with any collectable object and it should result in handle
+     */
+    @Test
+    public void testBoulderCollisionCollectable() throws CollisionHandlerNotImplement{
+        GameEngine ge = new GameEngine(new Map());
+        Key key = new Key(new Point(1,1));
+        Boulder boulder = new Boulder(new Point(1,1));
+        boulder.registerCollisionHandler(ge);
 
-            @Test
-            public void testBoulderSpeed() throws CollisionHandlerNotImplement{
-                GameEngine ge = new GameEngine(new Map());
-                Player player = new Player(new Point(1,1));
-                Boulder boulder = new Boulder(new Point(1,1));
-                player.registerCollisionHandler(ge);
-                boulder.registerCollisionHandler(ge);
+        CollisionEntities ce1 = new CollisionEntities(Boulder.class, Key.class);
+        CollisionHandler ch = ge.getCollisionHandler(ce1);
+        CollisionResult res = ch.handle(ge, key, boulder);
 
-                assertTrue(boulder.getSpeed() == 0);
-                CollisionHandler ch = new PlayerBoulderCollisionHandler();
-                CollisionResult res = ch.handle(ge, boulder, player);
+        // Boulders should just go over a collectable item (keys and such)
+        assertEquals(res.getFlags(), CollisionResult.HANDLED);
+    }
 
-                assertTrue(boulder.getSpeed() > 0);
+    /**
+     * Testing that the boulder disappears when entering a pit
+     * @throws CollisionHandlerNotImplement
+     */
 
-            }
+    @Test
+    public void testBoulderCollisionPit() {
+        GameEngine ge = new GameEngine(new Map());
+        Pit pit = new Pit(new Point(1,1));
+        Boulder boulder = new Boulder(new Point(1,1));
+        boulder.registerCollisionHandler(ge);
 
-            /*
-            TODO: Test that direction changes when player pushes (front end implementation)
-            @Test
-            public void testDirection() throws CollisionHandlerNotImplement{
-                fail("Not yet Implemented");
-            }
-            */
+        CollisionHandler ch = new BoulderPitCollisionHandler();
+        CollisionResult res = ch.handle(ge, boulder, pit);
 
-        }
+        // tests that a boulder disappears when collided with pit
+        assertEquals(res.getFlags(), CollisionResult.DELETE_FIRST);
+    }
+
+    /**
+     * When Player collide with boulder,
+     * it should have a speed and a facing same as player
+     */
+    @Test
+    public void testPlayerPushBoulder() {
+        Boulder boulder = new Boulder(new Point(1,1));
+        player.registerCollisionHandler(ge);
+        boulder.registerCollisionHandler(ge);
+
+        assertTrue(boulder.getSpeed() == 0);
+        CollisionHandler ch = new PlayerBoulderCollisionHandler();
+        CollisionResult res = ch.handle(ge, boulder, player);
+
+        assertEquals(res.getFlags(), CollisionResult.REJECT);
+        assertTrue(boulder.getSpeed() > 0);
+        assertEquals(player.getFacing(), boulder.getFacing());
+    }
+
+    @Test
+    public void testBoulderCanGoOverSwitch() throws CollisionHandlerNotImplement {
+        FloorSwitch _switch = new FloorSwitch(new Point(1, 9));
+        CollisionEntities ent = new CollisionEntities(_switch.getClass(), boulder.getClass());
+        CollisionHandler handler = ge.getCollisionHandler(ent);
+        assertEquals(handler.handle(ge, _switch, boulder).getFlags(), CollisionResult.HANDLED);
+    }
+
+    @Test
+    public void testBoulderCollideMonster(){
+        Monster monster = new Hunter(new Point(4, 1));
+        CollisionHandler handler = new BoulderMonsterCollisionHandler();
+        assertEquals(handler.handle(ge, monster, boulder).getFlags(), CollisionResult.REJECT);
+    }
+
+    // Boulder Door covered in DoorTest#closedDoorBlockingTest
+}

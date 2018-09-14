@@ -24,10 +24,18 @@ public class BombTest {
     @Test
     public void getCollectedTest() {
         assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
-        bomb.getCollected(engine, player.getInventory());
+        CollisionHandler handler = new CollectablesCollisionHandler();
+        handler.handle(engine, player, bomb);
 
         assertTrue(player.getInventory().contains(bomb));
         assertEquals(player.getInventory().getCount(bomb.getClass()), 1);
+
+        Bomb bomb2 = new Bomb(new Point(1, 1));
+        handler.handle(engine, player, bomb2);
+
+        assertTrue(player.getInventory().contains(bomb2));
+        assertEquals(player.getInventory().getCount(Bomb.class), 2);
+
     }
 
     @Test

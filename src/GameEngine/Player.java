@@ -14,14 +14,13 @@ public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player Unit is grid per second
      */
-
     public static final double SPEED = 2;
 
     // player inventory should be newly instantiated when loading map
     // not loading from serialized file
     private transient Inventory inventory;
 
-    private Set<PlayerEffect> effects;
+    private transient Set<PlayerEffect> effects;
     private Direction facing;
     private boolean onPushingBoulder;
 

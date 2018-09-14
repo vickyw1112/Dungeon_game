@@ -1,6 +1,8 @@
 package GameEngine;
 
 import GameEngine.CollisionHandler.*;
+import GameEngine.utils.GameObjectObserver;
+import GameEngine.utils.Observable;
 import GameEngine.utils.Point;
 
 import java.io.IOException;
@@ -22,21 +24,17 @@ public class GameEngine {
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
-    public GameEngine(InputStream input) throws IOException, ClassNotFoundException {
-        this(new Map(input));
-    }
 
     /**
      * Constructor for GameEngine Load the map from saving For each unique game
-     * object, call it's {@link GameObject#registerCollisionHandler} method TODO:
-     * consider using factory pattern to instantiate all game objects? TODO: also
-     * check Class.forName().getConstructor().newInstance()
+     * object, call it's {@link GameObject#registerCollisionHandler} method
+     * TODO: consider using factory pattern to instantiate all game objects?
+     * TODO: also check Class.forName().getConstructor().newInstance()
      *
-     * @param file
-     *            map file
+     * @param map map
+     * @param observer front end observer for GameObject state change
      */
-    public GameEngine(Map map) {
-        // init
+    public GameEngine(Map map, GameObjectObserver observer){
         // TODO init different thing in different places
         this.map = map;
         this.objects = new HashMap<>();
@@ -45,6 +43,7 @@ public class GameEngine {
 
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
+            obj.addObserver(observer);
             if (obj instanceof Player)
                 this.player = (Player) obj;
             if (obj instanceof Movable)
@@ -58,9 +57,34 @@ public class GameEngine {
         this.collisionHandlerMap = new HashMap<>();
 
         // register collisionHandler for (GameObject, GameObject) for default handler
-        // here
         // fall back mechanism see GameEngine#getCollisionHandler
         registerCollisionHandler(new CollisionEntities(GameObject.class, GameObject.class), new DefaultHandler());
+    }
+
+    /**
+     * Wrapper constructor
+     *
+     * @param mapInput map file input stream
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public GameEngine(InputStream mapInput, GameObjectObserver observer) throws IOException, ClassNotFoundException {
+        this(new Map(mapInput), observer);
+    }
+
+    /**
+     * Constructor only takes in map for debugging/testing
+     * @param map
+     */
+    public GameEngine(Map map){
+        this(map, obj -> System.out.println(obj + " changed state to: "+ obj.getState()));
+    }
+
+    /**
+     * No arg constructor for debugging/testing
+     */
+    public GameEngine(){
+        this(new Map());
     }
 
     /**
@@ -182,17 +206,6 @@ public class GameEngine {
         objects.remove(obj.getObjID());
         movingObjects.remove(obj);
         monsters.remove(obj);
-    }
-
-    /**
-     * Interface for front end to provide hook for changing states of game objects
-     *
-     * @deprecated use observer pattern now
-     * @param stateChanger
-     *            hook class
-     */
-    public void setStateChanger(StateChanger stateChanger) {
-        // GameObject.stateChanger = stateChanger;
     }
 
     /**

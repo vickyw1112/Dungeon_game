@@ -63,9 +63,11 @@ public class CollisionEntities {
     }
 
     /**
-     * Return a list of entities with two type being super type of this entities
+     * Enumerate all entities with two type being super type of this entities
+     * in the order that more specific type comes first
      * This is used when this entities is not found in the key of
-     * collisionHandlerMap in GameObject TODO: test this thoroughly
+     * collisionHandlerMap in GameObject
+     * TODO: test this thoroughly
      *
      * @see GameEngine#getCollisionHandler(CollisionEntities)
      * @return list of CollisionEntities in the order that subclasses go first
@@ -101,7 +103,7 @@ public class CollisionEntities {
             for(int base = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++) {
                 // mix base B with top lvl A
                 final int ATopLvl = Integer.min(lvl, clsAParents.size() - 1);
-                if(base <= ATopLvl){
+                if(base < ATopLvl){
                     clsBParents.get(base).forEach(clsB ->
                         clsAParents.get(ATopLvl).forEach(clsA ->
                             ret.add(new CollisionEntities(clsA, clsB))
@@ -111,7 +113,7 @@ public class CollisionEntities {
 
                 // mix base A with top lvl B
                 final int BTopLvl = Integer.min(lvl, clsBParents.size() - 1);
-                if(base <= ATopLvl){
+                if(base <= BTopLvl){
                     clsAParents.get(base).forEach(clsA ->
                             clsBParents.get(BTopLvl).forEach(clsB ->
                                     ret.add(new CollisionEntities(clsA, clsB))

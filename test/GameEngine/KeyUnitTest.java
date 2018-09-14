@@ -14,7 +14,7 @@ public class KeyUnitTest {
 	@Test
 	public void getCollectedTest() {
 		Key key = new Key(new Point(1,1));
-		GameEngine engine = new GameEngine(new Map());
+		GameEngine engine = new GameEngine();
 		Inventory inv = new Inventory();
 		assertTrue(key.getCollected(engine, inv));
 		

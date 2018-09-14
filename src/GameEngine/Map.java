@@ -29,6 +29,8 @@ public class Map implements Serializable {
      *
      * @param mapBuilder
      */
+    // TODO: how are we going to construct a map in second mode?
+    // how to enumerate all subclasses of GameObject
     public Map(MapBuilder mapBuilder) {
         this();
         GameObject[][] builderMap = mapBuilder.getMap();

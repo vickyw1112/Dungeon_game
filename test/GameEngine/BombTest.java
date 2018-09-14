@@ -16,7 +16,7 @@ public class BombTest {
     @Before
     public void setUp(){
         bomb = new Bomb(new Point(1, 1));
-        engine = new GameEngine(new Map());
+        engine = new GameEngine();
         player = new Player(new Point(2, 2));
         player.initialize();
     }

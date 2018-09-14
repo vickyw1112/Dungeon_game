@@ -136,9 +136,9 @@ public class MapTest {
         points = map.getNonBlockAdjacentPoints(new Point(2, 0));
         assertEquals(points.size(), 0);
 
-        // TODO: think of better way to handle blockable classes ?
         // after open door
         door.changeState(Door.OPEN);
+        points = map.getNonBlockAdjacentPoints(new Point(2, 0));
         assertTrue(points.contains(new Point(3, 0)));
     }
 
@@ -146,10 +146,10 @@ public class MapTest {
     public void mapSerializationTest() throws IOException, ClassNotFoundException {
         mapBuilder = generateMapBuilder();
         Point keyLocation = new Point(2, 0);
-        Point doorLocatin = new Point(3, 0);
+        Point doorLocation = new Point(3, 0);
 
         // add door - key reference
-        Door door = new Door(doorLocatin);
+        Door door = new Door(doorLocation);
         mapBuilder.addObject(door);
         Key key = new Key(keyLocation);
         mapBuilder.addObject(key);
@@ -169,11 +169,9 @@ public class MapTest {
         // check new map is the same
         key = (Key) map.getObjects(keyLocation).get(0);
         assertTrue(key instanceof Key);
-        door = (Door) map.getObjects(doorLocatin).get(0);
+        door = (Door) map.getObjects(doorLocation).get(0);
         assertTrue(door instanceof Door);
 
         assertEquals(door.getKey(), key);
     }
-
-
 }

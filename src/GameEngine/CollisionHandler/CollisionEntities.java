@@ -1,5 +1,6 @@
 package GameEngine.CollisionHandler;
 
+
 import GameEngine.*;
 
 import java.util.*;
@@ -11,20 +12,22 @@ public class CollisionEntities {
     private Class<?> cls2;
 
     /**
-     * Constructor for CollisionEntities
-     * Sort two given type so that order does not matter
+     * Constructor for CollisionEntities Sort two given type so that order does not
+     * matter
      *
-     * @param cls1 class for first obj
-     * @param cls2 class for second obj
+     * @param cls1
+     *            class for first obj
+     * @param cls2
+     *            class for second obj
      */
 
     public CollisionEntities(Class<?> cls1, Class<?> cls2) {
-        assert(GameObject.class.isAssignableFrom(cls1));
-        assert(GameObject.class.isAssignableFrom(cls2));
+        assert (GameObject.class.isAssignableFrom(cls1));
+        assert (GameObject.class.isAssignableFrom(cls2));
 
         String type1 = cls1.getSimpleName();
         String type2 = cls2.getSimpleName();
-        if(type1.compareTo(type2) < 0){
+        if (type1.compareTo(type2) < 0) {
             this.cls1 = cls1;
             this.cls2 = cls2;
         } else {
@@ -34,22 +37,21 @@ public class CollisionEntities {
     }
 
     /**
-     * Override equals and hashCode to make sure
-     * different instance CollisionEntities can be effective the
-     * same key for HashMap
+     * Override equals and hashCode to make sure different instance
+     * CollisionEntities can be effective the same key for HashMap
      *
      * @see GameEngine#collisionHandlerMap
      */
     @Override
-    public boolean equals(Object obj){
-        if(obj == null || !(obj instanceof CollisionEntities)) return false;
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof CollisionEntities))
+            return false;
 
-        return cls1.equals(((CollisionEntities) obj).cls1) &&
-                cls2.equals(((CollisionEntities) obj).cls2);
+        return cls1.equals(((CollisionEntities) obj).cls1) && cls2.equals(((CollisionEntities) obj).cls2);
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return cls1.hashCode() ^ cls2.hashCode();
     }
 
@@ -61,11 +63,9 @@ public class CollisionEntities {
     }
 
     /**
-     * Return a list of entities with two type being super type
-     * of this entities
+     * Return a list of entities with two type being super type of this entities
      * This is used when this entities is not found in the key of
-     * collisionHandlerMap in GameObject
-     * TODO: test this thoroughly
+     * collisionHandlerMap in GameObject TODO: test this thoroughly
      *
      * @see GameEngine#getCollisionHandler(CollisionEntities)
      * @return list of CollisionEntities in the order that subclasses go first
@@ -73,56 +73,70 @@ public class CollisionEntities {
     public Collection<CollisionEntities> getAllParentEntities() {
         Set<CollisionEntities> ret = new LinkedHashSet<>();
 
-        Set<Class<?>> currALvl = new LinkedHashSet<>(), currBLvl = new LinkedHashSet<>();
-        Set<Class<?>> nextALvl = new LinkedHashSet<>(), nextBLvl = new LinkedHashSet<>();
-        currALvl.add(cls1);
-        currBLvl.add(cls2);
+        List<Set<Class<?>>> clsAParents = new ArrayList<>();
+        List<Set<Class<?>>> clsBParents = new ArrayList<>();
 
-        while(!(currALvl.contains(GameObject.class) &&
-                currBLvl.contains(GameObject.class))) {
+        clsAParents.add(Collections.singleton(cls1));
+        clsBParents.add(Collections.singleton(cls2));
 
-            // mix classes in curr A Level and classes in nextB level
-            for (Class<?> currA : currALvl) {
-                nextBLvl = currBLvl.stream()
-                        .flatMap(CollisionEntities::getParentTypes)
-                        .collect(Collectors.toSet());
-                nextBLvl.forEach(currB -> ret.add(new CollisionEntities(currA, currB)));
-            }
+        // init all parent type levels up to GameObject for cls1
+        Set<Class<?>> currLvl = clsAParents.get(0);
+        do {
+            currLvl = currLvl.stream()
+                    .flatMap(CollisionEntities::getParentTypes)
+                    .collect(Collectors.toSet());
+            clsAParents.add(currLvl);
+        } while (!currLvl.contains(GameObject.class));
 
-            // mix classes in curr B Level and classes in nextA level
-            for (Class<?> currB : currBLvl) {
-                nextALvl = currALvl.stream()
-                        .flatMap(CollisionEntities::getParentTypes)
-                        .collect(Collectors.toSet());
-                nextALvl.forEach(currA -> ret.add(new CollisionEntities(currA, currB)));
-            }
+        // init all parent type levels up to GameObject for cls2
+        currLvl = clsBParents.get(0);
+        do {
+            currLvl = currLvl.stream()
+                    .flatMap(CollisionEntities::getParentTypes)
+                    .collect(Collectors.toSet());
+            clsBParents.add(currLvl);
+        } while (!currLvl.contains(GameObject.class));
 
-            // increment curr level to next level if it has not reached end
-            if (!currALvl.contains(GameObject.class)) {
-                currALvl = nextALvl;
-            }
+        for(int lvl = 0; lvl < clsAParents.size() || lvl < clsBParents.size(); lvl++){
+            for(int base = 0; base < clsAParents.size() || base < clsBParents.size(); base++) {
+                // mix base B with top lvl A
+                final int ATopLvl = Integer.min(lvl, clsAParents.size() - 1);
+                int baseB = Integer.min(base, clsBParents.size() - 1);
+                if(baseB <= ATopLvl){
+                    clsBParents.get(baseB).forEach(clsB ->
+                        clsAParents.get(ATopLvl).forEach(clsA ->
+                            ret.add(new CollisionEntities(clsA, clsB))
+                        )
+                    );
+                }
 
-            if (!currBLvl.contains(GameObject.class)) {
-                currBLvl = nextBLvl;
+                // mix base A with top lvl B
+                final int BTopLvl = Integer.min(lvl, clsBParents.size() - 1);
+                int baseA = Integer.min(base, clsAParents.size() - 1);
+                if(baseA <= ATopLvl){
+                    clsAParents.get(baseA).forEach(clsA ->
+                            clsBParents.get(BTopLvl).forEach(clsB ->
+                                    ret.add(new CollisionEntities(clsA, clsB))
+                            )
+                    );
+                }
             }
         }
-
-        ret.add(new CollisionEntities(GameObject.class, GameObject.class));
+        ret.add(new CollisionEntities(GameObject.class, GameObject.class)); // Fall back
         return ret;
     }
 
     /**
-     * Get parent types (classes/interfaces) of given class
-     * filter out all non GameObject types
+     * Get parent types (classes/interfaces) of given class filter out all non
+     * GameObject types
      *
      * @return stream of parent types
      */
-    private static Stream<Class<?>> getParentTypes(Class<?> cls){
+    private static Stream<Class<?>> getParentTypes(Class<?> cls) {
         List<Class<?>> parents = new ArrayList<>(Arrays.asList(cls.getInterfaces()));
-        if(cls.getSuperclass() != null)
+        if (cls.getSuperclass() != null)
             parents.add(cls.getSuperclass());
 
         return parents.stream().filter(GameObject.class::isAssignableFrom);
     }
-
 }

@@ -10,6 +10,7 @@ import java.util.List;
 public class ShortestPathGenerator implements PathGenerator {
     /**
      * BFS to find the shortest path from monster to target
+     * 
      * @param map
      * @param monster
      * @param target
@@ -21,14 +22,17 @@ public class ShortestPathGenerator implements PathGenerator {
         LinkedList<Point> toBeVisited = new LinkedList<>();
         HashMap<Point, Point> path = new HashMap<>();
         toBeVisited.add(monster.location);
-        while(toBeVisited.size() > 0){
+        while (toBeVisited.size() > 0) {
             Point curr = toBeVisited.pop();
-            if(visited.contains(curr)) continue;
-            if(curr.equals(target)) break;
+            if (visited.contains(curr))
+                continue;
+            if (curr.equals(target))
+                break;
             visited.add(curr);
 
-            for(Point next: map.getNonBlockAdjacentPoints(curr)){
-                if(visited.contains(next)) continue;
+            for (Point next : map.getNonBlockAdjacentPoints(curr)) {
+                if (visited.contains(next))
+                    continue;
                 path.put(next, curr); // next is from curr
                 toBeVisited.add(next);
             }
@@ -38,8 +42,8 @@ public class ShortestPathGenerator implements PathGenerator {
 
         // if there is a path to target,
         // traverse back and add the points in reverse order
-        if(path.containsKey(target)){
-            for(Point curr = target; curr != monster.location; curr = path.get(curr)){
+        if (path.containsKey(target)) {
+            for (Point curr = target; curr != monster.location; curr = path.get(curr)) {
                 ret.add(curr);
             }
         }

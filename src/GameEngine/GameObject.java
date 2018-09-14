@@ -4,39 +4,40 @@ import GameEngine.utils.Point;
 
 public interface GameObject {
     /**
-     * This is called when the game actual load the dungeon in
-     * the first mode
-     * Rather than GameObject being instantiated.
+     * This is called when the game actual load the dungeon in the first mode Rather
+     * than GameObject being instantiated.
      */
-    default void initialize(){
+    default void initialize() {
 
     }
 
     /**
      * Get object id
+     * 
      * @return objID
      */
     int getObjID();
 
     /**
      * Get location
+     * 
      * @return location
      */
     public Point getLocation();
 
     /**
-     * Change a new location for an object
-     * return true if the location changed, otherwise false
+     * Change a new location for an object return true if the location changed,
+     * otherwise false
      *
      * @see Map#map
-     * @param point new location
+     * @param point
+     *            new location
      * @return whether location changed
      */
     public boolean setLocation(Point point);
 
     /**
-     * Call front end hook
-     * {@link StateChanger#changeState}
+     * Call front end hook {@link StateChanger#changeState}
      *
      * @param state
      */
@@ -52,19 +53,32 @@ public interface GameObject {
     /**
      * Register collision handler related to this object
      *
-     * @param gameEngine the game engine
+     * @param gameEngine
+     *            the game engine
      */
     public void registerCollisionHandler(GameEngine gameEngine);
 
     /**
-     * Return class name
-     * Used for finding count for specific type of object
-     * in player's inventory
+     * Return class name Used for finding count for specific type of object in
+     * player's inventory
      *
      * @see Inventory#getCount
      * @return class name
      */
-    default String getClassName(){
+    default String getClassName() {
         return getClass().getSimpleName();
+    }
+
+
+    /**
+     * Test if the current GameObject is blocking movements of other objects
+     * This gets overwritten by boulder and wall to return true
+     * also overwritten by Door which the return value will depends on the state of the door
+     *
+     * @see Door#isBlocking()
+     * @return boolean value
+     */
+    default boolean isBlocking() {
+        return false;
     }
 }

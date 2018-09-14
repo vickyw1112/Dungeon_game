@@ -8,7 +8,7 @@ public class Hound extends Monster implements Pairable {
      */
     private Hunter hunter;
 
-    public Hound(Point location){
+    public Hound(Point location) {
         super(location);
     }
 
@@ -17,11 +17,11 @@ public class Hound extends Monster implements Pairable {
         this.pathGenerator = new HoundPathGenerator();
     }
 
-    public GameObject getPair(){
+    public GameObject getPair() {
         return hunter;
     }
 
-    public void setPair(GameObject pair){
+    public void setPair(GameObject pair) {
         hunter = (Hunter) pair;
     }
 }

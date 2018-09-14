@@ -14,7 +14,11 @@ public class GetCollisionHandlerTest {
     static Sword sword;
     static Treasure treasure;
     static Bomb bomb;
-    static Hunter hunter = new Hunter(new Point(1,1));
+    static Hunter hunter;
+    static Boulder boulder;
+    static Wall wall;
+    static Pit pit;
+    static Door door;
 
     @BeforeClass
     static public void beforeTest(){
@@ -26,6 +30,11 @@ public class GetCollisionHandlerTest {
         treasure = new Treasure(new Point(4,4));
         bomb = new Bomb(new Point(1,1));
         hunter = new Hunter(new Point(1,1));
+        boulder = new Boulder(new Point(1, 1));
+        wall = new Wall(new Point(2,1));
+        pit = new Pit(new Point(3,1));
+        door = new Door(new Point(5,6));
+        door.setKey(key);
 
         player.registerCollisionHandler(engine);
         key.registerCollisionHandler(engine);
@@ -34,6 +43,10 @@ public class GetCollisionHandlerTest {
         treasure.registerCollisionHandler(engine);
         bomb.registerCollisionHandler(engine);
         hunter.registerCollisionHandler(engine);
+        boulder.registerCollisionHandler(engine);
+        wall.registerCollisionHandler(engine);
+        pit.registerCollisionHandler(engine);
+        door.registerCollisionHandler(engine);
     }
 
     /**
@@ -48,8 +61,7 @@ public class GetCollisionHandlerTest {
         assertTrue(engine.getCollisionHandler(KeyNPlayer) instanceof CollectablesCollisionHandler);
 
         CollisionEntities ArrowNPlayer = new CollisionEntities(arrow.getClass(), player.getClass());
-        // TODO: fix this - player/arrow have a specific collision handler
-        // assertTrue(engine.getCollisionHandler(ArrowNPlayer) instanceof CollectablesCollisionHandler);
+        assertTrue(engine.getCollisionHandler(ArrowNPlayer) instanceof CollectablesCollisionHandler);
         
         CollisionEntities SwordNPlayer = new CollisionEntities(sword.getClass(), player.getClass());
         assertTrue(engine.getCollisionHandler(SwordNPlayer) instanceof CollectablesCollisionHandler);
@@ -68,14 +80,94 @@ public class GetCollisionHandlerTest {
     @Test
     public void DefaultHandlerTest() throws Exception {
         CollisionEntities ArrowNKey = new CollisionEntities(key.getClass(), arrow.getClass());
-        assertTrue(engine.getCollisionHandler(ArrowNKey) instanceof DefaultHandler);
+        assertTrue(engine.getCollisionHandler(ArrowNKey) instanceof ArrowGameObjectCollisionHandler);
 
         CollisionEntities KeyNM = new CollisionEntities(key.getClass(), hunter.getClass());
-        assertTrue(engine.getCollisionHandler(KeyNM) instanceof DefaultHandler);
+        assertTrue(engine.getCollisionHandler(KeyNM) instanceof GameObjectMovableCollisionHandler);
         
         CollisionEntities MANKEY = new CollisionEntities(arrow.getClass(), key.getClass());
-        assertTrue(engine.getCollisionHandler(MANKEY) instanceof DefaultHandler);
+        assertTrue(engine.getCollisionHandler(MANKEY) instanceof ArrowGameObjectCollisionHandler);
     }
-    
-    
+
+    @Test
+    public void playerBoulderHandlerTest() throws Exception {
+        CollisionEntities ent = new CollisionEntities(player.getClass(), boulder.getClass());
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerBoulderCollisionHandler);
+    }
+
+    @Test
+    public void ArrowGameObjectHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities AWent = new CollisionEntities(Arrow.class, Wall.class);
+        assertTrue(engine.getCollisionHandler(AWent) instanceof ArrowGameObjectCollisionHandler);
+
+        CollisionEntities ABent = new CollisionEntities(Arrow.class, Boulder.class);
+        assertTrue(engine.getCollisionHandler(ABent) instanceof ArrowGameObjectCollisionHandler);
+
+        CollisionEntities DAent = new CollisionEntities(Door.class, Arrow.class);
+        assertTrue(engine.getCollisionHandler(DAent) instanceof DoorMovableCollisionHandler);
+    }
+
+    @Test
+    public void ArrowMonsterHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities AMent = new CollisionEntities(Arrow.class, Monster.class);
+        assertTrue(engine.getCollisionHandler(AMent) instanceof ArrowMonsterCollisionHandler);
+    }
+
+    @Test
+    public void BoulderMonsterHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Boulder.class, Monster.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof BoulderMonsterCollisionHandler);
+    }
+
+    @Test
+    public void BoulderPitHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Boulder.class, Pit.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof BoulderPitCollisionHandler);
+    }
+
+    @Test
+    public void GameObjectMovableHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities PAent = new CollisionEntities(Player.class, Arrow.class);
+        assertTrue(engine.getCollisionHandler(PAent) instanceof CollectablesCollisionHandler);
+
+        CollisionEntities PWent = new CollisionEntities(Player.class, Wall.class);
+        assertTrue(engine.getCollisionHandler(PWent) instanceof GameObjectMovableCollisionHandler);
+
+        CollisionEntities DBent = new CollisionEntities(Door.class, Boulder.class);
+        assertTrue(engine.getCollisionHandler(DBent) instanceof DoorMovableCollisionHandler);
+
+    }
+
+    @Test
+    public void PlayerBoulderHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Player.class, Boulder.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerBoulderCollisionHandler);
+    }
+
+    @Test
+    public void DoorPlayerHandlerTest() throws CollisionHandlerNotImplement {
+        player.initialize();
+        player.getInventory().addObject(key);
+        CollisionEntities ent = new CollisionEntities(Door.class, Player.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof DoorPlayerCollisionHandler);
+    }
+
+    @Test
+    public void PlayerMonsterHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Player.class, Monster.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerMonsterCollisionHandler);
+    }
+
+    @Test
+    public void PlayerPitHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Player.class, Pit.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerPitCollisionHandler);
+    }
+
+    @Test
+    public void PlayerPotionHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities ent = new CollisionEntities(Player.class, Potion.class);
+        assertTrue(engine.getCollisionHandler(ent) instanceof PlayerPotionCollisionHandler);
+    }
+
 }

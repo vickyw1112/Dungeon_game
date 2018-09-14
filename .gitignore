@@ -27,6 +27,7 @@ bin
 
 # Intellij
 .idea
+*.iml
 
 # Eclipse
 .settings

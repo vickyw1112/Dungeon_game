@@ -3,8 +3,8 @@ package GameEngine;
 import GameEngine.utils.Point;
 
 /**
- * Builder for map used in second mode of the game
- * where the player gradually construct a map
+ * Builder for map used in second mode of the game where the player gradually
+ * construct a map
  */
 public class MapBuilder {
     private GameObject[][] map;
@@ -12,7 +12,7 @@ public class MapBuilder {
     /**
      * Constructor for MapBuilder
      */
-    public MapBuilder(){
+    public MapBuilder() {
         this.map = new GameObject[Map.DUNGEON_SIZE_X][Map.DUNGEON_SIZE_Y];
     }
 
@@ -22,7 +22,7 @@ public class MapBuilder {
      * @param obj
      * @param location
      */
-    public void addObject(GameObject obj){
+    public void addObject(GameObject obj) {
         map[obj.getLocation().getX()][obj.getLocation().getY()] = obj;
     }
 
@@ -31,7 +31,7 @@ public class MapBuilder {
      *
      * @param location
      */
-    public void deleteObject(Point location){
+    public void deleteObject(Point location) {
         // simply delete the reference
         map[location.getX()][location.getY()] = null;
     }
@@ -42,11 +42,11 @@ public class MapBuilder {
      * @param location
      * @return the game object
      */
-    public GameObject getObject(Point location){
+    public GameObject getObject(Point location) {
         return map[location.getX()][location.getY()];
     }
 
-    public GameObject[][] getMap(){
+    public GameObject[][] getMap() {
         return map;
     }
 }

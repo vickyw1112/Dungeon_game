@@ -73,8 +73,13 @@ public class BombTest {
         // player set bomb to (5, 4)
         engine.changeObjectLocation(bomb, new Point(5, 4));
 
+            // Should have added boulder to the list of things to delete
+        assertEquals(list.size(), 1);
+
+            // need to consider edge cases (wall next to bomb)
         // this should return 2 things to destroy.
         List<GameObject> list = bomb.explode(engine);
+
 
         // Should have added boulders to the list of things to delete
         assertEquals(list.size(), 2);

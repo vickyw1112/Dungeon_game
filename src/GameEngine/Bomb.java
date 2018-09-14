@@ -38,10 +38,11 @@ public class Bomb extends StandardObject implements Collectable {
      * generic way, e.g. could have a interface for all object can be invoke after
      * delaying for some time period then override them in individual sub class
      */
-    public List<GameObject> explode(GameEngine engine, Map map) {
+    public List<GameObject> explode(GameEngine engine) {
 
         int x = this.location.getX();
         int y = this.location.getY();
+        Map map = engine.getMap();
         // list of positions maybe implement this function in point class (get
         // surrounding points)
         Point[] checkPositions = new Point[4];
@@ -68,6 +69,8 @@ public class Bomb extends StandardObject implements Collectable {
                 return null; // game over
             }
         }
+
+        engine.removeGameObject(this); // remove reference of this Lit Bomb
         return ret;
     }
 

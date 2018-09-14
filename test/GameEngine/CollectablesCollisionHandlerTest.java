@@ -12,11 +12,11 @@ public class CollectablesCollisionHandlerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void collectablesCollisionHandlerTest() throws Exception {
+	public void collectablesCollisionHandlerTest() {
 		GameEngine engine = new GameEngine(new Map());
 		Player p = new Player(new Point(1,1));
-		
 		Arrow arrow = new Arrow(new Point(1,1));
+
 		p.initialize();
         CollisionHandler ch = new CollectablesCollisionHandler();
         CollisionResult res = ch.handle(engine, arrow, p);

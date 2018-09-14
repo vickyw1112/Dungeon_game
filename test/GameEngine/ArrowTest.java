@@ -13,7 +13,7 @@ public class ArrowTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void constructorTest() throws Exception {
+	public void constructorTest() {
 		Arrow arrow = new Arrow(new Point(1,1));
 		Point p = new Point(1,1);
 		assertEquals(arrow.getLocation(), p);
@@ -24,7 +24,7 @@ public class ArrowTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void checkStateTest() throws Exception {
+	public void checkStateTest() {
 		Arrow arrow = new Arrow(new Point(1,1));
 		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 	}
@@ -34,19 +34,28 @@ public class ArrowTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void getCollectedTest() throws Exception {
-		
+	public void getCollectedTest() {
 		Arrow arrow = new Arrow(new Point(1,1));
+        Arrow arrow2 = new Arrow(new Point(1,1));
+        Player p = new Player(new Point(2,2));
+        p.initialize();
+
 		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 		GameEngine engine = new GameEngine(new Map());
-		Player p = new Player(new Point(2,2));
-		Inventory inv = new Inventory();
-		arrow.getCollected(engine, inv);
-		
-		assertTrue(inv.contains(arrow));
-		assertEquals(inv.getCount(arrow.getClassName()), 1);
+
+		CollisionHandler handler = new CollectablesCollisionHandler();
+
+        handler.handle(engine, p, arrow);
+
+		assertTrue(p.getInventory().contains(arrow));
+		assertEquals(p.getInventory().getCount(Arrow.class), 1);
+
+        handler.handle(engine, p, arrow2);
+        assertTrue(p.getInventory().contains(arrow2));
+        assertEquals(p.getInventory().getCount(Arrow.class), 2);
+
 	}
-	
+
 	/**
 	 * Collision Handler for arrow 
 	 * @throws Exception

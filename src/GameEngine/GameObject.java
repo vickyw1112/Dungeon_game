@@ -1,8 +1,8 @@
 package GameEngine;
 
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
-public interface GameObject {
+public interface GameObject extends Observable {
     /**
      * This is called when the game actual load the dungeon in the first mode Rather
      * than GameObject being instantiated.
@@ -37,7 +37,7 @@ public interface GameObject {
     public boolean setLocation(Point point);
 
     /**
-     * Call front end hook {@link StateChanger#changeState}
+     * Change state and notify observer (front end)
      *
      * @param state
      */
@@ -58,14 +58,16 @@ public interface GameObject {
      */
     public void registerCollisionHandler(GameEngine gameEngine);
 
+
     /**
-     * Return class name Used for finding count for specific type of object in
-     * player's inventory
+     * Test if the current GameObject is blocking movements of other objects
+     * This gets overwritten by boulder and wall to return true
+     * also overwritten by Door which the return value will depends on the state of the door
      *
-     * @see Inventory#getCount
-     * @return class name
+     * @see Door#isBlocking()
+     * @return boolean value
      */
-    default String getClassName() {
-        return getClass().getSimpleName();
+    default boolean isBlocking() {
+        return false;
     }
 }

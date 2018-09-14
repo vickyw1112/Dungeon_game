@@ -2,6 +2,7 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.*;
 import GameEngine.utils.Direction;
+import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 
 import java.util.HashSet;
@@ -13,15 +14,13 @@ public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player Unit is grid per second
      */
-    // TODO: set onPushingBoulder to false
-
     public static final double SPEED = 2;
 
     // player inventory should be newly instantiated when loading map
     // not loading from serialized file
     private transient Inventory inventory;
 
-    private Set<PlayerEffect> effects;
+    private transient Set<PlayerEffect> effects;
     private Direction facing;
     private boolean onPushingBoulder;
 
@@ -69,12 +68,12 @@ public class Player extends StandardObject implements Movable {
      * Update facing when set location
      *
      * @pre player's location is consistently changed i.e. one grid at a time
-     * @param point
-     *            new location
+     * @param point new location
      * @return whether location changed
      */
     @Override
     public boolean setLocation(Point point) {
+        this.onPushingBoulder = false;
         if (point.getX() > this.location.getX())
             facing = Direction.RIGHT;
         else if (point.getX() < this.location.getX())
@@ -107,7 +106,7 @@ public class Player extends StandardObject implements Movable {
      * @return whether the player has an arrow to shoot
      */
     public Arrow shootArrow() {
-        Arrow arrow = (Arrow) inventory.popObject(Arrow.class.getSimpleName());
+        Arrow arrow = (Arrow) inventory.popObject(Arrow.class);
         if (arrow == null)
             return null;
         // setup the arrow
@@ -128,7 +127,7 @@ public class Player extends StandardObject implements Movable {
      */
     public Bomb setBomb(Map map) {
         // if player does not have bomb
-        if (inventory.getCount(Bomb.class.getSimpleName()) == 0)
+        if (inventory.getCount(Bomb.class) == 0)
             return null;
 
         // if there is something else in front of player
@@ -137,7 +136,7 @@ public class Player extends StandardObject implements Movable {
             return null;
 
         // case when bomb is planted
-        Bomb bomb = (Bomb) inventory.popObject(Bomb.class.getSimpleName());
+        Bomb bomb = (Bomb) inventory.popObject(Bomb.class);
         bomb.setLocation(setPosition);
         bomb.changeState(bomb.ALMOSTLIT);
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front
@@ -211,10 +210,6 @@ public class Player extends StandardObject implements Movable {
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
                 new PlayerPitCollisionHandler());
 
-        // Register handler for Player collide with moving arrow
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Arrow.class),
-               new PlayerMovingArrowCollisionHandler());
-
         // Register handler for Player Collide with collectables
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Collectable.class),
                 new CollectablesCollisionHandler());
@@ -228,14 +223,14 @@ public class Player extends StandardObject implements Movable {
                 new PlayerPotionCollisionHandler());
 
         // Player Boulder
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
                 new PlayerBoulderCollisionHandler());
     }
 
     /**
      * set pushBoulder to true when player intend to push
      */
-    public void setPushBoulder(Boolean toogle) {
-        this.onPushingBoulder = toogle;
+    public void setPushBoulder(Boolean val) {
+        this.onPushingBoulder = val;
     }
 }

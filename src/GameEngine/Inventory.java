@@ -12,23 +12,19 @@ public class Inventory {
      * NOTE: count is not necessary the actual count but a number associated to the
      * object. i.e. Sword's count would mean number of capable hits
      */
-    private HashMap<String, Integer> countMap;
+    private HashMap<Class<?>, Integer> countMap;
 
     /**
      * Maintain the object instances for all collected items
      */
-    private List<GameObject> items;
+    private List<Collectable> items;
 
     /**
      * Constructor for Inventory
-     * 
-     * @param countMap
-     * @param items
      */
     public Inventory() {
-        super();
-        this.countMap = new HashMap<String, Integer>();
-        this.items = new ArrayList<GameObject>();
+        this.countMap = new HashMap<>();
+        this.items = new ArrayList<>();
     }
 
     /**
@@ -38,7 +34,7 @@ public class Inventory {
      *            the instance being checked
      * @return if the inventory contains that object
      */
-    public boolean contains(GameObject obj) {
+    public boolean contains(Collectable obj) {
         return items.contains(obj);
     }
 
@@ -49,10 +45,10 @@ public class Inventory {
      *            type of the object
      * @return count
      */
-    public int getCount(String classname) {
-        if (countMap.get(classname) == null)
+    public int getCount(Class<?> cls) {
+        if (countMap.get(cls) == null)
             return 0;
-        return countMap.get(classname);
+        return countMap.get(cls);
     }
 
     /**
@@ -63,8 +59,8 @@ public class Inventory {
      * @param count
      *            number to set
      */
-    public void setCount(String classname, int count) {
-        countMap.put(classname, count);
+    public void setCount(Class<?> cls, int count) {
+        countMap.put(cls, count);
     }
 
     /**
@@ -74,15 +70,15 @@ public class Inventory {
      * @param obj
      *            the object being added
      */
-    public void addObject(GameObject obj) {
+    public void addObject(Collectable obj) {
         items.add(obj);
 
         int count;
-        if (countMap.get(obj.getClassName()) != null) {
-            count = countMap.get(obj.getClassName());
-            countMap.put(obj.getClassName(), ++count);
+        if (countMap.get(obj.getClass()) != null) {
+            count = countMap.get(obj.getClass());
+            countMap.put(obj.getClass(), ++count);
         } else {
-            countMap.put(obj.getClassName(), 1);
+            countMap.put(obj.getClass(), 1);
         }
     }
 
@@ -94,13 +90,13 @@ public class Inventory {
      *            type of object being popped
      * @return popped object, if no such type object return null
      */
-    public GameObject popObject(String classname) {
+    public Collectable popObject(Class<?> cls) {
         int count;
-        for (GameObject item : items) {
-            if (item.getClassName().equals(classname)) {
+        for (Collectable item : items) {
+            if (item.getClass().equals(cls)) {
                 items.remove(item);
-                count = countMap.get(classname);
-                countMap.put(classname, --count);
+                count = countMap.get(cls);
+                countMap.put(cls, --count);
                 return item;
             }
         }

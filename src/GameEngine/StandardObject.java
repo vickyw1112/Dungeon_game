@@ -1,18 +1,24 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollisionEntities;
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class StandardObject implements GameObject, Serializable {
-    static int objCount = 0;
-    protected int objId;
+    public static final int DEFAULT_STATE = 0;
+
+    private static int objCount = 0;
+    private int objId;
     protected Point location;
+    private transient List<GameObjectObserver> observers;
+
     /**
      * State of a object, specific to each type of object
      */
     protected int state;
+
 
     /**
      * Constructor for GameObject Auto generate objId
@@ -23,18 +29,19 @@ public abstract class StandardObject implements GameObject, Serializable {
     public StandardObject(Point location) {
         this.location = location;
         this.objId = objCount++;
+        this.observers = new LinkedList<>();
     }
 
-    // debug only
+    @Override
+    public void initialize() {
+        observers = new LinkedList<>();
+        this.state = DEFAULT_STATE;
+    }
+
     @Override
     public String toString() {
         return String.format("<%s|%s>", this.getClass().getName(), this.location.toString());
     }
-
-    /**
-     * Front end provided hook to change a state (view/style) of a GameObject
-     */
-    static StateChanger stateChanger;
 
     /**
      * Get object id
@@ -75,15 +82,13 @@ public abstract class StandardObject implements GameObject, Serializable {
     }
 
     /**
-     * Call front end hook {@link StateChanger#changeState}
-     *
-     * @param state
+     * Change object's state and notify all observers (front end)
+     * @param state new state
      */
     @Override
     public void changeState(int state) {
         this.state = state;
-        // TODO: check observer pattern for this
-        // stateChanger.changeState(this, state);
+        notifyObservers();
     }
 
     /**
@@ -96,31 +101,22 @@ public abstract class StandardObject implements GameObject, Serializable {
         return this.state;
     }
 
+    @Override
+    public void addObserver(GameObjectObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(observer -> observer.update(this));
+    }
+
     /**
-     * Register collision handler related to this object
-     *
+     * Object register no collision handlers by default
      * @param gameEngine
-     *            the game engine
      */
     @Override
-    public void registerCollisionHandler(GameEngine gameEngine) {
-        // defult do sth
+    public void registerCollisionHandler(GameEngine gameEngine){
 
     }
-
-    /**
-     * Return object's category name which could be the class name of a parent class
-     * depends on specific game object By default, this is same as
-     * {@link GameObject#getClassName} Used for finding collision handler
-     *
-     * TODO: delete this if verified no use
-     * 
-     * @deprecated now using collisionHandlerMap with a fall back mechanism
-     * @see GameEngine#getCollisionHandler(CollisionEntities)
-     * @return category name
-     */
-    public String getCategoryName() {
-        return this.getClassName();
-    }
-
 }

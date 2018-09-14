@@ -9,17 +9,21 @@ public class KeyUnitTest {
 
 	/**
 	 * Test getCollected method in Key
-	 * @throws Exception
+     * player can only carrie one key at a time
 	 */
 	@Test
 	public void getCollectedTest() {
 		Key key = new Key(new Point(1,1));
-		GameEngine engine = new GameEngine(new Map());
+		GameEngine engine = new GameEngine();
 		Inventory inv = new Inventory();
-		key.getCollected(engine, inv);
+		assertTrue(key.getCollected(engine, inv));
 		
 		assertTrue(inv.contains(key));
-		assertEquals(inv.getCount(key.getClassName()), 1);
+		assertEquals(inv.getCount(key.getClass()), 1);
+
+		// try to pick up second key
+		assertFalse(key.getCollected(engine, inv));
+        assertEquals(inv.getCount(key.getClass()), 1);
 	}
 
 }

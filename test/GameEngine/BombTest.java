@@ -2,83 +2,95 @@ package GameEngine;
 
 import static org.junit.Assert.*;
 
+import GameEngine.CollisionHandler.*;
 import GameEngine.utils.Point;
+import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
 
-    public class BombTest {
+public class BombTest {
+    private Bomb bomb;
+    private Player player;
+    private GameEngine engine;
 
-        @Test
-        public void getCollectedTest() throws Exception {
+    @Before
+    public void setUp(){
+        bomb = new Bomb(new Point(1, 1));
+        engine = new GameEngine();
+        player = new Player(new Point(2, 2));
+        player.initialize();
+    }
 
-            Bomb bomb = new Bomb(new Point(1, 1));
-            assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
-            GameEngine engine = new GameEngine(new Map());
-            Player p = new Player(new Point(2, 2));
-            Inventory inv = new Inventory();
-            bomb.getCollected(engine, inv);
+    @Test
+    public void getCollectedTest() {
+        assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
+        CollisionHandler handler = new CollectablesCollisionHandler();
+        handler.handle(engine, player, bomb);
 
-            assertTrue(inv.contains(bomb));
-            assertEquals(inv.getCount(bomb.getClassName()), 1);
-        }
+        assertTrue(player.getInventory().contains(bomb));
+        assertEquals(player.getInventory().getCount(bomb.getClass()), 1);
 
-        @Test
-        public void testBombRetrieval() {
-            // when a bomb is retrieved check inventory goes up
-            // check the states of the bomb as well
+        Bomb bomb2 = new Bomb(new Point(1, 1));
+        handler.handle(engine, player, bomb2);
 
-            GameEngine ge = new GameEngine(new Map());
-            Player p = new Player(new Point(1, 2));
-            Bomb b = new Bomb(new Point(1, 2));
-            p.registerCollisionHandler(ge);
-
-            // checking a new bomb state starts of UNLIT
-            assertEquals(b.getState(), 0);
-
-            // instance of when a new bomb collides with a player
-            //CollisionEntities ce1 = new CollisionEntities(Player.class, Bomb.class);
-            //CollisionHandler ch1 = ge.getCollisionHandler(ce1);
-            //CollisionResult cr1 = ch1.handle(ge, b, p);
-
-        }
-
-
-        /**
-         * The front end requests the bomb destroy
-         * Then the backend returns the new elements for now
-         */
-        @Test
-        public void testBombDestroy() {
-
-            Map m = new Map();
-            GameEngine ge = new GameEngine(m);
-
-            Point p1 = new Point(1,1);
-            Point p2 = new Point(1,2);
-           // Point p3 = new Point(2, 1);
-
-            Bomb bomb = new Bomb(p1);
-            Boulder boulder = new Boulder(p2);
-          //  Player player = new Player (p3);
-
-            m.updateObjectLocation(bomb, p1);
-            m.updateObjectLocation(boulder, p2);
-           // m.updateObjectLocation(player, p3);
-
-
-            // this should return 2 things to destroy.
-            List<GameObject> list = bomb.explode(ge, m);
-            System.out.println(list);
-
-            // Should have added boulder to the list of things to delete
-            assertEquals(list.size(), 1);
-
-            // need to consider edge cases (wall next to bomb)
-
-
-
-        }
-
+        assertTrue(player.getInventory().contains(bomb2));
+        assertEquals(player.getInventory().getCount(Bomb.class), 2);
 
     }
+
+    @Test
+    public void testBombRetrieval() {
+        // when a bomb is retrieved check inventory goes up
+        // check the states of the bomb as well
+
+        // checking a new bomb state starts of UNLIT
+        assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
+
+        // instance of when a new bomb collides with a player
+        CollisionHandler ch1 = new CollectablesCollisionHandler();
+        CollisionResult result = ch1.handle(engine, bomb, player);
+        assertEquals(result.getFlags(), CollisionResult.DELETE_FIRST | CollisionResult.REFRESH_INVENTORY);
+        assertTrue(player.getInventory().contains(bomb));
+    }
+
+
+    /**
+     * The front end requests the bomb to explode
+     * Then the backend returns the new elements get destroyed
+     */
+    @Test
+    public void testBombDestroy() {
+        MapBuilder mapBuilder = new MapBuilder();
+        Boulder boulder = new Boulder(new Point(5, 5));
+        Boulder boulder2 = new Boulder(new Point(5, 3));
+
+        mapBuilder.addObject(boulder);
+        mapBuilder.addObject(boulder2);
+        mapBuilder.addObject(bomb);
+
+        engine = new GameEngine(new Map(mapBuilder));
+
+        // player set bomb to (5, 4)
+        engine.changeObjectLocation(bomb, new Point(5, 4));
+
+            // Should have added boulder to the list of things to delete
+        assertEquals(list.size(), 1);
+
+            // need to consider edge cases (wall next to bomb)
+        // this should return 2 things to destroy.
+        List<GameObject> list = bomb.explode(engine);
+
+
+        // Should have added boulders to the list of things to delete
+        assertEquals(list.size(), 2);
+        assertTrue(list.contains(boulder));
+        assertTrue(list.contains(boulder2));
+
+        // Boulder should be removed from map
+        assertFalse(engine.getMap().getObjects(new Point(5, 5)).contains(boulder));
+
+    }
+
+
+}
 

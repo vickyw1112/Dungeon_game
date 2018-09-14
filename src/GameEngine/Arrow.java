@@ -1,8 +1,7 @@
 package GameEngine;
 
 import GameEngine.CollisionHandler.*;
-import GameEngine.utils.Direction;
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
 public class Arrow extends StandardObject implements Collectable, Movable {
     public static final double SPEED = 4;
@@ -40,17 +39,13 @@ public class Arrow extends StandardObject implements Collectable, Movable {
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
-
-        // boulder and arrow
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Boulder.class),
-                new ArrowBoulderCollisionHandler());
-
-        // Closed door && moving arrow collision handler
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Door.class),
-                 new ArrowClosedDoorCollisionHandler());
-
-        // Monster && moving arrow collision handler
+        // Monster and moving arrow collision handler
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Monster.class),
                 new ArrowMonsterCollisionHandler());
+
+        // arrow and all other GameObject
+        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), GameObject.class),
+                new ArrowGameObjectCollisionHandler());
+
     }
 }

@@ -9,7 +9,7 @@ public class DoorPlayerCollisionHandler implements CollisionHandler {
         Player player = (Player) (obj1 instanceof Player ? obj1 : obj2);
         Door door = (Door) (obj1 instanceof Door ? obj1 : obj2);
 
-        CollisionResult res = new CollisionResult(0);
+        CollisionResult res = new CollisionResult();
 
         // Check if obj1 is the door && Door is closed
         if (door.getState() == Door.CLOSED) {

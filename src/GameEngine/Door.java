@@ -1,9 +1,6 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollisionEntities;
-import GameEngine.CollisionHandler.CollisionResult;
-import GameEngine.CollisionHandler.DoorMovableCollisionHandler;
-import GameEngine.CollisionHandler.DoorPlayerCollisionHandler;
+import GameEngine.CollisionHandler.*;
 import GameEngine.utils.Point;
 
 public class Door extends StandardObject implements Pairable {
@@ -65,6 +62,11 @@ public class Door extends StandardObject implements Pairable {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return this.state == Door.CLOSED;
     }
 
     /**

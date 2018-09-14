@@ -31,6 +31,8 @@ public class Map implements Serializable {
      *
      * @param mapBuilder
      */
+    // TODO: how are we going to construct a map in second mode?
+    // how to enumerate all subclasses of GameObject
     public Map(MapBuilder mapBuilder) {
         this();
         GameObject[][] builderMap = mapBuilder.getMap();
@@ -98,8 +100,8 @@ public class Map implements Serializable {
             if (!isValidPoint(curr))
                 continue;
 
-            // check if there's blockable obj in that point
-            if (getObjects(curr).stream().filter(o -> (o instanceof Blockable)) // TODO: change this later
+            // check if there's blocking obj in that point
+            if (getObjects(curr).stream().filter(o -> (o.isBlocking()))
                     .collect(Collectors.toList()).size() == 0)
                 ret.add(curr);
         }

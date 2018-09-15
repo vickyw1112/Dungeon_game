@@ -13,6 +13,6 @@ public class Exit extends StandardObject {
     public void registerCollisionHandler(GameEngine gameEngine) {
         // handler for exit and player (not sure if this should be in player?)
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
-                new PlayerExitCollisionHandler());
+                new WinCollisionHandler());
     }
 }

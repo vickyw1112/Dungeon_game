@@ -15,19 +15,10 @@ public class ExitTest {
         GameEngine ge = new GameEngine(new Map());
         Exit exit = new Exit(new Point(1,1));
         Player player = new Player(new Point (1,1));
-
-        CollisionEntities ce1 = new CollisionEntities(Player.class, Exit.class);
-
         exit.registerCollisionHandler(ge);
-
-        CollisionHandler ch = null;
-        try {
-            ch = ge.getCollisionHandler(ce1);
-        } catch (CollisionHandlerNotImplement collisionHandlerNotImplement) {
-            collisionHandlerNotImplement.printStackTrace();
-        }
+        CollisionHandler ch = new WinCollisionHandler();
         CollisionResult res = ch.handle(ge, player , exit);
-
         assertEquals(res.getFlags(), CollisionResult.WIN);
     }
 }
+

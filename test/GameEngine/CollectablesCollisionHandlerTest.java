@@ -17,6 +17,7 @@ public class CollectablesCollisionHandlerTest {
 		Player p = new Player(new Point(1,1));
 		Arrow arrow = new Arrow(new Point(1,1));
 
+
 		p.initialize();
         CollisionHandler ch = new CollectablesCollisionHandler();
         CollisionResult res = ch.handle(engine, arrow, p);

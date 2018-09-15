@@ -7,6 +7,13 @@ public class Coward extends Monster {
         super(location);
     }
 
+    /**
+     * SetLocation method for coward
+     * Method returns a point and instantiates the path generation algorithm
+     * @param point
+     *            new location
+     * @return
+     */
     @Override
     public boolean setLocation(Point point) {
         boolean ret = super.setLocation(point);
@@ -23,6 +30,10 @@ public class Coward extends Monster {
         return ret;
     }
 
+    /**
+     * Path generator method for Coward
+     * @return
+     */
     @Override
     public PathGenerator getDefaultPathGenerator() {
         return new ShortestPathGenerator();

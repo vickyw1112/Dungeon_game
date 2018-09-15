@@ -68,7 +68,7 @@ public class BFSTest {
         Monster monster = new Hunter(p7);
         Player player = new Player(origin);
         ShortestPathGenerator path = new ShortestPathGenerator();
-        path = generatePath(map, monster, player);
+        path = map.getShortestPath(monster.getLocation(), player.getLocation());
         assertEquals(path, (6,0));
     }
 

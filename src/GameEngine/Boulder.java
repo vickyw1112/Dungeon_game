@@ -9,16 +9,30 @@ public class Boulder extends StandardObject implements Movable{
     private Direction facing;
     private double speed;
 
+    /**
+     * constructor for Boulder object
+     * @param location
+     */
     public Boulder(Point location) {
         super(location);
         this.speed = 0;
     }
 
+    /**
+     * Blocking method
+     * Always true because Boulder always blocks
+     * @return
+     */
     @Override
     public boolean isBlocking() {
         return true;
     }
 
+    /**
+     * getter for facing
+     * Returns the direction the object is facing
+     * @return
+     */
     @Override
     public Direction getFacing() {
         return this.facing;
@@ -49,6 +63,8 @@ public class Boulder extends StandardObject implements Movable{
 
     /**
      * set boulder's speed to 0 and s
+     * @param point
+     *          point
      */
     @Override
     public boolean setLocation(Point point) {

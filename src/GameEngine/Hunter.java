@@ -7,6 +7,10 @@ public class Hunter extends Monster {
         super(location);
     }
 
+    /**
+     * Path generation for hunter monster
+     * @return
+     */
     @Override
     public PathGenerator getDefaultPathGenerator() {
        return new ShortestPathGenerator();

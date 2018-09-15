@@ -86,7 +86,7 @@ public class BoulderTest {
         CollisionHandler ch = new PlayerBoulderCollisionHandler();
         CollisionResult res = ch.handle(ge, boulder, player);
 
-        assertEquals(res.getFlags(), CollisionResult.REJECT);
+        assertEquals(res.containFlag(CollisionResult.REJECT), true);
         assertTrue(boulder.getSpeed() > 0);
         assertEquals(player.getFacing(), boulder.getFacing());
     }

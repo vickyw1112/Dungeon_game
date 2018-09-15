@@ -24,11 +24,10 @@ public class CollectablesCollisionHandlerTest {
 	public void collectArrowTest() {
 		Arrow arrow = new Arrow(new Point(1,1));
 
-		player.initialize();
         CollisionResult res = handler.handle(engine, arrow, player);
-        assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_FIRST);
+        assertTrue(res.containFlag(CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_FIRST));
 
         res = handler.handle(engine, player, arrow);
-        assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND);
+        assertTrue(res.containFlag(CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND));
 	}
 }

@@ -67,4 +67,12 @@ public class CollisionResult {
     public int getFlags() {
         return flags;
     }
+
+    /**
+     * for testing flag
+     * @return
+     */
+    public boolean containFlag(int flag){
+        return (this.flags & flag) > 0;
+    }
 }

@@ -87,7 +87,7 @@ public class ArrowTest {
 
         Monster monster = new Hunter(new Point(1, 1));
         res = handler.handle(engine, arrow, monster);
-        assertEquals(res.getFlags(), CollisionResult.DELETE_BOTH);
+        assertTrue(res.containFlag(CollisionResult.DELETE_BOTH));
     }
 
 

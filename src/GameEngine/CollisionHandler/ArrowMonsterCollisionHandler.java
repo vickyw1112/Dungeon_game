@@ -16,6 +16,8 @@ public class ArrowMonsterCollisionHandler implements CollisionHandler {
         if (arrow.getState() == MOVING) {
             res.addFlag(CollisionResult.DELETE_BOTH);
         }
+        if(engine.checkWiningCondition())
+            res.addFlag(CollisionResult.WIN);
         return res;
 
     }

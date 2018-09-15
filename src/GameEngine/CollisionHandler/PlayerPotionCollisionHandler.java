@@ -9,6 +9,7 @@ public class PlayerPotionCollisionHandler implements CollisionHandler {
         Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
         Potion potion = (Potion)(obj1 instanceof Potion ? obj1 : obj2);
 
+
         if (obj1 instanceof Potion)
             res.addFlag(CollisionResult.DELETE_FIRST);
         else
@@ -17,7 +18,7 @@ public class PlayerPotionCollisionHandler implements CollisionHandler {
         player.addPlayerEffect(potion.getEffect());
 
         // TODO: improve this
-        if(potion instanceof InvinciblePotion){
+        if(potion instanceof InvinciblePotion) {
             // TODO: update monster movement
         }
 

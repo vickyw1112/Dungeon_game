@@ -241,4 +241,20 @@ public class GameEngine {
         }
         throw new CollisionHandlerNotImplement(entities.toString());
     }
+
+    /**
+     * Set all monsters' pathGenerator to given one
+     * if the given one is null, restore all monsters' pathGenerator to default
+     * This is called when player get invincible potion
+     * and called again by front end with null as arg when invincible effect expires
+     *
+     * @see PlayerPotionCollisionHandler#handle
+     * @see Monster#getDefaultPathGenerator()
+     * @param pathGenerator new pathGenerator to set
+     */
+    public void updateMonsterMovementStategy(PathGenerator pathGenerator) {
+        this.monsters.forEach(monster ->
+            monster.pathGenerator = pathGenerator == null ? monster.getDefaultPathGenerator() : pathGenerator
+        );
+    }
 }

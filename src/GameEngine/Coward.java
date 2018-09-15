@@ -8,14 +8,6 @@ public class Coward extends Monster {
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
-        // Coward use ShortestPathGenerator by default
-        // but change to RunAwayPathGenerator after getting close to player
-        pathGenerator = new ShortestPathGenerator();
-    }
-
-    @Override
     public boolean setLocation(Point point) {
         boolean ret = super.setLocation(point);
         // if location changed
@@ -29,5 +21,10 @@ public class Coward extends Monster {
                 this.pathGenerator = new ShortestPathGenerator();
         }
         return ret;
+    }
+
+    @Override
+    public PathGenerator getDefaultPathGenerator() {
+        return new ShortestPathGenerator();
     }
 }

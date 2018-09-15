@@ -9,9 +9,7 @@ public class Strategist extends Monster {
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
-        pathGenerator = new StrategistPathGenerator();
+    public PathGenerator getDefaultPathGenerator() {
+        return new StrategistPathGenerator();
     }
-
 }

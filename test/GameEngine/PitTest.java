@@ -31,7 +31,9 @@ public class PitTest {
 
     @Test
     public void playerGoOverPitTest() {
-        player.addPlayerEffect(PlayerEffect.HOVER);
+        Potion potion = new HoverPotion(new Point(1, 1));
+        player.applyPotionEffect(engine, potion);
+
         assertTrue(player.getPlayerEffects().contains(PlayerEffect.HOVER));
         assertEquals(handler.handle(engine, player, pit).getFlags(), CollisionResult.HANDLED);
     }

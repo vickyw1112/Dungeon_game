@@ -164,23 +164,29 @@ public class Player extends StandardObject implements Movable {
     }
 
     /**
-     * Add a effect to the player
+     * Add a effect to the player, apply side effects on game
+     * if there is any
      *
-     * @param effect
-     *            the effect to be added
+     * @see Potion#onPlayerGetPotion(GameEngine)
+     * @param engine game engine
+     * @param potion effect of potion to be added
      */
-    public void addPlayerEffect(PlayerEffect effect) {
-        effects.add(effect);
+    public void applyPotionEffect(GameEngine engine, Potion potion) {
+        potion.onPlayerGetPotion(engine);
+        effects.add(potion.getEffect());
     }
 
     /**
-     * Remove a effect from player
+     * Remove a effect from player, apply side effects on game
+     * if there is any
      *
-     * @param effect
-     *            the effect to be removed
+     * @see Potion#onPlayerGetPotion(GameEngine)
+     * @param engine game engine
+     * @param potion effect of the potion to be removed
      */
-    public void removePlyaerEffect(PlayerEffect effect) {
-        effects.remove(effect);
+    public void removePotionEffect(GameEngine engine, Potion potion) {
+        potion.onPotionExpires(engine);
+        effects.remove(potion.getEffect());
     }
 
     /**

@@ -30,4 +30,41 @@ public class CollectablesCollisionHandlerTest {
         res = handler.handle(engine, player, arrow);
         assertTrue(res.containFlag(CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND));
 	}
+
+	@Test
+    public void collectSwordTest() {
+        Sword sword = new Sword(new Point(1, 3));
+        Sword sword2 = new Sword(new Point(1, 3));
+
+        assertEquals(player.getInventory().getCount(Sword.class), 0);
+        handler.handle(engine, player, sword);
+
+        assertEquals(player.getInventory().getCount(Sword.class), 5);
+
+        Monster monster = new Hunter(new Point(1, 3));
+        CollisionResult res = new PlayerMonsterCollisionHandler().handle(engine, player, monster);
+        // TODO: change this to res.containFlag
+        assertTrue((res.getFlags() & CollisionResult.DELETE_SECOND) > 0);
+
+        assertEquals(player.getInventory().getCount(Sword.class), 4);
+
+        handler.handle(engine, player, sword2);
+        assertEquals(player.getInventory().getCount(Sword.class), 5);
+
+    }
+
+    @Test
+    public void collectTreasureTest() {
+        Treasure t1 = new Treasure(new Point(1, 2));
+        Treasure t2 = new Treasure(new Point(1, 4));
+
+        handler.handle(engine, player, t1);
+        assertTrue(player.getInventory().contains(t1));
+        assertEquals(player.getInventory().getCount(Treasure.class), 1);
+
+        // stack the second treasure
+        handler.handle(engine, player, t2);
+        assertTrue(player.getInventory().contains(t2));
+        assertEquals(player.getInventory().getCount(Treasure.class), 2);
+    }
 }

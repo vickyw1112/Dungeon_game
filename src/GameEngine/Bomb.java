@@ -6,18 +6,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bomb extends StandardObject implements Collectable {
+    private static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
+
     public static final int ALMOSTLIT = 1; // will find a better name
     public static final int LIT = 2;
-    public static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
+
+    private double timer;
+
 
     /**
      * Constructor for bomb
      *
-     * @param location
+     * @param location init location
      */
     public Bomb(Point location) {
         super(location);
-        state = Collectable.COLLECTABLESTATE;
+        state = COLLECTABLESTATE;
+        timer = TIMER;
+    }
+
+    /**
+     * Interface to front end to update timer value
+     * Call to change state for different style of bomb
+     */
+    public void updateTimer(double timer) {
+        this.timer = timer;
+        // TODO: update state for diff remain time
     }
 
     /**
@@ -27,10 +41,8 @@ public class Bomb extends StandardObject implements Collectable {
      *
      * @param engine
      *            game engine
-     * @param map
-     *            game map
      * @return list of object that gets destroyed during explosion return empty list
-     *         if no objects are destroyed return null if player is died during
+     *         if no objects are destroyed or null if player is died during
      *         explosion
      */
     /*
@@ -43,13 +55,15 @@ public class Bomb extends StandardObject implements Collectable {
         int x = this.location.getX();
         int y = this.location.getY();
         Map map = engine.getMap();
-        // list of positions maybe implement this function in point class (get
-        // surrounding points)
-        Point[] checkPositions = new Point[4];
+        // list of positions maybe implement this function in point class
+        // (get surrounding points)
+        Point[] checkPositions = new Point[5];
         checkPositions[0] = new Point(x + 1, y);
         checkPositions[1] = new Point(x - 1, y);
         checkPositions[2] = new Point(x, y + 1);
         checkPositions[3] = new Point(x, y - 1);
+        // include the location of bomb as boulder/monster can go over it
+        checkPositions[4] = new Point(x, y);
 
         ArrayList<GameObject> adjacentObj = new ArrayList<>();
 
@@ -64,7 +78,6 @@ public class Bomb extends StandardObject implements Collectable {
             if (obj instanceof Boulder || obj instanceof Monster) {
                 engine.removeGameObject(obj);
                 ret.add(obj);
-
             } else if (obj instanceof Player) {
                 return null; // game over
             }
@@ -73,5 +86,4 @@ public class Bomb extends StandardObject implements Collectable {
         engine.removeGameObject(this); // remove reference of this Lit Bomb
         return ret;
     }
-
 }

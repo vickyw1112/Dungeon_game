@@ -4,7 +4,7 @@ import GameEngine.CollisionHandler.*;
 import GameEngine.utils.*;
 
 public class Arrow extends StandardObject implements Collectable, Movable {
-    public static final double SPEED = 4;
+    private static final double SPEED = 4;
     public static final int MOVING = 1;
 
     private Direction facing;

@@ -9,12 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: delegate some of the method in GameEngine
+
 public class Map implements Serializable {
-    // TODO: we can probs do multi-sized dungeon by changing these const to variable
+    // TODO: we can probably do multi-sized dungeon by changing these const to variable for extension
     public static final int DUNGEON_SIZE_X = 10;
     public static final int DUNGEON_SIZE_Y = 10;
 
-    public List<GameObject>[][] map;
+    private List<GameObject>[][] map;
 
     /**
      * Empty arg constructor
@@ -29,7 +31,7 @@ public class Map implements Serializable {
     /**
      * Constructor from a map builder
      *
-     * @param mapBuilder
+     * @param mapBuilder map builder
      */
     // TODO: how are we going to construct a map in second mode?
     // how to enumerate all subclasses of GameObject
@@ -45,7 +47,7 @@ public class Map implements Serializable {
     /**
      * Construct a Map from a saved file
      *
-     * @param
+     * @param inputStream map input stream
      */
     public Map(InputStream inputStream) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(inputStream);
@@ -55,7 +57,7 @@ public class Map implements Serializable {
     /**
      * Get list of object in specific grid
      */
-    public List<GameObject> getObjects(Point location) {
+    List<GameObject> getObjects(Point location) {
         return map[location.getX()][location.getY()];
     }
 
@@ -74,7 +76,7 @@ public class Map implements Serializable {
      * @param location
      *            new location
      */
-    public void updateObjectLocation(GameObject obj, Point location) {
+    void updateObjectLocation(GameObject obj, Point location) {
         removeObject(obj);
         map[location.getX()][location.getY()].add(obj);
         obj.setLocation(location);
@@ -88,7 +90,7 @@ public class Map implements Serializable {
      *            current point
      * @return adjacent movable points
      */
-    public List<Point> getNonBlockAdjacentPoints(Point point) {
+    List<Point> getNonBlockAdjacentPoints(Point point) {
         List<Point> ret = new LinkedList<>();
         // enumerate all adjacent point
         Point[] points = new Point[4];
@@ -108,16 +110,16 @@ public class Map implements Serializable {
         return ret;
     }
 
-    public void serialize(OutputStream outputStream) throws IOException {
+    void serialize(OutputStream outputStream) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
         out.writeObject(this.map);
     }
 
-    public boolean isValidPoint(Point p) {
+    boolean isValidPoint(Point p) {
         return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X && p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
     }
 
-    public List<GameObject> getAllObjects() {
+    List<GameObject> getAllObjects() {
         List<GameObject> ret = new LinkedList<>();
         for (int i = 0; i < DUNGEON_SIZE_X; i++)
             for (int j = 0; j < DUNGEON_SIZE_Y; j++)
@@ -129,7 +131,7 @@ public class Map implements Serializable {
     /**
      * Returns the shortest path between two points
      */
-    public LinkedList<Point> getShortestPath(Point from, Point to) {
+    LinkedList<Point> getShortestPath(Point from, Point to) {
         List<Point> visited = new LinkedList<>();
         LinkedList<Point> toBeVisited = new LinkedList<>();
         HashMap<Point, Point> path = new HashMap<>();
@@ -164,7 +166,14 @@ public class Map implements Serializable {
         return ret;
     }
 
-
-
-
+    /**
+     * Get shortest distance between two given points
+     * considering not passing all blocking objects
+     * @param from from point
+     * @param to to point
+     * @return distance in number of grid
+     */
+    int getDistance(Point from, Point to) {
+        return getShortestPath(from, to).size();
+    }
 }

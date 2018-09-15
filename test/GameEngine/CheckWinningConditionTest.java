@@ -48,28 +48,28 @@ public class CheckWinningConditionTest {
     @Test
     public void treasureWinTest(){
         treasure1.getCollected(ge, player.getInventory());
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
         treasure2.getCollected(ge, player.getInventory());
-        assertEquals(ge.checkWiningCondition(), true);
+        assertTrue(ge.checkWiningCondition());
     }
 
     @Test
     public void monsterWinTest(){
         ge.removeGameObject(hound);
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
         ge.removeGameObject(hunter);
-        assertEquals(ge.checkWiningCondition(), true);
+        assertTrue(ge.checkWiningCondition());
 
     }
 
     @Test
     public void floorSwitchWinTest(){
         boulder1.setLocation(new Point(8, 1));
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
         boulder2.setLocation(new Point(8, 1));
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
         boulder2.setLocation(new Point(9, 1));
-        assertEquals(ge.checkWiningCondition(), true);
+        assertTrue(ge.checkWiningCondition());
     }
 
     @Test
@@ -79,17 +79,17 @@ public class CheckWinningConditionTest {
 
         treasure1.getCollected(ge, player.getInventory());
         treasure2.getCollected(ge, player.getInventory());
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
 
         boulder1.setLocation(new Point(8, 1));
         boulder2.setLocation(new Point(9, 1));
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
 
         ge.removeGameObject(hound);
         ge.removeGameObject(hunter);
-        assertEquals(ge.checkWiningCondition(), false);
+        assertFalse(ge.checkWiningCondition());
 
         player.setLocation(exit.location);
-        assertEquals(ge.checkWiningCondition(), true);
+        assertTrue(ge.checkWiningCondition());
     }
 }

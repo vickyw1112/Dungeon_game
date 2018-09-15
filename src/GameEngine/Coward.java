@@ -12,12 +12,14 @@ public class Coward extends Monster {
         boolean ret = super.setLocation(point);
         // if location changed
         if (ret) {
-            // TODO: Have another function to calculate distance to a specific point
-            // considering obstructive objs
-            int distance = 0;
-            if (distance < 5)
+            if (pathGenerator instanceof ShortestPathGenerator &&
+                    this.pathToDestination.size() < 5)
+                // run away
                 this.pathGenerator = new RunAwayPathGenerator();
-            else if (distance > 10)
+            // if running away and reached the furthest location
+            else if (pathGenerator instanceof RunAwayPathGenerator &&
+                    this.pathToDestination.size() == 0)
+                // chase player again
                 this.pathGenerator = new ShortestPathGenerator();
         }
         return ret;

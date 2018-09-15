@@ -7,7 +7,7 @@ import GameEngine.utils.Point;
  * construct a map
  */
 public class MapBuilder {
-    private GameObject[][] map;
+    private final GameObject[][] map;
 
     /**
      * Constructor for MapBuilder
@@ -19,8 +19,7 @@ public class MapBuilder {
     /**
      * Add a new object to the map
      *
-     * @param obj
-     * @param location
+     * @param obj object to be added
      */
     public void addObject(GameObject obj) {
         map[obj.getLocation().getX()][obj.getLocation().getY()] = obj;
@@ -29,7 +28,7 @@ public class MapBuilder {
     /**
      * Delete the object in specific location
      *
-     * @param location
+     * @param location location
      */
     public void deleteObject(Point location) {
         // simply delete the reference
@@ -39,7 +38,7 @@ public class MapBuilder {
     /**
      * Get the object in specific location
      *
-     * @param location
+     * @param location location
      * @return the game object
      */
     public GameObject getObject(Point location) {

@@ -6,18 +6,18 @@ import GameEngine.utils.Point;
 public abstract class Potion extends StandardObject {
     public static final int LAST_FOREVER = -1;
 
-    protected PlayerEffect playerEffect;
+    PlayerEffect playerEffect;
 
     /**
      * Duration of the effect of the potion in seconds
      */
-    protected int duration;
+    int duration;
 
     public Potion(Point location) {
         super(location);
     }
 
-    public PlayerEffect getEffect(){
+    PlayerEffect getEffect(){
         return playerEffect;
     }
 

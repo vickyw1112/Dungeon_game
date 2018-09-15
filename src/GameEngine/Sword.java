@@ -3,7 +3,7 @@ package GameEngine;
 import GameEngine.utils.Point;
 
 public class Sword extends StandardObject implements Collectable {
-    public static final int ATTACKNUM = 5;
+    private static final int ATTACKNUM = 5;
 
     public Sword(Point location) {
         super(location);

@@ -44,7 +44,7 @@ public class CollisionEntities {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof CollisionEntities))
+        if (!(obj instanceof CollisionEntities))
             return false;
 
         return cls1.equals(((CollisionEntities) obj).cls1) && cls2.equals(((CollisionEntities) obj).cls2);

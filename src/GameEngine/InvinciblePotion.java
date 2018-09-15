@@ -16,7 +16,7 @@ public class InvinciblePotion extends Potion {
      */
     @Override
     public void onPlayerGetPotion(GameEngine engine) {
-        engine.updateMonsterMovementStategy(new RunAwayPathGenerator());
+        engine.updateMonstersMovementStrategy(new RunAwayPathGenerator());
     }
 
     /**
@@ -25,6 +25,6 @@ public class InvinciblePotion extends Potion {
      */
     @Override
     public void onPotionExpires(GameEngine engine) {
-        engine.updateMonsterMovementStategy(Monster.DEFAULT_PATHGEN);
+        engine.updateMonstersMovementStrategy(Monster.DEFAULT_PATHGEN);
     }
 }

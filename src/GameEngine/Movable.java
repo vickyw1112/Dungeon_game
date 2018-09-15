@@ -9,12 +9,12 @@ public interface Movable extends GameObject {
      * 
      * @return facing direction
      */
-    public Direction getFacing();
+    Direction getFacing();
 
     /**
      * Get current speed of the movable object
      * 
      * @return speed in grid per second
      */
-    public double getSpeed();
+    double getSpeed();
 }

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import GameEngine.CollisionHandler.*;
 
-public class OpenDoorTest {
+public class DoorTest {
     private Point p1 = new Point(1, 2);
     private Point p2 = new Point(3, 4);
     Key key1;
@@ -44,8 +44,7 @@ public class OpenDoorTest {
         door.registerCollisionHandler(engine);
         assertEquals(door.getState(), Door.CLOSED);
         
-        CollisionEntities ce1 = new CollisionEntities(Player.class, Door.class);  
-        CollisionHandler ch1 = engine.getCollisionHandler(ce1);
+        CollisionHandler ch1 = new DoorPlayerCollisionHandler();
         // test collision results on player and door
         CollisionResult cr1 = ch1.handle(engine, player, door);
         assertEquals(cr1.getFlags(), CollisionResult.REJECT);
@@ -60,11 +59,24 @@ public class OpenDoorTest {
         player.registerCollisionHandler(engine);
         door.registerCollisionHandler(engine);
         
-        CollisionEntities ce1 = new CollisionEntities(Player.class, Door.class);  
-        CollisionHandler ch1 = engine.getCollisionHandler(ce1);
+        CollisionHandler ch1 = new DoorPlayerCollisionHandler();
         // test collision results on player and door
         CollisionResult cr1 = ch1.handle(engine, player, door);
         assertEquals(cr1.getFlags(), CollisionResult.REJECT);
         assertEquals(door.getState(), Door.CLOSED);
+    }
+
+    @Test
+    public void closedDoorBlockBoulderTest(){
+        CollisionHandler handler = new DoorMovableCollisionHandler();
+        Boulder boulder = new Boulder(new Point(1, 1));
+
+        assertEquals(door.getState(), Door.CLOSED);
+        assertEquals(handler.handle(engine, boulder, door).getFlags(), CollisionResult.REJECT);
+
+        door.changeState(Door.OPEN);
+
+        assertEquals(door.getState(), Door.OPEN);
+        assertEquals(handler.handle(engine, boulder, door).getFlags(), CollisionResult.HANDLED);
     }
 }

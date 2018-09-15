@@ -6,10 +6,11 @@ import GameEngine.utils.Point;
 import java.util.LinkedList;
 
 public abstract class Monster extends StandardObject implements Movable {
+    public static final PathGenerator DEFAULT_PATHGEN = null;
     public static final double SPEED = 2;
 
-    private LinkedList<Point> pathToDestination;
-    protected PathGenerator pathGenerator;
+    private transient LinkedList<Point> pathToDestination;
+    protected transient PathGenerator pathGenerator;
 
     public Monster(Point location) {
         super(location);
@@ -18,6 +19,7 @@ public abstract class Monster extends StandardObject implements Movable {
     @Override
     public void initialize() {
         pathToDestination = new LinkedList<>();
+        pathGenerator = getDefaultPathGenerator();
     }
 
     /**
@@ -66,7 +68,15 @@ public abstract class Monster extends StandardObject implements Movable {
         return ret;
     }
 
+    /**
+     * Update monster's path by its strategy
+     * TODO: also update when somewhere on the path gets blocked!
+     * @param map
+     * @param player
+     */
     public void updatePath(Map map, Player player) {
         pathToDestination = pathGenerator.generatePath(map, this, player.location);
     }
+
+    public abstract PathGenerator getDefaultPathGenerator();
 }

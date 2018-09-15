@@ -1,10 +1,12 @@
 package GameEngine;
 
 import GameEngine.CollisionHandler.*;
+import GameEngine.utils.GameObjectObserver;
 import GameEngine.utils.Point;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,21 +24,17 @@ public class GameEngine {
     private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
     private List<Monster> monsters;
 
-    public GameEngine(InputStream input) throws IOException, ClassNotFoundException {
-        this(new Map(input));
-    }
 
     /**
      * Constructor for GameEngine Load the map from saving For each unique game
-     * object, call it's {@link GameObject#registerCollisionHandler} method TODO:
-     * consider using factory pattern to instantiate all game objects? TODO: also
-     * check Class.forName().getConstructor().newInstance()
+     * object, call it's {@link GameObject#registerCollisionHandler} method
+     * TODO: consider using factory pattern to instantiate all game objects?
+     * TODO: also check Class.forName().getConstructor().newInstance()
      *
-     * @param file
-     *            map file
+     * @param map map
+     * @param observer front end observer for GameObject state change
      */
-    public GameEngine(Map map) {
-        // init
+    public GameEngine(Map map, GameObjectObserver observer){
         // TODO init different thing in different places
         this.map = map;
         this.objects = new HashMap<>();
@@ -46,6 +44,7 @@ public class GameEngine {
 
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
+            obj.addObserver(observer);
             if (obj instanceof Player)
                 this.player = (Player) obj;
             if (obj instanceof Movable)
@@ -59,7 +58,6 @@ public class GameEngine {
         this.collisionHandlerMap = new HashMap<>();
 
         // register collisionHandler for (GameObject, GameObject) for default handler
-        // here
         // fall back mechanism see GameEngine#getCollisionHandler
         registerCollisionHandler(new CollisionEntities(GameObject.class, GameObject.class), new DefaultHandler());
 
@@ -69,13 +67,41 @@ public class GameEngine {
     }
 
     /**
+     * Wrapper constructor
+     *
+     * @param mapInput map file input stream
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public GameEngine(InputStream mapInput, GameObjectObserver observer) throws IOException, ClassNotFoundException {
+        this(new Map(mapInput), observer);
+    }
+
+    /**
+     * Constructor only takes in map for debugging/testing
+     * @param map
+     */
+    public GameEngine(Map map){
+        this(map, obj -> System.out.println(obj + " changed state to: "+ obj.getState()));
+        // to suppress null pointer exception in tests does not involve map
+        this.player = player == null ? new Player(new Point(0, 0)) : player;
+    }
+
+    /**
+     * No arg constructor for debugging/testing
+     */
+    public GameEngine(){
+        this(new Map());
+    }
+
+    /**
      * Define the behaviour of backend when the player pressed the key for shooting
      * arrow
      *
      * @return if the player have a arrow to shoot
      */
     public Arrow playerShootArrow() {
-        return player.shootArrow();
+        return player.shootArrow(map);
     }
 
     /**
@@ -85,7 +111,6 @@ public class GameEngine {
      * @return if the player have a bomb to set
      */
     public Bomb playerSetBomb() {
-
         return player.setBomb(map);
     }
 
@@ -134,8 +159,46 @@ public class GameEngine {
      * @return whether the player has won the game
      */
     public boolean checkWiningCondition() {
-        // TODO
-        return false;
+
+        boolean isAllTreasure = true;
+        boolean isAllMonster = false;
+        boolean isAllSwitch = false;
+        List<Point> boulders = new ArrayList<Point>();
+        List<Point> floorSwitches = new ArrayList<Point>();
+        List<Point> exits = new ArrayList<Point>();
+
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Boulder)
+                boulders.add(((Boulder) obj).location);
+            if(obj instanceof FloorSwitch)
+                floorSwitches.add(((FloorSwitch) obj).location);
+            if(obj instanceof Exit)
+                exits.add(((Exit) obj).location);
+        }
+
+        // check exit
+        if(exits.contains(this.player.location))
+            return true;
+        if(!exits.isEmpty())
+            return false;
+
+        // check boulder on switch
+        if(boulders.equals(floorSwitches))
+            isAllSwitch = true;
+
+        // check treasure in player's inventory
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Treasure)
+                isAllTreasure = false;
+        }
+
+        // monster condition
+        if(this.monsters.size() == 0)
+            isAllMonster = true;
+
+
+
+        return (isAllTreasure || isAllMonster || isAllSwitch);
     }
 
     /**
@@ -190,17 +253,6 @@ public class GameEngine {
     }
 
     /**
-     * Interface for front end to provide hook for changing states of game objects
-     *
-     * @deprecated use observer pattern now
-     * @param stateChanger
-     *            hook class
-     */
-    public void setStateChanger(StateChanger stateChanger) {
-        // GameObject.stateChanger = stateChanger;
-    }
-
-    /**
      * Interface to register a collision handler for given entities
      */
     protected void registerCollisionHandler(CollisionEntities entities, CollisionHandler handler) {
@@ -229,5 +281,21 @@ public class GameEngine {
             }
         }
         throw new CollisionHandlerNotImplement(entities.toString());
+    }
+
+    /**
+     * Set all monsters' pathGenerator to given one
+     * if the given one is null, restore all monsters' pathGenerator to default
+     * This is called when player get invincible potion
+     * and called again by front end with null as arg when invincible effect expires
+     *
+     * @see PlayerPotionCollisionHandler#handle
+     * @see Monster#getDefaultPathGenerator()
+     * @param pathGenerator new pathGenerator to set
+     */
+    public void updateMonsterMovementStategy(PathGenerator pathGenerator) {
+        this.monsters.forEach(monster ->
+            monster.pathGenerator = pathGenerator == null ? monster.getDefaultPathGenerator() : pathGenerator
+        );
     }
 }

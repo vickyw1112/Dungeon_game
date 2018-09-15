@@ -68,5 +68,6 @@ public class Boulder extends StandardObject implements Movable{
         // handler for boulder with pit
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Pit.class),
                 new BoulderPitCollisionHandler());
+
     }
 }

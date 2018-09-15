@@ -12,37 +12,50 @@ public class BombTest {
     private Bomb bomb;
     private Player player;
     private GameEngine engine;
+    private CollisionHandler handler;
+    private Map map;
 
     @Before
     public void setUp(){
+        MapBuilder mb = new MapBuilder();
         bomb = new Bomb(new Point(1, 1));
-        engine = new GameEngine(new Map());
         player = new Player(new Point(2, 2));
+        mb.addObject(bomb);
+        mb.addObject(player);
+        map = new Map(mb);
+        engine = new GameEngine(map);
+        handler = new CollectablesCollisionHandler();
         player.initialize();
     }
 
     @Test
     public void getCollectedTest() {
         assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
-        bomb.getCollected(engine, player.getInventory());
+        handler.handle(engine, player, bomb);
 
         assertTrue(player.getInventory().contains(bomb));
         assertEquals(player.getInventory().getCount(bomb.getClass()), 1);
+
+        Bomb bomb2 = new Bomb(new Point(1, 1));
+        handler.handle(engine, player, bomb2);
+
+        assertTrue(player.getInventory().contains(bomb2));
+        assertEquals(player.getInventory().getCount(Bomb.class), 2);
+
     }
 
     @Test
-    public void testBombRetrieval() {
-        // when a bomb is retrieved check inventory goes up
-        // check the states of the bomb as well
+    public void playerSetUpBombTest(){
+        assertNull(player.setBomb(map));
 
-        // checking a new bomb state starts of UNLIT
-        assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
+        // collect bomb
+        handler.handle(engine, player, bomb);
 
-        // instance of when a new bomb collides with a player
-        CollisionHandler ch1 = new CollectablesCollisionHandler();
-        CollisionResult result = ch1.handle(engine, bomb, player);
-        assertEquals(result.getFlags(), CollisionResult.DELETE_FIRST | CollisionResult.REFRESH_INVENTORY);
-        assertTrue(player.getInventory().contains(bomb));
+        // player will set the bomb just collected
+        assertEquals(player.setBomb(map), bomb);
+
+        assertTrue(map.getObjects(player.getFrontGrid(map)).contains(bomb));
+        assertNotEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
     }
 
 
@@ -55,18 +68,22 @@ public class BombTest {
         MapBuilder mapBuilder = new MapBuilder();
         Boulder boulder = new Boulder(new Point(5, 5));
         Boulder boulder2 = new Boulder(new Point(5, 3));
+        Wall wall = new Wall(new Point(4, 4));
 
         mapBuilder.addObject(boulder);
         mapBuilder.addObject(boulder2);
         mapBuilder.addObject(bomb);
+        mapBuilder.addObject(wall);
 
         engine = new GameEngine(new Map(mapBuilder));
 
         // player set bomb to (5, 4)
         engine.changeObjectLocation(bomb, new Point(5, 4));
 
+
         // this should return 2 things to destroy.
         List<GameObject> list = bomb.explode(engine);
+
 
         // Should have added boulders to the list of things to delete
         assertEquals(list.size(), 2);
@@ -77,7 +94,5 @@ public class BombTest {
         assertFalse(engine.getMap().getObjects(new Point(5, 5)).contains(boulder));
 
     }
-
-
 }
 

@@ -10,7 +10,11 @@ public class PlayerBoulderCollisionHandler implements CollisionHandler {
         Boulder boulder = (Boulder) (obj1 instanceof Boulder ? obj1 : obj2);
         res.addFlag(CollisionResult.REJECT);
         player.setPushBoulder(true);
+        boulder.setFacing(player.getFacing());
         boulder.setSpeed(Boulder.SPEED);
+
+        if(engine.checkWiningCondition())
+            res.addFlag(CollisionResult.WIN);
         return res;
     }
 }

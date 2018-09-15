@@ -63,9 +63,10 @@ public class CollisionEntities {
     }
 
     /**
-     * Return a list of entities with two type being super type of this entities
+     * Enumerate all entities with two type being super type of this entities
+     * in the order that more specific type comes first
      * This is used when this entities is not found in the key of
-     * collisionHandlerMap in GameObject TODO: test this thoroughly
+     * collisionHandlerMap in GameObject
      *
      * @see GameEngine#getCollisionHandler(CollisionEntities)
      * @return list of CollisionEntities in the order that subclasses go first

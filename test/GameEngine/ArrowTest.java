@@ -3,82 +3,106 @@ package GameEngine;
 import static org.junit.Assert.*;
 
 import GameEngine.utils.Point;
+import org.junit.Before;
 import org.junit.Test;
 import GameEngine.CollisionHandler.*;
 
 public class ArrowTest {
+    private Player player;
+    private GameEngine engine;
+    private Arrow arrow;
+    private Map map;
+    private CollisionResult res;
+    private CollisionHandler handler;
+
+    @Before
+    public void setUp(){
+        MapBuilder mb = new MapBuilder();
+        player = new Player(new Point(2, 2));
+        arrow = new Arrow(new Point(1, 1));
+
+        mb.addObject(player);
+        mb.addObject(arrow);
+        map = new Map(mb);
+        engine = new GameEngine(map);
+        player.initialize();
+    }
 
 	/**
 	 * Construction unit test, test the created arrow location is set to the right location
-	 * @throws Exception
 	 */
 	@Test
-	public void constructorTest() throws Exception {
-		Arrow arrow = new Arrow(new Point(1,1));
+	public void constructorTest() {
 		Point p = new Point(1,1);
 		assertEquals(arrow.getLocation(), p);
-	}
-	
-	/**
-	 * Checks arrow state after it get created
-	 * @throws Exception
-	 */
-	@Test
-	public void checkStateTest() throws Exception {
-		Arrow arrow = new Arrow(new Point(1,1));
-		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
+        assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 	}
 	
 	/**
 	 * Test for getCollected method
-	 * @throws Exception
 	 */
 	@Test
-	public void getCollectedTest() throws Exception {
-		
-		Arrow arrow = new Arrow(new Point(1,1));
+	public void getCollectedTest() {
 		assertEquals(arrow.getState(), Arrow.COLLECTABLESTATE);
 		GameEngine engine = new GameEngine(new Map());
-		Player p = new Player(new Point(2,2));
-		Inventory inv = new Inventory();
-		arrow.getCollected(engine, inv);
-		
-		assertTrue(inv.contains(arrow));
-		assertEquals(inv.getCount(arrow.getClass()), 1);
-	}
-	
-	/**
-	 * Collision Handler for arrow 
-	 * @throws Exception
-	 */
-	@Test
-	public void arrowCollisionHandlerTest() throws Exception {
-		
-		GameEngine engine = new GameEngine(new Map());
-		Player p = new Player(new Point(2,2));
-		Inventory inv = new Inventory();
-		
-		Boulder boulder = new Boulder(new Point(5,5));
-		Arrow arrow1 = new Arrow(new Point(1,1));
-		
-		CollisionEntities bMV = new CollisionEntities(Arrow.class, Boulder.class);
-        CollisionEntities bMV1 = new CollisionEntities(Arrow.class, Monster.class);
-        CollisionEntities bMV2 = new CollisionEntities(Arrow.class, Door.class);
-        arrow1.registerCollisionHandler(engine);
-        
-        CollisionHandler ch = engine.getCollisionHandler(bMV);
-        CollisionResult res = ch.handle(engine, arrow1, boulder);
-        assertEquals(res.getFlags(), CollisionResult.HANDLED);
-        res = ch.handle(engine,arrow1,boulder);
-        
-        arrow1.changeState(Arrow.MOVING);
-        res = ch.handle(engine, arrow1, boulder);
-        assertEquals(res.getFlags(), CollisionResult.DELETE_FIRST);
-        
-        Door door = new Door(new Point(6,6));
-        res = ch.handle(engine, arrow1, door);
-        assertEquals(res.getFlags(), CollisionResult.DELETE_FIRST);
-        
+
+		handler = new CollectablesCollisionHandler();
+
+        handler.handle(engine, player, arrow);
+
+		assertTrue(player.getInventory().contains(arrow));
+		assertEquals(player.getInventory().getCount(Arrow.class), 1);
+
+        Arrow arrow2 = new Arrow(new Point(1,1));
+
+        handler.handle(engine, player, arrow2);
+        assertTrue(player.getInventory().contains(arrow2));
+        assertEquals(player.getInventory().getCount(Arrow.class), 2);
+
 	}
 
+	/**
+	 * Collision Handler for arrow 
+	 */
+	@Test
+	public void arrowHitBlockingObjectTest() {
+		Boulder boulder = new Boulder(new Point(5,5));
+        Door door = new Door(new Point(6,6));
+
+        handler = new ArrowGameObjectCollisionHandler();
+
+        arrow.changeState(Arrow.MOVING);
+        res = handler.handle(engine, boulder, arrow);
+        assertEquals(res.getFlags(), CollisionResult.DELETE_SECOND);
+
+        assertEquals(door.getState(), Door.CLOSED);
+        res = handler.handle(engine, arrow, door);
+        assertEquals(res.getFlags(), CollisionResult.DELETE_FIRST);
+	}
+
+	@Test
+    public void arrowHitMonsterTest() {
+        handler = new ArrowMonsterCollisionHandler();
+        arrow.changeState(Arrow.MOVING);
+
+        Monster monster = new Hunter(new Point(1, 1));
+        res = handler.handle(engine, arrow, monster);
+        assertTrue(res.containFlag(CollisionResult.DELETE_BOTH));
+    }
+
+
+	@Test
+    public void playerShootArrowTest() {
+	    // if player does not have an arrow
+	    assertNull(player.shootArrow(map));
+
+	    // collect arrow
+        handler = new CollectablesCollisionHandler();
+        handler.handle(engine, player, arrow);
+
+        assertEquals(player.shootArrow(map), arrow);
+        assertTrue(arrow.getSpeed() > 0);
+        assertEquals(player.getFacing(), arrow.getFacing());
+        assertEquals(player.getFrontGrid(map), arrow.getLocation());
+    }
 }

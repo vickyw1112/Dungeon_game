@@ -8,7 +8,7 @@ public class Hunter extends Monster {
     }
 
     @Override
-    public void initialize() {
-        this.pathGenerator = new ShortestPathGenerator();
+    public PathGenerator getDefaultPathGenerator() {
+       return new ShortestPathGenerator();
     }
 }

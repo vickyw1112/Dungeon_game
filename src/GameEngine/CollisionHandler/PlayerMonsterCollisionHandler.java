@@ -12,13 +12,16 @@ public class PlayerMonsterCollisionHandler implements CollisionHandler {
         Monster monster = (Monster)(obj1 instanceof Monster ? obj1 : obj2);
         CollisionResult res = new CollisionResult();
 
+        int deleteFlag =
+                obj1 instanceof Monster ? CollisionResult.DELETE_FIRST : CollisionResult.DELETE_SECOND;
+
         if (player.getPlayerEffects().contains(PlayerEffect.INVINCIBLE)) {
-            res.addFlag(CollisionResult.HANDLED);
+            res.addFlag(deleteFlag);
             engine.removeGameObject(monster);
         } else if (player.getInventory().getCount(Sword.class) > 0) {
             int n = player.getInventory().getCount(Sword.class);
             player.getInventory().setCount(Sword.class, n - 1);
-            res.addFlag(CollisionResult.HANDLED);
+            res.addFlag(deleteFlag);
             engine.removeGameObject(monster);
         } else {
             res.addFlag(CollisionResult.LOSE);

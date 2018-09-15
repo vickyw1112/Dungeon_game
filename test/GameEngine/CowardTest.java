@@ -11,7 +11,7 @@ import GameEngine.CollisionHandler.*;
 public class CowardTest {
 
     @Test
-    public void testPath {
+    public void testPath () {
 
 
 

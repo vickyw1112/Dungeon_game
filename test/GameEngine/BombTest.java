@@ -63,20 +63,19 @@ public class BombTest {
         MapBuilder mapBuilder = new MapBuilder();
         Boulder boulder = new Boulder(new Point(5, 5));
         Boulder boulder2 = new Boulder(new Point(5, 3));
+        Wall wall = new Wall(new Point(4, 4));
 
         mapBuilder.addObject(boulder);
         mapBuilder.addObject(boulder2);
         mapBuilder.addObject(bomb);
+        mapBuilder.addObject(wall);
 
         engine = new GameEngine(new Map(mapBuilder));
 
         // player set bomb to (5, 4)
         engine.changeObjectLocation(bomb, new Point(5, 4));
 
-            // Should have added boulder to the list of things to delete
-        assertEquals(list.size(), 1);
 
-            // need to consider edge cases (wall next to bomb)
         // this should return 2 things to destroy.
         List<GameObject> list = bomb.explode(engine);
 

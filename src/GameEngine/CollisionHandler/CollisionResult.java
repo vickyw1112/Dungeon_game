@@ -53,7 +53,7 @@ public class CollisionResult {
     /**
      * Set a specific bit of flags to true BITWISE OR
      * 
-     * @param flag
+     * @param flag flag to set
      */
     public void addFlag(int flag) {
         this.flags |= flag;
@@ -70,7 +70,7 @@ public class CollisionResult {
 
     /**
      * for testing flag
-     * @return
+     * @return whether the result contains the flag
      */
     public boolean containFlag(int flag){
         return (this.flags & flag) > 0;

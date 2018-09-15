@@ -1,7 +1,6 @@
 package GameEngine;
 
-import GameEngine.utils.PlayerEffect;
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
 public class HoverPotion extends Potion {
     public HoverPotion(Point location) {

@@ -41,16 +41,16 @@ public class Boulder extends StandardObject implements Movable{
     /**
      * set boulder's direction same as player's
      * 
-     * @param facing
+     * @param facing new facing to be set
      */
     public void setFacing(Direction facing) {
         this.facing = facing;
     }
 
     /**
-     * set speed same as player
+     * set speed
      * 
-     * @param speed
+     * @param speed new speed
      */
     public void setSpeed(Double speed) {
         this.speed = speed;

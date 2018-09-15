@@ -4,12 +4,11 @@ import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.CollisionHandler.CollisionHandler;
 import GameEngine.CollisionHandler.CollisionHandlerNotImplement;
 import GameEngine.CollisionHandler.CollisionResult;
-import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.*;
 
 public class MonsterCollisionTests {
     private GameEngine ge;
@@ -43,8 +42,8 @@ public class MonsterCollisionTests {
         CollisionEntities ent = new CollisionEntities(Arrow.class, Monster.class);
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, arrow, hunter);
-        assertEquals(res.containFlag(CollisionResult.DELETE_BOTH), true);
-        assertEquals(res.containFlag(CollisionResult.WIN), true);
+        assertTrue(res.containFlag(CollisionResult.DELETE_BOTH));
+        assertTrue(res.containFlag(CollisionResult.WIN));
     }
 
     @Test
@@ -53,15 +52,15 @@ public class MonsterCollisionTests {
         CollisionEntities ent = new CollisionEntities(Monster.class, Player.class);
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, hunter, player);
-        assertEquals(res.containFlag(CollisionResult.LOSE), true);
+        assertTrue(res.containFlag(CollisionResult.LOSE));
 
         // have swords
         player.getInventory().addObject(sword);
         ent = new CollisionEntities(Monster.class, Player.class);
         handler = ge.getCollisionHandler(ent);
         res = handler.handle(ge, hunter, player);
-        assertEquals(res.containFlag(CollisionResult.DELETE_FIRST), true);
-        assertEquals(res.containFlag(CollisionResult.WIN), true);
+        assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
+        assertTrue(res.containFlag(CollisionResult.WIN));
     }
 
     @Test
@@ -72,8 +71,8 @@ public class MonsterCollisionTests {
         CollisionEntities ent = new CollisionEntities(Monster.class, Player.class);
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, hunter, player);
-        assertEquals(res.containFlag(CollisionResult.DELETE_FIRST), true);
-        assertEquals(res.containFlag(CollisionResult.WIN), true);
-        assertEquals(res.containFlag(CollisionResult.LOSE), false);
+        assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
+        assertTrue(res.containFlag(CollisionResult.WIN));
+        assertFalse(res.containFlag(CollisionResult.LOSE));
     }
 }

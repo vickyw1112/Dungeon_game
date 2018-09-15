@@ -10,14 +10,14 @@ public abstract class StandardObject implements GameObject, Serializable {
     public static final int DEFAULT_STATE = 0;
 
     private static int objCount = 0;
-    private int objId;
-    protected Point location;
+    private final int objId;
+    Point location;
     private transient List<GameObjectObserver> observers;
 
     /**
      * State of a object, specific to each type of object
      */
-    protected int state;
+    int state;
 
 
     /**
@@ -113,7 +113,7 @@ public abstract class StandardObject implements GameObject, Serializable {
 
     /**
      * Object register no collision handlers by default
-     * @param gameEngine
+     * @param gameEngine game engine
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine){

@@ -10,6 +10,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 
+@SuppressWarnings("CanBeFinal")
 public class MapTest {
     private MapBuilder mapBuilder;
     private Map map;
@@ -168,9 +169,9 @@ public class MapTest {
         map = new Map(input);
         // check new map is the same
         key = (Key) map.getObjects(keyLocation).get(0);
-        assertTrue(key instanceof Key);
+        assertNotNull(key);
         door = (Door) map.getObjects(doorLocation).get(0);
-        assertTrue(door instanceof Door);
+        assertNotNull(door);
 
         assertEquals(door.getKey(), key);
     }

@@ -63,7 +63,7 @@ public class InventoryTest {
     
     
     /**
-     * Checks the addObject method, kind of redudant beacuse of getCount check
+     * Checks the addObject method, kind of redundant because of getCount check
      * @throws Exception
      */
     @Test

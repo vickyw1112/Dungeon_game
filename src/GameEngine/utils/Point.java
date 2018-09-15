@@ -9,8 +9,8 @@ public class Point implements Serializable {
     /**
      * Constructor
      * 
-     * @param x
-     * @param y
+     * @param x x
+     * @param y y
      */
     public Point(int x, int y) {
         this.x = x;
@@ -60,7 +60,7 @@ public class Point implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Point))
+        if (!(obj instanceof Point))
             return false;
         return this.x == ((Point) obj).x && this.y == ((Point) obj).y;
     }
@@ -70,6 +70,7 @@ public class Point implements Serializable {
         return Integer.hashCode(x) ^ Integer.hashCode(y);
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Point clone() {
         return new Point(this);
     }

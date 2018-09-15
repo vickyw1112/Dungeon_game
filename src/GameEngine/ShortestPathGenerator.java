@@ -5,11 +5,11 @@ import java.util.LinkedList;
 
 public class ShortestPathGenerator implements PathGenerator {
     /**
-     * BFS to find the shortest path from monster to target
+     * call Map's BFS to find the shortest path from monster to target
      * 
-     * @param map
-     * @param monster
-     * @param target
+     * @param map map
+     * @param monster monster
+     * @param target target point
      * @return list of Point indicating the path
      */
     @Override

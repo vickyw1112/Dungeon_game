@@ -149,7 +149,7 @@ public class Player extends StandardObject implements Movable {
             return null;
 
         map.updateObjectLocation(bomb, setPosition);
-        bomb.changeState(bomb.ALMOSTLIT);
+        bomb.changeState(Bomb.ALMOSTLIT);
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front
                      // end deals with most of this)
     }
@@ -249,5 +249,29 @@ public class Player extends StandardObject implements Movable {
      */
     public void setPushBoulder(Boolean val) {
         this.onPushingBoulder = val;
+    }
+
+    /**
+     * If player's location changed, all monster will recalculate path
+     *
+     * @see Monster#updatePath(Map, Player)
+     * @param engine game engine
+     */
+    @Override
+    public void onUpdatingLocation(GameEngine engine) {
+        engine.updateMonstersPath();
+    }
+
+    /**
+     * Try to open given door
+     *
+     * @param door door to open
+     * @return boolean indicating whether the door is successfully opened
+     */
+    public boolean openDoor(Door door){
+        Key key = (Key) inventory.popObject(Key.class);
+        if(key == null)
+            return false;
+        return door.openTheDoor(key);
     }
 }

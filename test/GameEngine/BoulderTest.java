@@ -55,7 +55,6 @@ public class BoulderTest {
 
     /**
      * Testing that the boulder disappears when entering a pit
-     * @throws CollisionHandlerNotImplement
      */
 
     @Test
@@ -82,11 +81,11 @@ public class BoulderTest {
         player.registerCollisionHandler(ge);
         boulder.registerCollisionHandler(ge);
 
-        assertTrue(boulder.getSpeed() == 0);
+        assertEquals(0, boulder.getSpeed(), 0.0);
         CollisionHandler ch = new PlayerBoulderCollisionHandler();
         CollisionResult res = ch.handle(ge, boulder, player);
 
-        assertEquals(res.containFlag(CollisionResult.REJECT), true);
+        assertTrue(res.containFlag(CollisionResult.REJECT));
         assertTrue(boulder.getSpeed() > 0);
         assertEquals(player.getFacing(), boulder.getFacing());
     }

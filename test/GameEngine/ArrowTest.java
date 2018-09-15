@@ -103,6 +103,6 @@ public class ArrowTest {
         assertEquals(player.shootArrow(map), arrow);
         assertTrue(arrow.getSpeed() > 0);
         assertEquals(player.getFacing(), arrow.getFacing());
-        assertEquals(player.getFrontGrid(), arrow.getLocation());
+        assertEquals(player.getFrontGrid(map), arrow.getLocation());
     }
 }

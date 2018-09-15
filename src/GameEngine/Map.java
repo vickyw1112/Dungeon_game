@@ -113,7 +113,7 @@ public class Map implements Serializable {
         out.writeObject(this.map);
     }
 
-    public static boolean isValidPoint(Point p) {
+    public boolean isValidPoint(Point p) {
         return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X && p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
     }
 

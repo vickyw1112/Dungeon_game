@@ -54,7 +54,7 @@ public class BombTest {
         // player will set the bomb just collected
         assertEquals(player.setBomb(map), bomb);
 
-        assertTrue(map.getObjects(player.getFrontGrid()).contains(bomb));
+        assertTrue(map.getObjects(player.getFrontGrid(map)).contains(bomb));
         assertNotEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
     }
 

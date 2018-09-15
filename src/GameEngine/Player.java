@@ -16,13 +16,26 @@ public class Player extends StandardObject implements Movable {
      */
     public static final double SPEED = 2;
 
-    // player inventory should be newly instantiated when loading map
-    // not loading from serialized file
+    /**
+     * transient field so that won't be serialized
+     * player inventory should be newly instantiated when loading map
+     * not loading from serialized file
+     */
     private transient Inventory inventory;
+
+    /**
+     * Whether player is pushing boulder
+     * This is set to true at the frame when player collide with boulder
+     * and set to false after player's location changed
+     * @see Player#setLocation
+     * @see PlayerBoulderCollisionHandler#handle
+     */
+    private boolean onPushingBoulder;
 
     private transient Set<PlayerEffect> effects;
     private Direction facing;
-    private boolean onPushingBoulder;
+
+
 
     /**
      * Constructor for Player
@@ -36,6 +49,7 @@ public class Player extends StandardObject implements Movable {
         facing = Direction.UP;
         onPushingBoulder = false;
     }
+
 
     @Override
     public void initialize() {
@@ -55,7 +69,16 @@ public class Player extends StandardObject implements Movable {
     }
 
     /**
-     * Get current facing of a movable object
+     * Set current facing of player
+     *
+     * @param facing new facing to set
+     */
+    public void setFacing(Direction facing){
+        this.facing = facing;
+    }
+
+    /**
+     * Get current facing of player
      * 
      * @return facing direction
      */
@@ -65,7 +88,7 @@ public class Player extends StandardObject implements Movable {
     }
 
     /**
-     * Update facing when set location
+     * Set player's onPushingBoulder to false before setting new location
      *
      * @pre player's location is consistently changed i.e. one grid at a time
      * @param point new location
@@ -73,17 +96,9 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public boolean setLocation(Point point) {
-        this.onPushingBoulder = false;
-        if (point.getX() > this.location.getX())
-            facing = Direction.RIGHT;
-        else if (point.getX() < this.location.getX())
-            facing = Direction.LEFT;
-        else if (point.getY() > this.location.getY())
-            facing = Direction.DOWN;
-        else if (point.getY() < this.location.getY())
-            facing = Direction.UP;
         if (this.location == point)
             return false;
+        this.onPushingBoulder = false;
         this.location = point;
         return true;
     }
@@ -103,16 +118,17 @@ public class Player extends StandardObject implements Movable {
      * inventory returns false if there's no arrow in inventory
      *
      * @see GameEngine#playerShootArrow()
-     * @return whether the player has an arrow to shoot
+     * @return the arrow instance to shoot,
+     *          null if no arrow in inventory or cannot shoot to that direction
      */
     public Arrow shootArrow(Map map) {
         Arrow arrow = (Arrow) inventory.popObject(Arrow.class);
-        if (arrow == null)
+        if (arrow == null || !map.isValidPoint(getFrontGrid(map)))
             return null;
         // setup the arrow
         arrow.changeState(Arrow.MOVING);
         arrow.setFacing(this.facing);
-        map.updateObjectLocation(arrow, getFrontGrid());
+        map.updateObjectLocation(arrow, getFrontGrid(map));
         return arrow;
     }
 
@@ -123,25 +139,19 @@ public class Player extends StandardObject implements Movable {
      * player
      *
      * @see GameEngine#playerSetBomb()
-     * @return the bomb instance or null
+     * @return the bomb instance to set,
+     *          or null if no bomb in inventory or cannot set to front of player
      */
     public Bomb setBomb(Map map) {
-        // if player does not have bomb
-        if (inventory.getCount(Bomb.class) == 0)
-            return null;
-
-        // if there is something else in front of player
-        Point setPosition = getFrontGrid();
-        if (map.getObjects(setPosition).size() != 0)
-            return null;
-
-        // case when bomb is planted
         Bomb bomb = (Bomb) inventory.popObject(Bomb.class);
+        Point setPosition = getFrontGrid(map);
+        if (bomb == null || !map.getNonBlockAdjacentPoints(location).contains(setPosition))
+            return null;
+
         map.updateObjectLocation(bomb, setPosition);
         bomb.changeState(bomb.ALMOSTLIT);
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front
                      // end deals with most of this)
-
     }
 
     /**
@@ -174,13 +184,14 @@ public class Player extends StandardObject implements Movable {
     }
 
     /**
-     * Get the grid in front of the player TODO: move this to Movable?
+     * Get the grid in front of the player
      *
      * @see Player#setBomb
-     * @see Player#shootArrow TODO: add stategiest path finder here
-     * @return the location of that grid
+     * @see Player#shootArrow
+     * @see Object TODO: add stategiest path finder here
+     * @return the location of that grid or null if that grid is out of bound
      */
-    Point getFrontGrid() {
+    Point getFrontGrid(Map map) {
         Point res = new Point(this.location);
         int dx = 0, dy = 0;
         switch (this.facing) {
@@ -198,7 +209,7 @@ public class Player extends StandardObject implements Movable {
             break;
         }
         res.translate(dx, dy);
-        return res;
+        return map.isValidPoint(res) ? res : null;
     }
 
     /**

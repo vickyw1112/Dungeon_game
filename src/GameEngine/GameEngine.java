@@ -108,7 +108,6 @@ public class GameEngine {
      * @return if the player have a bomb to set
      */
     public Bomb playerSetBomb() {
-
         return player.setBomb(map);
     }
 

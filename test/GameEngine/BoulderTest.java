@@ -1,6 +1,6 @@
 package GameEngine;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import GameEngine.utils.Point;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class BoulderTest {
      */
 
     @Test
-    public void testBoulderCollisionPit() {
+    public void testBoulderFallIntoPit() {
         GameEngine ge = new GameEngine(new Map());
         Pit pit = new Pit(new Point(1,1));
         Boulder boulder = new Boulder(new Point(1,1));

@@ -4,8 +4,8 @@ import GameEngine.utils.*;
 
 public interface GameObject extends Observable {
     /**
-     * This is called when the game actual load the dungeon in the first mode Rather
-     * than GameObject being instantiated.
+     * This is called when the game actual load the dungeon in the first mode
+     * Rather than GameObject being instantiated.
      */
     default void initialize() {
 

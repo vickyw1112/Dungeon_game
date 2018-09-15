@@ -7,6 +7,7 @@ import GameEngine.utils.Point;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +84,8 @@ public class GameEngine {
      */
     public GameEngine(Map map){
         this(map, obj -> System.out.println(obj + " changed state to: "+ obj.getState()));
+        // to suppress null pointer exception in tests does not involve map
+        this.player = player == null ? new Player(new Point(0, 0)) : player;
     }
 
     /**
@@ -158,8 +161,46 @@ public class GameEngine {
      * @return whether the player has won the game
      */
     public boolean checkWiningCondition() {
-        // TODO
-        return false;
+
+        boolean isAllTreasure = true;
+        boolean isAllMonster = false;
+        boolean isAllSwitch = false;
+        List<Point> boulders = new ArrayList<Point>();
+        List<Point> floorSwitches = new ArrayList<Point>();
+        List<Point> exits = new ArrayList<Point>();
+
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Boulder)
+                boulders.add(((Boulder) obj).location);
+            if(obj instanceof FloorSwitch)
+                floorSwitches.add(((FloorSwitch) obj).location);
+            if(obj instanceof Exit)
+                exits.add(((Exit) obj).location);
+        }
+
+        // check exit
+        if(exits.contains(this.player.location))
+            return true;
+        if(!exits.isEmpty())
+            return false;
+
+        // check boulder on switch
+        if(boulders.equals(floorSwitches))
+            isAllSwitch = true;
+
+        // check treasure in player's inventory
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Treasure)
+                isAllTreasure = false;
+        }
+
+        // monster condition
+        if(this.monsters.size() == 0)
+            isAllMonster = true;
+
+
+
+        return (isAllTreasure || isAllMonster || isAllSwitch);
     }
 
     /**

@@ -20,8 +20,8 @@ public class CollectablesCollisionHandlerTest {
 		p.initialize();
         CollisionHandler ch = new CollectablesCollisionHandler();
         CollisionResult res = ch.handle(engine, arrow, p);
-        assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_FIRST);
+        assertEquals(res.containFlag(CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_FIRST), true);
         res = ch.handle(engine, p, arrow);
-        assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND);
+        assertEquals(res.containFlag(CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND), true);
 	}
 }

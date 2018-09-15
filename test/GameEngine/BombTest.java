@@ -49,7 +49,7 @@ public class BombTest {
         // instance of when a new bomb collides with a player
         CollisionHandler ch1 = new CollectablesCollisionHandler();
         CollisionResult result = ch1.handle(engine, bomb, player);
-        assertEquals(result.getFlags(), CollisionResult.DELETE_FIRST | CollisionResult.REFRESH_INVENTORY);
+        assertEquals(result.containFlag(CollisionResult.DELETE_FIRST | CollisionResult.REFRESH_INVENTORY), true);
         assertTrue(player.getInventory().contains(bomb));
     }
 

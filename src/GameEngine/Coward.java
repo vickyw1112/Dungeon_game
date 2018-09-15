@@ -9,6 +9,7 @@ public class Coward extends Monster {
 
     @Override
     public void initialize() {
+        super.initialize();
         // Coward use ShortestPathGenerator by default
         // but change to RunAwayPathGenerator after getting close to player
         pathGenerator = new ShortestPathGenerator();

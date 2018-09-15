@@ -16,14 +16,12 @@ public class CollisionResult {
     public static final int DELETE_SECOND = 0x02;
     public static final int DELETE_BOTH = DELETE_FIRST | DELETE_SECOND;
     public static final int REJECT = 0x04;
-    public static final int REFRESH_INVENTORY = 0x10;
-    public static final int REFRESH_EFFECT_TIMER = 0x20;
-    public static final int SHOOT_ARROW = 0x40;
-    public static final int SET_BOMB = 0x80;
-    public static final int WIN = 0x100;
-    public static final int LOSE = 0x200;
+    public static final int REFRESH_INVENTORY = 0x08;
+    public static final int REFRESH_EFFECT_TIMER = 0x10;
+    public static final int WIN = 0x20;
+    public static final int LOSE = 0x40;
 
-    public static final int FLAG_SIZE = 32;
+    public static final int FLAG_SIZE = 32; // int size
 
     /**
      * 32 bits string

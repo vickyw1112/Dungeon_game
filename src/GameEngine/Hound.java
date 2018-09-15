@@ -14,6 +14,7 @@ public class Hound extends Monster implements Pairable {
 
     @Override
     public void initialize() {
+        super.initialize();
         this.pathGenerator = new HoundPathGenerator();
     }
 

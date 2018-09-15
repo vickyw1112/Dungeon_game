@@ -15,6 +15,7 @@ public class PlayerPotionCollisionHandler implements CollisionHandler {
             res.addFlag(CollisionResult.DELETE_SECOND);
 
         player.addPlayerEffect(potion.getEffect());
+        res.addFlag(CollisionResult.REFRESH_EFFECT_TIMER);
 
         // TODO: improve this
         if(potion instanceof InvinciblePotion){

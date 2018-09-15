@@ -10,7 +10,7 @@ public class ArrowMonsterCollisionHandler implements CollisionHandler {
         Monster monster = (Monster) (obj1 instanceof Monster ? obj1 : obj2);
         Arrow arrow = (Arrow) (obj1 instanceof Arrow ? obj1 : obj2);
 
-        CollisionResult res = new CollisionResult(0);
+        CollisionResult res = new CollisionResult();
 
         // Check if arrow is in the moving state
         if (arrow.getState() == MOVING) {

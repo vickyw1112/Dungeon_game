@@ -105,14 +105,14 @@ public class Player extends StandardObject implements Movable {
      * @see GameEngine#playerShootArrow()
      * @return whether the player has an arrow to shoot
      */
-    public Arrow shootArrow() {
+    public Arrow shootArrow(Map map) {
         Arrow arrow = (Arrow) inventory.popObject(Arrow.class);
         if (arrow == null)
             return null;
         // setup the arrow
         arrow.changeState(Arrow.MOVING);
         arrow.setFacing(this.facing);
-        arrow.setLocation(getFrontGrid());
+        map.updateObjectLocation(arrow, getFrontGrid());
         return arrow;
     }
 
@@ -137,7 +137,7 @@ public class Player extends StandardObject implements Movable {
 
         // case when bomb is planted
         Bomb bomb = (Bomb) inventory.popObject(Bomb.class);
-        bomb.setLocation(setPosition);
+        map.updateObjectLocation(bomb, setPosition);
         bomb.changeState(bomb.ALMOSTLIT);
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front
                      // end deals with most of this)

@@ -39,7 +39,7 @@ public class BoulderTest {
      * Test that boulder collides with any collectable object and it should result in handle
      */
     @Test
-    public void testBoulderCollisionCollectable() throws CollisionHandlerNotImplement{
+    public void testBoulderGoOverCollectable() throws CollisionHandlerNotImplement{
         GameEngine ge = new GameEngine(new Map());
         Key key = new Key(new Point(1,1));
         Boulder boulder = new Boulder(new Point(1,1));

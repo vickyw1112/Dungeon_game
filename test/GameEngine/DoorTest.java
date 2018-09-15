@@ -67,7 +67,7 @@ public class DoorTest {
     }
 
     @Test
-    public void closedDoorBlockingTest(){
+    public void closedDoorBlockBoulderTest(){
         CollisionHandler handler = new DoorMovableCollisionHandler();
         Boulder boulder = new Boulder(new Point(1, 1));
 

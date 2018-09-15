@@ -2,7 +2,6 @@ package GameEngine;
 
 import GameEngine.CollisionHandler.*;
 import GameEngine.utils.GameObjectObserver;
-import GameEngine.utils.Observable;
 import GameEngine.utils.Point;
 
 import java.io.IOException;
@@ -99,7 +98,7 @@ public class GameEngine {
      * @return if the player have a arrow to shoot
      */
     public Arrow playerShootArrow() {
-        return player.shootArrow();
+        return player.shootArrow(map);
     }
 
     /**

@@ -14,7 +14,7 @@ public class CollisionResult {
     public static final int HANDLED = 0x00;
     public static final int DELETE_FIRST = 0x01;
     public static final int DELETE_SECOND = 0x02;
-    public static final int DELETE_BOTH = 0x03;
+    public static final int DELETE_BOTH = DELETE_FIRST | DELETE_SECOND;
     public static final int REJECT = 0x04;
     public static final int REFRESH_INVENTORY = 0x10;
     public static final int REFRESH_EFFECT_TIMER = 0x20;

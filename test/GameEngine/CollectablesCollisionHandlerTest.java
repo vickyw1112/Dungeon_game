@@ -1,27 +1,34 @@
 package GameEngine;
 
 import GameEngine.utils.Point;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import GameEngine.CollisionHandler.*;
 
 public class CollectablesCollisionHandlerTest {
+    private Player player;
+    private GameEngine engine;
+    private CollisionHandler handler;
 
-	/**
-	 * Checks the CollectablesCollisionHandler method
-	 * @throws Exception
-	 */
+    @Before
+    public void setup(){
+        player = new Player(new Point(2, 2));
+        engine = new GameEngine();
+        handler = new CollectablesCollisionHandler();
+        player.initialize();
+    }
+
+
 	@Test
-	public void collectablesCollisionHandlerTest() {
-		GameEngine engine = new GameEngine(new Map());
-		Player p = new Player(new Point(1,1));
+	public void collectArrowTest() {
 		Arrow arrow = new Arrow(new Point(1,1));
 
-		p.initialize();
-        CollisionHandler ch = new CollectablesCollisionHandler();
-        CollisionResult res = ch.handle(engine, arrow, p);
+		player.initialize();
+        CollisionResult res = handler.handle(engine, arrow, player);
         assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_FIRST);
-        res = ch.handle(engine, p, arrow);
+
+        res = handler.handle(engine, player, arrow);
         assertEquals(res.getFlags(), CollisionResult.REFRESH_INVENTORY | CollisionResult.DELETE_SECOND);
 	}
 }

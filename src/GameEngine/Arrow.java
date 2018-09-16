@@ -9,6 +9,8 @@ public class Arrow extends StandardObject implements Collectable, Movable {
 
     private Direction facing;
 
+
+
     /**
      * Constructor for arrow
      * @param location
@@ -63,7 +65,7 @@ public class Arrow extends StandardObject implements Collectable, Movable {
     }
 
     /**
-     * Boulder && Moving arrow collision handler
+     * Register Arrow related collision handler
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
@@ -74,6 +76,5 @@ public class Arrow extends StandardObject implements Collectable, Movable {
         // arrow and all other GameObject
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), GameObject.class),
                 new ArrowGameObjectCollisionHandler());
-
     }
 }

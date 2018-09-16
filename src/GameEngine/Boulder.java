@@ -19,9 +19,8 @@ public class Boulder extends StandardObject implements Movable{
     }
 
     /**
-     * Blocking method
      * Always true because Boulder always blocks
-     * @return
+     * @return true
      */
     @Override
     public boolean isBlocking() {
@@ -29,7 +28,7 @@ public class Boulder extends StandardObject implements Movable{
     }
 
     /**
-     * getter for facing
+     * Get facing
      * Returns the direction the object is facing
      * @return
      */
@@ -73,7 +72,9 @@ public class Boulder extends StandardObject implements Movable{
     }
 
     /**
-     * If a boulder moved, monsters path
+     * If a boulder moved, update monsters' path
+     * since it might block/unblock current path
+     *
      * @param engine game engine
      */
     @Override
@@ -82,7 +83,7 @@ public class Boulder extends StandardObject implements Movable{
     }
 
     /**
-     * Define collision handler for boulder
+     * Register collision handler for boulder
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {

@@ -2,6 +2,10 @@ package GameEngine;
 
 import GameEngine.utils.*;
 
+/**
+ * Super interface for all GameObject
+ * Implementation for most of methods is defined in {@link StandardObject}
+ */
 public interface GameObject extends Observable {
     /**
      * This is called when the game actual load the dungeon in the first mode

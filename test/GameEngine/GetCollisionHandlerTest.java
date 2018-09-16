@@ -108,7 +108,7 @@ public class GetCollisionHandlerTest {
         assertTrue(engine.getCollisionHandler(ABent) instanceof ArrowGameObjectCollisionHandler);
 
         CollisionEntities DAent = new CollisionEntities(Door.class, Arrow.class);
-        assertTrue(engine.getCollisionHandler(DAent) instanceof DoorMovableCollisionHandler);
+        assertTrue(engine.getCollisionHandler(DAent) instanceof ArrowGameObjectCollisionHandler);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class GetCollisionHandlerTest {
         assertTrue(engine.getCollisionHandler(PWent) instanceof GameObjectMovableCollisionHandler);
 
         CollisionEntities DBent = new CollisionEntities(Door.class, Boulder.class);
-        assertTrue(engine.getCollisionHandler(DBent) instanceof DoorMovableCollisionHandler);
+        assertTrue(engine.getCollisionHandler(DBent) instanceof GameObjectMovableCollisionHandler);
 
     }
 

@@ -2,6 +2,9 @@ package GameEngine;
 
 import GameEngine.utils.Direction;
 
+/**
+ * Interface for all object that is capable of moving
+ */
 public interface Movable extends GameObject {
 
     /**

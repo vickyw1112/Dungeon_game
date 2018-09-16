@@ -5,6 +5,9 @@ import GameEngine.utils.Point;
 
 import java.util.LinkedList;
 
+/**
+ * Super class for all Monster instance
+ */
 public abstract class Monster extends StandardObject implements Movable {
     /**
      * monster speed default is 2

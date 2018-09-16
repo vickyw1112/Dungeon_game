@@ -13,6 +13,7 @@ public class Bomb extends StandardObject implements Collectable {
     public static final int EXPLODE = 2; // will find a better name
 
 
+
     /**
      * Constructor for bomb
      *
@@ -35,9 +36,8 @@ public class Bomb extends StandardObject implements Collectable {
     }
 
     /**
-     * Checks if any objects can be destroyed in radius and removes them this class
-     * should only gets called if we set a bomb. going to ignore the front end
-     * implementation of sending the message
+     * Front end interface for a bomb to explode
+     * Destroyed all adajcent objects that are Boulder/Monster/Player
      *
      * @param engine
      *            game engine
@@ -46,7 +46,6 @@ public class Bomb extends StandardObject implements Collectable {
      *         explosion
      */
     public List<GameObject> explode(GameEngine engine) {
-
         int x = this.location.getX();
         int y = this.location.getY();
         // list of positions maybe implement this function in point class

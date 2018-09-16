@@ -12,10 +12,11 @@ public class Hound extends Monster implements Pairable {
         super(location);
     }
 
-    public GameObject getPair() {
+    public Hunter getPair() {
         return hunter;
     }
 
+    @Override
     public void setPair(GameObject pair) {
         hunter = (Hunter) pair;
     }

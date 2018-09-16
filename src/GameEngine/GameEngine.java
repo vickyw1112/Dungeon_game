@@ -68,6 +68,9 @@ public class GameEngine {
             this.objects.put(obj.getObjID(), obj);
         }
 
+        // sort monsters in correct order
+        monsters.sort(Monster::compare);
+
         this.collisionHandlerMap = new HashMap<>();
 
         // register collisionHandler for (GameObject, GameObject) for default handler
@@ -300,6 +303,8 @@ public class GameEngine {
 
     /**
      * Update all monster's path by their path generator
+     *
+     * @pre all Hunter is before Hound since Hound is dependent on Hunter's path
      */
     public void updateMonstersPath() {
         this.monsters.forEach(monster -> monster.updatePath(map, player));

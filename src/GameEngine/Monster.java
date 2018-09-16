@@ -25,6 +25,19 @@ public abstract class Monster extends StandardObject implements Movable {
         pathGenerator = getDefaultPathGenerator();
     }
 
+    public LinkedList<Point> getPath() {
+        return pathToDestination;
+    }
+
+    /**
+     * Monster will block movement of other object
+     * @return true
+     */
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
+
     /**
      * Get current facing
      *
@@ -51,7 +64,7 @@ public abstract class Monster extends StandardObject implements Movable {
     public boolean setLocation(Point point) {
         boolean ret = super.setLocation(point);
 
-        if (ret && pathToDestination.pop() != point) {
+        if (ret && !pathToDestination.pop().equals(point)) {
             // TODO: throw an exception here?
             System.err.println("Inconsistent move: " + this);
             System.exit(1);
@@ -98,8 +111,25 @@ public abstract class Monster extends StandardObject implements Movable {
      */
     public void updatePath(Map map, Player player) {
         pathToDestination = pathGenerator.generatePath(map, this, player.location);
-        facing = determineFacing(pathToDestination.peek());
+        if(pathToDestination.peek() != null)
+            facing = determineFacing(pathToDestination.peek());
     }
 
     public abstract PathGenerator getDefaultPathGenerator();
+
+    /**
+     * Compare function for how monsters order should be when stored in GameEngine
+     * Make sure Hunter is before all Hound since Hound's path generation
+     * is dependent on Hunter
+     */
+    public static int compare(Monster m1, Monster m2) {
+        if(m1.getClass().equals(Hunter.class) && m2.getClass().equals(Hound.class)){
+            return -1;
+        }
+        if(m2.getClass().equals(Hunter.class) && m1.getClass().equals(Hound.class)){
+            return 1;
+        }
+        // ignore everything else
+        return 0;
+    }
 }

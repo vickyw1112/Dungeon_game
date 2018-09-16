@@ -126,9 +126,13 @@ public class Map implements Serializable {
 
 
     /**
-     * Returns the shortest path between two points
+     * Returns the shortest path between two points without go through points in exception
+     * @param from from
+     * @param to to
+     * @param exception points won't be gone through, if it's null then no exception
+     * @return list of points indicating the path, including to but not from
      */
-    public LinkedList<Point> getShortestPath(Point from, Point to) {
+    public LinkedList<Point> getShortestPathWithException(Point from, Point to, List<Point> exception) {
         List<Point> visited = new LinkedList<>();
         LinkedList<Point> toBeVisited = new LinkedList<>();
         HashMap<Point, Point> path = new HashMap<>();
@@ -143,7 +147,10 @@ public class Map implements Serializable {
             }
             visited.add(curr);
 
-            for (Point next : this.getNonBlockAdjacentPoints(curr)) {
+            List<Point> nextCandidate = this.getNonBlockAdjacentPoints(curr);
+            if(exception != null)
+                nextCandidate.removeAll(exception);
+            for (Point next : nextCandidate) {
                 if (visited.contains(next)) {
                     continue;
                 }
@@ -164,6 +171,17 @@ public class Map implements Serializable {
         // reverse it to correct order
         Collections.reverse(ret);
         return ret;
+
+    }
+
+    /**
+     * Wrapper for {@link Map#getShortestPathWithException(Point, Point, List)}
+     * @param from from
+     * @param to to
+     * @return list of points indicating the path, including to but not from
+     */
+    public LinkedList<Point> getShortestPath(Point from, Point to) {
+        return getShortestPathWithException(from, to, null);
     }
 
     /**

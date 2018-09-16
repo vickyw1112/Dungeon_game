@@ -72,6 +72,18 @@ public interface GameObject extends Observable {
     }
 
     /**
+     * If current GameObject is considered as a candidate point for path generation
+     * By default is opposite of isBlocking
+     *
+     * @see Map#canMoveThrough(Point)
+     * @see Map#getNonBlockAdjacentPoints(Point)
+     * @return
+     */
+    default boolean canMoveThrough() {
+        return !isBlocking();
+    }
+
+    /**
      * This is called when the object's position is changing to another grid
      *
      * @param engine game engine

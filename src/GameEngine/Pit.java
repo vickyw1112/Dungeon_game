@@ -8,4 +8,13 @@ public class Pit extends StandardObject {
         super(location);
     }
 
+    /**
+     * Do not consider a point with Pit on it as a candidate point
+     * for path generation
+     * @return false
+     */
+    @Override
+    public boolean canMoveThrough() {
+        return false;
+    }
 }

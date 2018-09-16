@@ -100,8 +100,7 @@ public class Map implements Serializable {
                 continue;
 
             // check if there's blocking obj in that point
-            if (getObjects(curr).stream().filter(o -> (o.isBlocking()))
-                    .collect(Collectors.toList()).size() == 0)
+            if (canMoveThrough(curr))
                 ret.add(curr);
         }
         return ret;
@@ -193,5 +192,17 @@ public class Map implements Serializable {
      */
     int getDistance(Point from, Point to) {
         return getShortestPath(from, to).size();
+    }
+
+    /**
+     * Test if given point is considered a candidate point during
+     * path generation
+     *
+     * @see GameObject#canMoveThrough()
+     * @return boolean value
+     */
+    boolean canMoveThrough(Point point) {
+        return getObjects(point).stream().filter(o -> (!o.canMoveThrough()))
+                .collect(Collectors.toList()).size() == 0;
     }
 }

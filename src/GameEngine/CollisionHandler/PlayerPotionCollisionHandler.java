@@ -9,11 +9,12 @@ public class PlayerPotionCollisionHandler implements CollisionHandler {
         Player player = (Player)(obj1 instanceof Player ? obj1 : obj2);
         Potion potion = (Potion)(obj1 instanceof Potion ? obj1 : obj2);
 
+
         if (obj1 instanceof Potion)
             res.addFlag(CollisionResult.DELETE_FIRST);
         else
             res.addFlag(CollisionResult.DELETE_SECOND);
-
+      
         player.applyPotionEffect(engine, potion);
         res.addFlag(CollisionResult.REFRESH_EFFECT_TIMER);
 

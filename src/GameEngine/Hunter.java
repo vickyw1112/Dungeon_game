@@ -7,8 +7,12 @@ public class Hunter extends Monster {
         super(location);
     }
 
+    /**
+     * Path generation for hunter monster
+     * @return
+     */
     @Override
-    public void initialize() {
-        this.pathGenerator = new ShortestPathGenerator();
+    public PathGenerator getDefaultPathGenerator() {
+       return new ShortestPathGenerator();
     }
 }

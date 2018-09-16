@@ -31,9 +31,9 @@ public class PointTest {
     public void equalAndCloneTest() {
         p3 = p2.clone();
         p5 = new Point(3, 4);
-        assertEquals(p1.equals(p2), false);
-        assertEquals(p3.equals(p2), true);
-        assertEquals(p5.equals(p3), true);
+        assertNotEquals(p1, p2);
+        assertEquals(p3, p2);
+        assertEquals(p5, p3);
     }
     
     @Test

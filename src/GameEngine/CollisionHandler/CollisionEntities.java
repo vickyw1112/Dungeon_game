@@ -44,7 +44,7 @@ public class CollisionEntities {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof CollisionEntities))
+        if (!(obj instanceof CollisionEntities))
             return false;
 
         return cls1.equals(((CollisionEntities) obj).cls1) && cls2.equals(((CollisionEntities) obj).cls2);
@@ -67,7 +67,6 @@ public class CollisionEntities {
      * in the order that more specific type comes first
      * This is used when this entities is not found in the key of
      * collisionHandlerMap in GameObject
-     * TODO: test this thoroughly
      *
      * @see GameEngine#getCollisionHandler(CollisionEntities)
      * @return list of CollisionEntities in the order that subclasses go first

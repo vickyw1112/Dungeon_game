@@ -10,6 +10,11 @@ public class Exit extends StandardObject {
         super(location);
     }
 
+    /**
+     * registerCollisionHandler method
+     * method to register collisions between players and exit, triggering the winning condition
+     * @param gameEngine
+     */
     public void registerCollisionHandler(GameEngine gameEngine) {
         // handler for exit and player (not sure if this should be in player?)
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),

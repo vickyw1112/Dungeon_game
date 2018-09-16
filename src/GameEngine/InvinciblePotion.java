@@ -7,6 +7,24 @@ public class InvinciblePotion extends Potion {
     public InvinciblePotion(Point location) {
         super(location);
         this.playerEffect = PlayerEffect.INVINCIBLE;
-        this.duration = -1;
+        this.duration = 10;
+    }
+
+    /**
+     * When player get invincible effect, all monsters run away
+     * @param engine game engine to apply side effect on
+     */
+    @Override
+    public void onPlayerGetPotion(GameEngine engine) {
+        engine.updateMonstersMovementStrategy(new RunAwayPathGenerator());
+    }
+
+    /**
+     * Restore all monsters' path generator to default one
+     * @param engine game engine to apply side effect on
+     */
+    @Override
+    public void onPotionExpires(GameEngine engine) {
+        engine.updateMonstersMovementStrategy(Monster.DEFAULT_PATHGEN);
     }
 }

@@ -1,6 +1,6 @@
 package GameEngine;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import GameEngine.utils.Point;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class BoulderTest {
      * Test that boulder collides with any collectable object and it should result in handle
      */
     @Test
-    public void testBoulderCollisionCollectable() throws CollisionHandlerNotImplement{
+    public void testBoulderGoOverCollectable() throws CollisionHandlerNotImplement{
         GameEngine ge = new GameEngine(new Map());
         Key key = new Key(new Point(1,1));
         Boulder boulder = new Boulder(new Point(1,1));
@@ -55,11 +55,10 @@ public class BoulderTest {
 
     /**
      * Testing that the boulder disappears when entering a pit
-     * @throws CollisionHandlerNotImplement
      */
 
     @Test
-    public void testBoulderCollisionPit() {
+    public void testBoulderFallIntoPit() {
         GameEngine ge = new GameEngine(new Map());
         Pit pit = new Pit(new Point(1,1));
         Boulder boulder = new Boulder(new Point(1,1));
@@ -82,11 +81,11 @@ public class BoulderTest {
         player.registerCollisionHandler(ge);
         boulder.registerCollisionHandler(ge);
 
-        assertTrue(boulder.getSpeed() == 0);
+        assertEquals(0, boulder.getSpeed(), 0.0);
         CollisionHandler ch = new PlayerBoulderCollisionHandler();
         CollisionResult res = ch.handle(ge, boulder, player);
 
-        assertEquals(res.getFlags(), CollisionResult.REJECT);
+        assertTrue(res.containFlag(CollisionResult.REJECT));
         assertTrue(boulder.getSpeed() > 0);
         assertEquals(player.getFacing(), boulder.getFacing());
     }

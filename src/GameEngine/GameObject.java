@@ -4,8 +4,8 @@ import GameEngine.utils.*;
 
 public interface GameObject extends Observable {
     /**
-     * This is called when the game actual load the dungeon in the first mode Rather
-     * than GameObject being instantiated.
+     * This is called when the game actual load the dungeon in the first mode
+     * Rather than GameObject being instantiated.
      */
     default void initialize() {
 
@@ -23,7 +23,7 @@ public interface GameObject extends Observable {
      * 
      * @return location
      */
-    public Point getLocation();
+    Point getLocation();
 
     /**
      * Change a new location for an object return true if the location changed,
@@ -34,21 +34,21 @@ public interface GameObject extends Observable {
      *            new location
      * @return whether location changed
      */
-    public boolean setLocation(Point point);
+    boolean setLocation(Point point);
 
     /**
      * Change state and notify observer (front end)
      *
-     * @param state
+     * @param state new state
      */
-    public void changeState(int state);
+    void changeState(int state);
 
     /**
      * Get the Object's current state
      *
      * @return state
      */
-    public int getState();
+    int getState();
 
     /**
      * Register collision handler related to this object
@@ -56,7 +56,7 @@ public interface GameObject extends Observable {
      * @param gameEngine
      *            the game engine
      */
-    public void registerCollisionHandler(GameEngine gameEngine);
+    void registerCollisionHandler(GameEngine gameEngine);
 
 
     /**
@@ -69,5 +69,14 @@ public interface GameObject extends Observable {
      */
     default boolean isBlocking() {
         return false;
+    }
+
+    /**
+     * This is called when the object's position is changing to another grid
+     *
+     * @param engine game engine
+     */
+    default void onUpdatingLocation(GameEngine engine) {
+
     }
 }

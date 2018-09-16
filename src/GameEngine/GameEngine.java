@@ -1,46 +1,59 @@
 package GameEngine;
 
 import GameEngine.CollisionHandler.*;
-import GameEngine.utils.GameObjectObserver;
-import GameEngine.utils.Observable;
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Game engine which store current state of the whole game
+ * Get instantiated when loading a specific map for 1st mode
+ */
 public class GameEngine {
-    private HashMap<Integer, GameObject> objects;
-    private Map map;
+    private final Map map;
     private Player player;
-    private List<Movable> movingObjects;
+    private final List<Movable> movingObjects;
+    private final List<Monster> monsters;
+
     /**
-     * Map for finding collision handler for two specific type of object Key is
-     * CollisionEntities which contains two string of class name in order Value is
-     * the CollisionHandler
+     * Map storing all game object and using their ObjId as key
+     * @see GameObject#getObjID()
+     * @see StandardObject#objId
      */
-    private HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
-    private List<Monster> monsters;
+    private final HashMap<Integer, GameObject> objects;
+
+    /**
+     * Map for finding collision handler for two specific type of object
+     * Key is CollisionEntities which contains two classes
+     * Value is CollisionHandler
+     * Also contains CollisionEntities key which include one or two
+     * super type of a specific type for fallback if specific key cannot be found
+     * @see GameEngine#getCollisionHandler(CollisionEntities)
+     */
+    private final HashMap<CollisionEntities, CollisionHandler> collisionHandlerMap;
+
 
 
     /**
-     * Constructor for GameEngine Load the map from saving For each unique game
-     * object, call it's {@link GameObject#registerCollisionHandler} method
-     * TODO: consider using factory pattern to instantiate all game objects?
-     * TODO: also check Class.forName().getConstructor().newInstance()
+     * Constructor for GameEngine Load the map from saving
+     * For each unique game object,
+     * call it's {@link GameObject#registerCollisionHandler}
+     * and {@link GameObject#initialize()} methods
      *
      * @param map map
      * @param observer front end observer for GameObject state change
      */
     public GameEngine(Map map, GameObjectObserver observer){
-        // TODO init different thing in different places
         this.map = map;
         this.objects = new HashMap<>();
         this.movingObjects = new LinkedList<>();
         this.monsters = new LinkedList<>();
-
 
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
@@ -79,10 +92,12 @@ public class GameEngine {
 
     /**
      * Constructor only takes in map for debugging/testing
-     * @param map
+     * @param map map
      */
     public GameEngine(Map map){
         this(map, obj -> System.out.println(obj + " changed state to: "+ obj.getState()));
+        // to suppress null pointer exception in tests does not involve map
+        this.player = player == null ? new Player(new Point(0, 0)) : player;
     }
 
     /**
@@ -96,20 +111,19 @@ public class GameEngine {
      * Define the behaviour of backend when the player pressed the key for shooting
      * arrow
      *
-     * @return if the player have a arrow to shoot
+     * @return the arrow instance being shot or null if cannot shoot arrow
      */
     public Arrow playerShootArrow() {
-        return player.shootArrow();
+        return player.shootArrow(map);
     }
 
     /**
      * Define the behaviour of backend when the player pressed the key for setting
      * bomb
      *
-     * @return if the player have a bomb to set
+     * @return the bomb instance being set or null if cannot set bomb
      */
     public Bomb playerSetBomb() {
-
         return player.setBomb(map);
     }
 
@@ -129,26 +143,36 @@ public class GameEngine {
      */
     public List<Movable> getMovingObjects() {
         // filter out all obj with speed 0
-        List<Movable> res = new LinkedList<>(movingObjects);
-        res.removeIf(o -> o.getSpeed() == 0);
-        return res;
+        return movingObjects.stream().filter(o -> o.getSpeed() > 0)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Find the handler for given two object and call to handle the collision and
-     * return the collision result to front end
-     * 
-     * @param obj1
-     *            first game obj
-     * @param obj2
-     *            second game obj
+     * Return a list of all game objects in this game
+     *
+     * @return list of all game objects
+     */
+    public List<GameObject> getAllObjects() {
+        return new LinkedList<>(objects.values());
+    }
+
+    /**
+     * Find the correct handler for given two object and call to handle the collision
      *
      * @see CollisionResult
-     * @return CollisionResult
+     * @param obj1 first game obj
+     * @param obj2 second game obj
+     * @return CollisionResult result of collision to be processed by front end
      */
-    public CollisionResult handleCollision(GameObject obj1, GameObject obj2) throws CollisionHandlerNotImplement {
-        CollisionHandler handler = getCollisionHandler(new CollisionEntities(obj1.getClass(), obj2.getClass()));
-
+    public CollisionResult handleCollision(GameObject obj1, GameObject obj2) {
+        CollisionHandler handler = null;
+        try {
+            handler = getCollisionHandler(new CollisionEntities(obj1.getClass(), obj2.getClass()));
+        } catch (CollisionHandlerNotImplement e) {
+            System.err.format("Error when trying to get collision handler for %s and %s\n", obj1, obj2);
+            e.printStackTrace();
+            System.exit(1);
+        }
         return handler.handle(this, obj1, obj2);
     }
 
@@ -158,8 +182,45 @@ public class GameEngine {
      * @return whether the player has won the game
      */
     public boolean checkWiningCondition() {
-        // TODO
-        return false;
+        // TODO: refactor this function
+
+        boolean isAllTreasure = true;
+        boolean isAllMonster = false;
+        boolean isAllSwitch = false;
+        List<Point> boulders = new ArrayList<>();
+        List<Point> floorSwitches = new ArrayList<>();
+        List<Point> exits = new ArrayList<>();
+
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Boulder)
+                boulders.add(((Boulder) obj).location);
+            if(obj instanceof FloorSwitch)
+                floorSwitches.add(((FloorSwitch) obj).location);
+            if(obj instanceof Exit)
+                exits.add(((Exit) obj).location);
+        }
+
+        // check exit
+        if(exits.contains(this.player.location))
+            return true;
+        if(!exits.isEmpty())
+            return false;
+
+        // check boulder on switch
+        if(boulders.equals(floorSwitches))
+            isAllSwitch = true;
+
+        // check treasure in player's inventory
+        for(GameObject obj: objects.values()){
+            if(obj instanceof Treasure)
+                isAllTreasure = false;
+        }
+
+        // monster condition
+        if(this.monsters.size() == 0)
+            isAllMonster = true;
+
+        return (isAllTreasure || isAllMonster || isAllSwitch);
     }
 
     /**
@@ -175,25 +236,18 @@ public class GameEngine {
     public void changeObjectLocation(GameObject object, Point location) {
         if (object.setLocation(location)) {
             map.updateObjectLocation(object, location);
-            // TODO: think of better way to do this
-            if (object instanceof Player) {
-                for (Monster monster : monsters) {
-                    monster.updatePath(map, player);
-                }
-            }
+            object.onUpdatingLocation(this);
         }
     }
 
     /**
      * Get a game object by it's objID
      *
-     * @param objId
-     *            object ID
-     * @return
+     * @param objId object ID
+     * @return GameObject with given id
      */
     public GameObject getObjectById(int objId) {
-
-        return null;
+        return objects.get(objId);
     }
 
     /**
@@ -216,7 +270,7 @@ public class GameEngine {
     /**
      * Interface to register a collision handler for given entities
      */
-    protected void registerCollisionHandler(CollisionEntities entities, CollisionHandler handler) {
+    void registerCollisionHandler(CollisionEntities entities, CollisionHandler handler) {
         collisionHandlerMap.put(entities, handler);
     }
 
@@ -226,7 +280,7 @@ public class GameEngine {
      * classes If no handler can be found throw exception
      *
      * @throws CollisionHandlerNotImplement
-     * @param entities
+     * @param entities entities
      * @return collision handler
      */
     public CollisionHandler getCollisionHandler(CollisionEntities entities) throws CollisionHandlerNotImplement {
@@ -242,5 +296,28 @@ public class GameEngine {
             }
         }
         throw new CollisionHandlerNotImplement(entities.toString());
+    }
+
+    /**
+     * Update all monster's path by their path generator
+     */
+    public void updateMonstersPath() {
+        this.monsters.forEach(monster -> monster.updatePath(map, player));
+    }
+
+    /**
+     * Set all monsters' pathGenerator to given one
+     * if the given one is null, restore all monsters' pathGenerator to default
+     * This is called when player get invincible potion
+     * and called again by front end with null as arg when invincible effect expires
+     *
+     * @see PlayerPotionCollisionHandler#handle
+     * @see Monster#getDefaultPathGenerator()
+     * @param pathGenerator new pathGenerator to set
+     */
+    public void updateMonstersMovementStrategy(PathGenerator pathGenerator) {
+        this.monsters.forEach(monster ->
+            monster.pathGenerator = pathGenerator == null ? monster.getDefaultPathGenerator() : pathGenerator
+        );
     }
 }

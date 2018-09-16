@@ -14,13 +14,9 @@ public class PlayerPotionCollisionHandler implements CollisionHandler {
             res.addFlag(CollisionResult.DELETE_FIRST);
         else
             res.addFlag(CollisionResult.DELETE_SECOND);
-
-        player.addPlayerEffect(potion.getEffect());
-
-        // TODO: improve this
-        if(potion instanceof InvinciblePotion) {
-            // TODO: update monster movement
-        }
+      
+        player.applyPotionEffect(engine, potion);
+        res.addFlag(CollisionResult.REFRESH_EFFECT_TIMER);
 
         return res;
     }

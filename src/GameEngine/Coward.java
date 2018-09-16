@@ -7,26 +7,37 @@ public class Coward extends Monster {
         super(location);
     }
 
-    @Override
-    public void initialize() {
-        // Coward use ShortestPathGenerator by default
-        // but change to RunAwayPathGenerator after getting close to player
-        pathGenerator = new ShortestPathGenerator();
-    }
-
+    /**
+     * SetLocation method for coward
+     * Method returns a point and instantiates the path generation algorithm
+     * @param point
+     *            new location
+     * @return
+     */
     @Override
     public boolean setLocation(Point point) {
         boolean ret = super.setLocation(point);
         // if location changed
         if (ret) {
-            // TODO: Have another function to calculate distance to a specific point
-            // considering obstructive objs
-            int distance = 0;
-            if (distance < 5)
+            if (pathGenerator instanceof ShortestPathGenerator &&
+                    this.pathToDestination.size() < 5)
+                // run away
                 this.pathGenerator = new RunAwayPathGenerator();
-            else if (distance > 10)
+            // if running away and reached the furthest location
+            else if (pathGenerator instanceof RunAwayPathGenerator &&
+                    this.pathToDestination.size() == 0)
+                // chase player again
                 this.pathGenerator = new ShortestPathGenerator();
         }
         return ret;
+    }
+
+    /**
+     * Path generator method for Coward
+     * @return
+     */
+    @Override
+    public PathGenerator getDefaultPathGenerator() {
+        return new ShortestPathGenerator();
     }
 }

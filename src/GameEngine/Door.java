@@ -13,18 +13,6 @@ public class Door extends StandardObject implements Pairable {
         this.state = CLOSED;
     }
 
-    /**
-     * helper function for open door
-     * 
-     * @param key
-     * @return
-     */
-    private boolean isMatchKey(Key key) {
-        if (this.key.equals(key))
-            return true;
-        return false;
-    }
-
     public GameObject getPair() {
         return key;
     }
@@ -36,7 +24,7 @@ public class Door extends StandardObject implements Pairable {
     /**
      * set corresponding key to door
      * 
-     * @param key
+     * @param key key to set
      */
     public void setKey(Key key) {
         this.key = key;
@@ -53,11 +41,11 @@ public class Door extends StandardObject implements Pairable {
      * open door check whether the key is match to the door or not if matching set
      * door's status to open otherwise return false
      * 
-     * @param key
-     * @return
+     * @param key the key that the player is trying to use to open the door
+     * @return whether the door is opened
      */
     public boolean openTheDoor(Key key) {
-        if (isMatchKey(key)) {
+        if (this.key.equals(key)) {
             this.changeState(OPEN);
             return true;
         }

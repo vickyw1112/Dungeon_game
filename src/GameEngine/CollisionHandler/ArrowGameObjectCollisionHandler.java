@@ -6,17 +6,12 @@ public class ArrowGameObjectCollisionHandler implements CollisionHandler {
     @Override
     public CollisionResult handle(GameEngine engine, GameObject obj1, GameObject obj2) {
         Arrow arrow = (Arrow) (obj1 instanceof Arrow ? obj1 : obj2);
-        GameObject obj = (GameObject) (obj1 instanceof Arrow ? obj2 : obj1);
+        GameObject obj = (obj1 instanceof Arrow ? obj2 : obj1);
 
         // Check if arrow is in the moving state
         if (arrow.getState() == Arrow.MOVING && obj.isBlocking()) {
             CollisionResult res = new CollisionResult();
-
-            if (obj1 instanceof Arrow) {
-                res.addFlag(CollisionResult.DELETE_FIRST);
-            } else if (obj2 instanceof Arrow) {
-                res.addFlag(CollisionResult.DELETE_SECOND);
-            }
+            res.addFlag(obj1 instanceof Arrow ? CollisionResult.DELETE_FIRST : CollisionResult.DELETE_SECOND);
             engine.removeGameObject(arrow);
             return res;
         } else {

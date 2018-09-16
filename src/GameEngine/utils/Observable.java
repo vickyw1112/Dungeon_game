@@ -8,12 +8,12 @@ public interface Observable {
     /**
      * Notify all observer
      */
-    public void notifyObservers();
+    void notifyObservers();
 
     /**
      * Add a new observer
-     * @param observer
+     * @param observer new observer
      */
-    public void addObserver(GameObjectObserver observer);
+    void addObserver(GameObjectObserver observer);
 
 }

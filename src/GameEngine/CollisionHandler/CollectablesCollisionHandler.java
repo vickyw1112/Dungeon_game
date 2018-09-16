@@ -16,11 +16,14 @@ public class CollectablesCollisionHandler implements CollisionHandler {
             return new CollisionResult(CollisionResult.HANDLED);
 
         collectable.getCollected(engine, player.getInventory());
+        engine.getMap().removeObject(collectable);
 
         CollisionResult res = new CollisionResult();
+
+        if(engine.checkWiningCondition())
+            res.addFlag(CollisionResult.WIN);
         res.addFlag(obj1 instanceof Collectable ? CollisionResult.DELETE_FIRST : CollisionResult.DELETE_SECOND);
         res.addFlag(CollisionResult.REFRESH_INVENTORY);
-
         return res;
     }
 }

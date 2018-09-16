@@ -1,7 +1,7 @@
 package GameEngine;
 
 public interface Pairable {
-    public GameObject getPair();
+    GameObject getPair();
 
-    public void setPair(GameObject pair);
+    void setPair(GameObject pair);
 }

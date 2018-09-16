@@ -30,7 +30,7 @@ public class DoorTest {
     
     // check when door and key are collision
     @Test
-    public void doorAndKeyMatch() throws CollisionHandlerNotImplement {
+    public void doorAndKeyMatch() {
 
         MapBuilder mapBuilder = new MapBuilder();
         mapBuilder.addObject(player);
@@ -52,7 +52,7 @@ public class DoorTest {
     }
     
     @Test
-    public void doorAndKeyNotMatch() throws CollisionHandlerNotImplement {
+    public void doorAndKeyNotMatch() {
         door.setKey(key2);
 
         player.getInventory().addObject(key1);
@@ -67,7 +67,7 @@ public class DoorTest {
     }
 
     @Test
-    public void closedDoorBlockingTest(){
+    public void closedDoorBlockBoulderTest(){
         CollisionHandler handler = new DoorMovableCollisionHandler();
         Boulder boulder = new Boulder(new Point(1, 1));
 

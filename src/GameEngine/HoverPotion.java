@@ -1,7 +1,6 @@
 package GameEngine;
 
-import GameEngine.utils.PlayerEffect;
-import GameEngine.utils.Point;
+import GameEngine.utils.*;
 
 /**
  * Flow of hover potion
@@ -11,11 +10,9 @@ import GameEngine.utils.Point;
  * 4. After a certain amount of time the front end will tell the back end to cancel potion effect
  */
 public class HoverPotion extends Potion {
-
     public HoverPotion(Point location) {
         super(location);
         this.playerEffect = PlayerEffect.HOVER;
-        this.duration = 10;
+        this.duration = Potion.LAST_FOREVER;
     }
-
 }

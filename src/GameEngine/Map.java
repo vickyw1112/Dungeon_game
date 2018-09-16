@@ -102,7 +102,7 @@ public class Map implements Serializable {
         return ret;
     }
 
-    void serialize(OutputStream outputStream) throws IOException {
+    public void serialize(OutputStream outputStream) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
         out.writeObject(this.map);
     }
@@ -127,7 +127,7 @@ public class Map implements Serializable {
      * @param exception points won't be gone through, if it's null then no exception
      * @return list of points indicating the path, including to but not from
      */
-    public LinkedList<Point> getShortestPathWithException(Point from, Point to, List<Point> exception) {
+    LinkedList<Point> getShortestPathWithException(Point from, Point to, List<Point> exception) {
         List<Point> visited = new LinkedList<>();
         LinkedList<Point> toBeVisited = new LinkedList<>();
         HashMap<Point, Point> path = new HashMap<>();
@@ -175,7 +175,7 @@ public class Map implements Serializable {
      * @param to to
      * @return list of points indicating the path, including to but not from
      */
-    public LinkedList<Point> getShortestPath(Point from, Point to) {
+    LinkedList<Point> getShortestPath(Point from, Point to) {
         return getShortestPathWithException(from, to, null);
     }
 

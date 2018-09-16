@@ -29,11 +29,6 @@ public class CollisionResult {
     private int flags;
 
     /**
-     * Array of length 2 Two objects being collided
-     */
-    public GameObject[] collisionObjects;
-
-    /**
      * Constructor of CollisionResult
      *
      * @param flags

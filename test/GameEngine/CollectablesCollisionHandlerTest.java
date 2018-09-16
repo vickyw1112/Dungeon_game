@@ -58,12 +58,12 @@ public class CollectablesCollisionHandlerTest {
         Treasure t2 = new Treasure(new Point(1, 4));
 
         handler.handle(engine, player, t1);
-        assertTrue(player.containsInventory(t1));
+        assertTrue(player.inventoryContains(t1));
         assertEquals(player.getInventoryCount(Treasure.class), 1);
 
         // stack the second treasure
         handler.handle(engine, player, t2);
-        assertTrue(player.containsInventory(t2));
+        assertTrue(player.inventoryContains(t2));
         assertEquals(player.getInventoryCount(Treasure.class), 2);
     }
 }

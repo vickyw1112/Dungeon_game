@@ -257,7 +257,7 @@ public class Player extends StandardObject implements Movable {
     /**
      * set pushBoulder to true when player intend to push
      */
-    public void setPushBoulder(Boolean val) {
+    public void setPushBoulder(boolean val) {
         this.onPushingBoulder = val;
     }
 
@@ -292,7 +292,7 @@ public class Player extends StandardObject implements Movable {
      * @return
      *          boolean
      */
-    public boolean containsInventory(Collectable obj) {
+    public boolean inventoryContains(Collectable obj) {
         return inventory.contains(obj);
     }
 
@@ -326,15 +326,4 @@ public class Player extends StandardObject implements Movable {
         inventory.addObject(obj);
     }
 
-    /**
-     * method to get the object from player inventory
-     * reduce object count from player inventory
-     * @see Inventory#popObject(Class)
-     * @param cls
-     * @return
-     *          inventory
-     */
-    public Collectable popObjectFromInventory(Class<?> cls) {
-        return inventory.popObject(cls);
-    }
 }

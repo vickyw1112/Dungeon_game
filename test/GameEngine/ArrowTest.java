@@ -50,13 +50,13 @@ public class ArrowTest {
 
         handler.handle(engine, player, arrow);
 
-		assertTrue(player.containsInventory(arrow));
+		assertTrue(player.inventoryContains(arrow));
 		assertEquals(player.getInventoryCount(Arrow.class), 1);
 
         Arrow arrow2 = new Arrow(new Point(1,1));
 
         handler.handle(engine, player, arrow2);
-        assertTrue(player.containsInventory(arrow2));
+        assertTrue(player.inventoryContains(arrow2));
         assertEquals(player.getInventoryCount(Arrow.class), 2);
 
 	}

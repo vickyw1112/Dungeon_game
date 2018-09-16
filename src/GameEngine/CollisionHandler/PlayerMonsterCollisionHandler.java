@@ -20,7 +20,7 @@ public class PlayerMonsterCollisionHandler implements CollisionHandler {
             engine.removeGameObject(monster);
         } else if (player.getInventoryCount(Sword.class) > 0) {
             int n = player.getInventoryCount(Sword.class);
-            player.getInventory().setCount(Sword.class, n - 1);
+            player.setInventoryCount(Sword.class, n - 1);
             res.addFlag(deleteFlag);
             engine.removeGameObject(monster);
         } else {

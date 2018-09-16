@@ -3,10 +3,7 @@ package GameEngine;
 import GameEngine.utils.Point;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Map implements Serializable {
@@ -164,7 +161,18 @@ public class Map implements Serializable {
         return ret;
     }
 
+    /**
+     * a* implementation of fleeing
+     * @param from
+     * @param to
+     * @return
+     */
+    public LinkedList<Point> getRunAwayPath(Point from, Point to) {
 
-
+        LinkedList<Point> ret = new LinkedList<>();
+        PriorityQueue<Point> open = new PriorityQueue<>();
+        LinkedList<Point> closed = new LinkedList<>();
+        return null;
+    }
 
 }

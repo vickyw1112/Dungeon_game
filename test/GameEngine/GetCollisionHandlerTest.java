@@ -19,6 +19,7 @@ public class GetCollisionHandlerTest {
     static Wall wall;
     static Pit pit;
     static Door door;
+    static Exit exit;
 
     @BeforeClass
     static public void beforeTest(){
@@ -34,6 +35,7 @@ public class GetCollisionHandlerTest {
         wall = new Wall(new Point(2,1));
         pit = new Pit(new Point(3,1));
         door = new Door(new Point(5,6));
+        exit = new Exit(new Point(1,2));
         door.setKey(key);
 
         player.registerCollisionHandler(engine);
@@ -47,6 +49,7 @@ public class GetCollisionHandlerTest {
         wall.registerCollisionHandler(engine);
         pit.registerCollisionHandler(engine);
         door.registerCollisionHandler(engine);
+        exit.registerCollisionHandler(engine);
     }
 
     /**
@@ -71,6 +74,9 @@ public class GetCollisionHandlerTest {
         
         CollisionEntities BNPlayer = new CollisionEntities(bomb.getClass(), player.getClass());
         assertTrue(engine.getCollisionHandler(BNPlayer) instanceof CollectablesCollisionHandler);
+
+        CollisionEntities playerExit = new CollisionEntities(player.getClass(), exit.getClass());
+        assertTrue(engine.getCollisionHandler(playerExit) instanceof WinCollisionHandler);
     }
 
     /**

@@ -4,6 +4,12 @@ import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 
 public class InvinciblePotion extends Potion {
+
+    /**
+     * Constructor for InvinciblePotion
+     * takes in location parameter
+     * @param location
+     */
     public InvinciblePotion(Point location) {
         super(location);
         this.playerEffect = PlayerEffect.INVINCIBLE;

@@ -4,6 +4,10 @@ import GameEngine.utils.Point;
 
 public class Pit extends StandardObject {
 
+    /**
+     * Pit Constructor
+     * @param location
+     */
     public Pit(Point location) {
         super(location);
     }

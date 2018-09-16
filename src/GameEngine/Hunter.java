@@ -9,6 +9,7 @@ public class Hunter extends Monster {
 
     /**
      * Path generation for hunter monster
+     * returns a linked list of points
      * @return
      */
     @Override

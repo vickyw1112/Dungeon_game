@@ -6,25 +6,56 @@ import GameEngine.utils.Point;
 import java.util.LinkedList;
 
 public abstract class Monster extends StandardObject implements Movable {
+    /**
+     * monster speed default is 2
+     */
     private static final double SPEED = 2;
+
+    /**
+     * monster has a default path generator
+     * initially set to null
+     */
     static final PathGenerator DEFAULT_PATHGEN = null;
 
+    /**
+     * LinkedList of points that represent the path for monsters
+     */
     transient LinkedList<Point> pathToDestination;
+
+    /**
+     * defining which pathGenerator to use
+     */
     transient PathGenerator pathGenerator;
+
+    /**
+     * variable to check the direction monster is facing
+     */
     private Direction facing;
 
 
-
+    /**
+     * Constructor for Monster
+     * takes in location parameter
+     * @param location
+     */
     public Monster(Point location) {
         super(location);
     }
 
+    /**
+     * initialize method for Monster
+     */
     @Override
     public void initialize() {
         pathToDestination = new LinkedList<>();
         pathGenerator = getDefaultPathGenerator();
     }
 
+    /**
+     * getPath method
+     * returns a linked list of points as path for monster
+     * @return
+     */
     public LinkedList<Point> getPath() {
         return new LinkedList<>(pathToDestination);
     }

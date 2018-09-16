@@ -1,81 +1,101 @@
 package GameEngine;
 
-import java.awt.*;
+import GameEngine.utils.*;
 
-public abstract class GameObject {
-    private static int objCount = 0;
-
-    protected int objId;
-    protected Point location;
-
-
+/**
+ * Super interface for all GameObject
+ * Implementation for most of methods is defined in {@link StandardObject}
+ */
+public interface GameObject extends Observable {
     /**
-     * Constructor for GameObject
-     * Auto generate objId
-     *
-     * @param location initial location of the object
+     * This is called when the game actual load the dungeon in the first mode
+     * Rather than GameObject being instantiated.
      */
-    public GameObject(Point location) {
-        this.location = location;
-        this.objId = objCount++;
+    default void initialize() {
+
     }
-
-
-    // debug only
-    @Override
-    public String toString() {
-        return String.format("<%s|%s>", this.getClass().getName(), this.location.toString());
-    }
-
-
-    /**
-     * Front end provided hook to change a state (view/style)
-     * of a GameObject
-     */
-    static StateChanger stateChanger;
 
     /**
      * Get object id
+     * 
      * @return objID
      */
-    public int getObjID() {
-        return objId;
-    }
-
-    /**
-     * Get class type specific ID
-     *
-     * @return classId
-     */
-    public abstract int getClassId();
-
+    int getObjID();
 
     /**
      * Get location
+     * 
      * @return location
      */
-    public Point getLocation() {
-        return location;
-    }
-
+    Point getLocation();
 
     /**
-     * Call front end hook
-     * {@link StateChanger#changeState}
+     * Change a new location for an object return true if the location changed,
+     * otherwise false
      *
-     * @param state
+     * @see Map#map
+     * @param point
+     *            new location
+     * @return whether location changed
      */
-    public void changeState(int state){
-        stateChanger.changeState(this, state);
-    }
+    boolean setLocation(Point point);
+
+    /**
+     * Change state and notify observer (front end)
+     *
+     * @param state new state
+     */
+    void changeState(int state);
+
+    /**
+     * Get the Object's current state
+     *
+     * @return state
+     */
+    int getState();
 
     /**
      * Register collision handler related to this object
      *
-     * @param gameEngine the game engine
+     * @param gameEngine
+     *            the game engine
      */
-    public void registerCollisionHandler(GameEngine gameEngine) {
-        // by default do nothing
+    void registerCollisionHandler(GameEngine gameEngine);
+
+
+    /**
+     * Test if the current GameObject will block movement of other object if collision occurs
+     * This gets overwritten by boulder and wall to return true
+     * also overwritten by Door which the return value will depends on the state of the door
+     *
+     * @see GameEngine.CollisionHandler.GameObjectMovableCollisionHandler
+     * @see Door#isBlocking()
+     * @return boolean value
+     */
+    default boolean isBlocking() {
+        return false;
     }
 
+    /**
+     * If current GameObject is considered as a candidate point for path generation
+     * By default is opposite of isBlocking
+     * Monster override this is true
+     * Pit override this is false
+     *
+     * @see Map#canMoveThrough(Point)
+     * @see Map#getNonBlockAdjacentPoints(Point)
+     * @return
+     */
+    default boolean canMoveThrough() {
+        return !isBlocking();
+    }
+
+    /**
+     * This is called when the object's position is changing to another grid
+     *
+     * @param engine game engine
+     */
+    default void onUpdatingLocation(GameEngine engine) {
+
+    }
 }

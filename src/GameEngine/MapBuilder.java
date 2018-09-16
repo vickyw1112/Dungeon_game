@@ -1,47 +1,51 @@
 package GameEngine;
 
-import java.awt.*;
+import GameEngine.utils.Point;
 
 /**
- * Builder for map used in second mode of the game
- * where the player gradually construct a map
+ * Builder for map used in second mode of the game where the player gradually
+ * construct a map
  */
 public class MapBuilder {
-    private GameObject[][] map;
+    private final GameObject[][] map;
 
     /**
      * Constructor for MapBuilder
      */
-    public MapBuilder(){
+    public MapBuilder() {
         this.map = new GameObject[Map.DUNGEON_SIZE_X][Map.DUNGEON_SIZE_Y];
     }
 
     /**
      * Add a new object to the map
      *
-     * @param obj
-     * @param location
+     * @param obj object to be added
      */
-    public void addObject(GameObject obj, Point location){
-
+    public void addObject(GameObject obj) {
+        map[obj.getLocation().getX()][obj.getLocation().getY()] = obj;
     }
 
     /**
      * Delete the object in specific location
      *
-     * @param location
+     * @param location location
      */
-    public void deleteObj(Point location){
-
+    public void deleteObject(Point location) {
+        // simply delete the reference
+        map[location.getX()][location.getY()] = null;
     }
 
     /**
      * Get the object in specific location
      *
-     * @param location
+     * @param location location
      * @return the game object
      */
-    public GameObject getObj(Point location){
+    public GameObject getObject(Point location) {
+        return map[location.getX()][location.getY()];
+    }
 
+    public GameObject[][] getMap() {
+        return map;
     }
 }

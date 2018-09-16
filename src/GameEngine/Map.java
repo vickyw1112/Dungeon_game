@@ -6,8 +6,6 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-// TODO: delegate some of the method in GameEngine
-
 public class Map implements Serializable {
     // TODO: we can probably do multi-sized dungeon by changing these const to variable for extension
     public static final int DUNGEON_SIZE_X = 10;
@@ -30,8 +28,6 @@ public class Map implements Serializable {
      *
      * @param mapBuilder map builder
      */
-    // TODO: how are we going to construct a map in second mode?
-    // how to enumerate all subclasses of GameObject
     public Map(MapBuilder mapBuilder) {
         this();
         GameObject[][] builderMap = mapBuilder.getMap();

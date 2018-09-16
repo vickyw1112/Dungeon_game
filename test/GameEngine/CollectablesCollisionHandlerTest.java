@@ -43,7 +43,6 @@ public class CollectablesCollisionHandlerTest {
 
         Monster monster = new Hunter(new Point(1, 3));
         CollisionResult res = new PlayerMonsterCollisionHandler().handle(engine, player, monster);
-        // TODO: change this to res.containFlag
         assertTrue(res.containFlag(CollisionResult.DELETE_SECOND));
 
         assertEquals(player.getInventory().getCount(Sword.class), 4);

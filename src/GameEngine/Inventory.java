@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-// TODO: delegate some of the method in Player
-
 public class Inventory {
     /**
      * Maintain the count for each kind of game object in the inventory Key is the

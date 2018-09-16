@@ -73,6 +73,15 @@ public class Boulder extends StandardObject implements Movable{
     }
 
     /**
+     * If a boulder moved, monsters path
+     * @param engine game engine
+     */
+    @Override
+    public void onUpdatingLocation(GameEngine engine) {
+        engine.updateMonstersPath();
+    }
+
+    /**
      * Define collision handler for boulder
      */
     @Override

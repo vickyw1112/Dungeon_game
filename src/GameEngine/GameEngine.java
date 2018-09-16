@@ -326,4 +326,11 @@ public class GameEngine {
             monster.pathGenerator = pathGenerator == null ? monster.getDefaultPathGenerator() : pathGenerator
         );
     }
+
+    /**
+     * Wrapper for {@link Map#getObjects(Point)}
+     */
+    public List<GameObject> getObjectsAtLocation(Point p) {
+        return map.getObjects(p);
+    }
 }

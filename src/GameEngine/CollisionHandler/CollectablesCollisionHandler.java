@@ -16,7 +16,7 @@ public class CollectablesCollisionHandler implements CollisionHandler {
             return new CollisionResult(CollisionResult.HANDLED);
 
         collectable.getCollected(engine, player.getInventory());
-        engine.getMap().removeObject(collectable);
+        engine.removeGameObject(collectable);
 
         CollisionResult res = new CollisionResult();
 

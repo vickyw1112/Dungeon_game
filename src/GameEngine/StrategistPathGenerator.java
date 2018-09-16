@@ -13,7 +13,12 @@ public class StrategistPathGenerator implements PathGenerator {
          List<GameObject> list = map.getObjects(target);
          for(GameObject obj : list){
              if(obj instanceof Player) {
-                tar = ((Player) obj).getFrontGrid(map);
+                 Point front = ((Player) obj).getFrontGrid(map);
+                if(front != null && map.isBlockingObjHere(front)){
+                    tar = ((Player) obj).getFrontGrid(map);
+                }
+                else
+                    tar = ((Player) obj).location;
              }
          }
          return map.getShortestPath(monster.getLocation(), tar);

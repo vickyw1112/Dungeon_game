@@ -100,11 +100,17 @@ public class Map implements Serializable {
                 continue;
 
             // check if there's blocking obj in that point
-            if (getObjects(curr).stream().filter(o -> (o.isBlocking()))
-                    .collect(Collectors.toList()).size() == 0)
+            if (isBlockingObjHere(curr))
                 ret.add(curr);
         }
         return ret;
+    }
+
+    public boolean isBlockingObjHere(Point curr){
+        if (getObjects(curr).stream().filter(o -> (o.isBlocking()))
+                .collect(Collectors.toList()).size() == 0)
+            return true;
+        return false;
     }
 
     void serialize(OutputStream outputStream) throws IOException {

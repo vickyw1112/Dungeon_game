@@ -75,8 +75,6 @@ public class GetCollisionHandlerTest {
         CollisionEntities BNPlayer = new CollisionEntities(bomb.getClass(), player.getClass());
         assertTrue(engine.getCollisionHandler(BNPlayer) instanceof CollectablesCollisionHandler);
 
-        CollisionEntities playerExit = new CollisionEntities(player.getClass(), exit.getClass());
-        assertTrue(engine.getCollisionHandler(playerExit) instanceof WinCollisionHandler);
     }
 
     /**
@@ -174,6 +172,12 @@ public class GetCollisionHandlerTest {
     public void PlayerPotionHandlerTest() throws CollisionHandlerNotImplement {
         CollisionEntities ent = new CollisionEntities(Player.class, Potion.class);
         assertTrue(engine.getCollisionHandler(ent) instanceof PlayerPotionCollisionHandler);
+    }
+
+    @Test
+     public void  WinCollisionHandlerTest() throws CollisionHandlerNotImplement {
+        CollisionEntities playerExit = new CollisionEntities(player.getClass(), exit.getClass());
+        assertTrue(engine.getCollisionHandler(playerExit) instanceof WinCollisionHandler);
     }
 
 }

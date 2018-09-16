@@ -151,7 +151,7 @@ public class GetCollisionHandlerTest {
     @Test
     public void DoorPlayerHandlerTest() throws CollisionHandlerNotImplement {
         player.initialize();
-        player.getInventory().addObject(key);
+        player.addObjectToInventory(key);
         CollisionEntities ent = new CollisionEntities(Door.class, Player.class);
         assertTrue(engine.getCollisionHandler(ent) instanceof DoorPlayerCollisionHandler);
     }

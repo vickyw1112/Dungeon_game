@@ -18,8 +18,8 @@ public class PlayerMonsterCollisionHandler implements CollisionHandler {
         if (player.getPlayerEffects().contains(PlayerEffect.INVINCIBLE)) {
             res.addFlag(deleteFlag);
             engine.removeGameObject(monster);
-        } else if (player.getInventory().getCount(Sword.class) > 0) {
-            int n = player.getInventory().getCount(Sword.class);
+        } else if (player.getInventoryCount(Sword.class) > 0) {
+            int n = player.getInventoryCount(Sword.class);
             player.getInventory().setCount(Sword.class, n - 1);
             res.addFlag(deleteFlag);
             engine.removeGameObject(monster);

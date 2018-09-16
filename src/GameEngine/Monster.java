@@ -77,7 +77,6 @@ public abstract class Monster extends StandardObject implements Movable {
         boolean ret = super.setLocation(point);
 
         if (ret && !pathToDestination.pop().equals(point)) {
-            // TODO: throw an exception here?
             System.err.println("Inconsistent move: " + this);
             System.exit(1);
         }

@@ -39,7 +39,7 @@ public class DoorTest {
 
         GameEngine engine = new GameEngine(new Map(mapBuilder));
         door.setKey(key1);
-        player.getInventory().addObject(key1);
+        player.addObjectToInventory(key1);
         player.registerCollisionHandler(engine);
         door.registerCollisionHandler(engine);
         assertEquals(door.getState(), Door.CLOSED);
@@ -55,7 +55,7 @@ public class DoorTest {
     public void doorAndKeyNotMatch() {
         door.setKey(key2);
 
-        player.getInventory().addObject(key1);
+        player.addObjectToInventory(key1);
         player.registerCollisionHandler(engine);
         door.registerCollisionHandler(engine);
         

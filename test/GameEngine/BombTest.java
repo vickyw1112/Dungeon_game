@@ -33,14 +33,14 @@ public class BombTest {
         assertEquals(bomb.getState(), Bomb.COLLECTABLESTATE);
         handler.handle(engine, player, bomb);
 
-        assertTrue(player.getInventory().contains(bomb));
-        assertEquals(player.getInventory().getCount(bomb.getClass()), 1);
+        assertTrue(player.containsInventory(bomb));
+        assertEquals(player.getInventoryCount(bomb.getClass()), 1);
 
         Bomb bomb2 = new Bomb(new Point(1, 1));
         handler.handle(engine, player, bomb2);
 
-        assertTrue(player.getInventory().contains(bomb2));
-        assertEquals(player.getInventory().getCount(Bomb.class), 2);
+        assertTrue(player.containsInventory(bomb2));
+        assertEquals(player.getInventoryCount(Bomb.class), 2);
 
     }
 

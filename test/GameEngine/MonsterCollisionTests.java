@@ -30,7 +30,7 @@ public class MonsterCollisionTests {
         mb.addObject(hunter);
 
         ge = new GameEngine(new Map(mb));
-        player.getInventory().addObject(arrow);
+        player.addObjectToInventory(arrow);
 
         player.registerCollisionHandler(ge);
         arrow.registerCollisionHandler(ge);
@@ -55,7 +55,7 @@ public class MonsterCollisionTests {
         assertTrue(res.containFlag(CollisionResult.LOSE));
 
         // have swords
-        player.getInventory().addObject(sword);
+        player.addObjectToInventory(sword);
         ent = new CollisionEntities(Monster.class, Player.class);
         handler = ge.getCollisionHandler(ent);
         res = handler.handle(ge, hunter, player);

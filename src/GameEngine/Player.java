@@ -274,4 +274,57 @@ public class Player extends StandardObject implements Movable {
             return false;
         return door.openTheDoor(key);
     }
+
+    /**
+     * Method to check if inventory does contain given object
+     * @see Inventory#contains(Collectable)
+     * @param obj
+     * @return
+     *          boolean
+     */
+    public boolean containsInventory(Collectable obj) {
+        return inventory.contains(obj);
+    }
+
+    /**
+     * Gets the count of the object in the inventory of the player
+     * @see Inventory#getCount(Class)
+     * @param cls
+     * @return
+     *          int
+     */
+    public int getInventoryCount(Class<?> cls) {
+        return inventory.getCount(cls);
+    }
+
+    /**
+     * Sets the count of the given object in the inventory of the player
+     * @see Inventory#setCount(Class, int)
+     * @param cls
+     * @param count
+     */
+    public void setInventoryCount(Class<?> cls, int count) {
+        inventory.setCount(cls, count);
+    }
+
+    /**
+     * Method to add the object to player inventory
+     * @see Inventory#addObject(Collectable)
+     * @param obj
+     */
+    public void addObjectToInventory(Collectable obj) {
+        inventory.addObject(obj);
+    }
+
+    /**
+     * method to get the object from player inventory
+     * reduce object count from player inventory
+     * @see Inventory#popObject(Class)
+     * @param cls
+     * @return
+     *          inventory
+     */
+    public Collectable popObjectFromInventory(Class<?> cls) {
+        return inventory.popObject(cls);
+    }
 }

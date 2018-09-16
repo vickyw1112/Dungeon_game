@@ -166,6 +166,7 @@ public class Map implements Serializable {
         return ret;
     }
 
+    /**
      * Get shortest distance between two given points
      * considering not passing all blocking objects
      * @param from from point

@@ -131,22 +131,25 @@ public class Map implements Serializable {
     /**
      * Returns the shortest path between two points
      */
-    LinkedList<Point> getShortestPath(Point from, Point to) {
+    public LinkedList<Point> getShortestPath(Point from, Point to) {
         List<Point> visited = new LinkedList<>();
         LinkedList<Point> toBeVisited = new LinkedList<>();
         HashMap<Point, Point> path = new HashMap<>();
         toBeVisited.add(from);
         while (toBeVisited.size() > 0) {
             Point curr = toBeVisited.pop();
-            if (visited.contains(curr))
+            if (visited.contains(curr)) {
                 continue;
-            if (curr.equals(to))
+            }
+            if (curr.equals(to)) {
                 break;
+            }
             visited.add(curr);
 
             for (Point next : this.getNonBlockAdjacentPoints(curr)) {
-                if (visited.contains(next))
+                if (visited.contains(next)) {
                     continue;
+                }
                 path.put(next, curr); // next is from curr
                 toBeVisited.add(next);
             }

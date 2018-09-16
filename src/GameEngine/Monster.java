@@ -25,6 +25,10 @@ public abstract class Monster extends StandardObject implements Movable {
         pathGenerator = getDefaultPathGenerator();
     }
 
+    public LinkedList<Point> getPath() {
+        return pathToDestination;
+    }
+
     /**
      * Get current facing
      *

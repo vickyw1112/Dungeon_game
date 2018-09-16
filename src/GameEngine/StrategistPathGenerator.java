@@ -1,21 +1,16 @@
 package GameEngine;
 
-import GameEngine.utils.Direction;
 import GameEngine.utils.Point;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class StrategistPathGenerator implements PathGenerator {
     @Override
-    public LinkedList<Point> generatePath(Map map, Monster monster, Point target) {
-         Point tar = null;
-         List<GameObject> list = map.getObjects(target);
-         for(GameObject obj : list){
-             if(obj instanceof Player) {
-                tar = ((Player) obj).getFrontGrid(map);
-             }
+    public LinkedList<Point> generatePath(Map map, Monster monster, Player player) {
+         Point target = player.getFrontGrid(map);
+         if(target != null && map.canMoveThrough(target)) {
+             return map.getShortestPath(monster.location, target);
          }
-         return map.getShortestPath(monster.getLocation(), tar);
+         return map.getShortestPath(monster.location, player.location);
     }
 }

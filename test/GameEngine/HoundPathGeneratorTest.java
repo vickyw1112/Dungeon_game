@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class MonsterMovementTest {
+public class HoundPathGeneratorTest {
     private GameEngine engine;
     private MapBuilder mb;
     private Map map;

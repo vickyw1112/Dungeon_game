@@ -9,12 +9,12 @@ public class ShortestPathGenerator implements PathGenerator {
      * 
      * @param map map
      * @param monster monster
-     * @param target target point
+     * @param player target point
      * @return list of Point indicating the path
      */
     @Override
-    public LinkedList<Point> generatePath(Map map, Monster monster, Point target) {
-        return map.getShortestPath(monster.getLocation(), target);
+    public LinkedList<Point> generatePath(Map map, Monster monster, Player player) {
+        return map.getShortestPath(monster.getLocation(), player.location);
     }
 
 }

@@ -203,6 +203,6 @@ public class Map implements Serializable {
      */
     boolean canMoveThrough(Point point) {
         return getObjects(point).stream().filter(o -> (!o.canMoveThrough()))
-                .collect(Collectors.toList()).size() == 0;
+                .collect(Collectors.toList()).size() == 0 && isValidPoint(point);
     }
 }

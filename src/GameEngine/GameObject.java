@@ -60,10 +60,11 @@ public interface GameObject extends Observable {
 
 
     /**
-     * Test if the current GameObject is blocking movements of other objects
+     * Test if the current GameObject will block movement of other object if collision occurs
      * This gets overwritten by boulder and wall to return true
      * also overwritten by Door which the return value will depends on the state of the door
      *
+     * @see GameEngine.CollisionHandler.GameObjectMovableCollisionHandler
      * @see Door#isBlocking()
      * @return boolean value
      */
@@ -74,6 +75,8 @@ public interface GameObject extends Observable {
     /**
      * If current GameObject is considered as a candidate point for path generation
      * By default is opposite of isBlocking
+     * Monster override this is true
+     * Pit override this is false
      *
      * @see Map#canMoveThrough(Point)
      * @see Map#getNonBlockAdjacentPoints(Point)

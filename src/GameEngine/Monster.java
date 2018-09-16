@@ -30,11 +30,23 @@ public abstract class Monster extends StandardObject implements Movable {
     }
 
     /**
-     * Monster will block movement of other object
+     * Monster will block movement if collision occurs
      * @return true
      */
     @Override
     public boolean isBlocking() {
+        return true;
+    }
+
+
+    /**
+     * Point with Monster on it should be considered as
+     * a candidate point for path generation
+     *
+     * @return true
+     */
+    @Override
+    public boolean canMoveThrough() {
         return true;
     }
 
@@ -93,7 +105,7 @@ public abstract class Monster extends StandardObject implements Movable {
             return Direction.RIGHT;
         } else if (this.location.getY() < next.getY()) {
             return Direction.DOWN;
-        } else if (this.location.getY() < next.getY()) {
+        } else if (this.location.getY() > next.getY()) {
             return Direction.UP;
         }
         System.err.format("Cannot determine next location (%s) for :%s\n", next, this);
@@ -110,7 +122,7 @@ public abstract class Monster extends StandardObject implements Movable {
      * @param player
      */
     public void updatePath(Map map, Player player) {
-        pathToDestination = pathGenerator.generatePath(map, this, player.location);
+        pathToDestination = pathGenerator.generatePath(map, this, player);
         if(pathToDestination.peek() != null)
             facing = determineFacing(pathToDestination.peek());
     }

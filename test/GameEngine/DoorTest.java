@@ -68,7 +68,7 @@ public class DoorTest {
 
     @Test
     public void closedDoorBlockBoulderTest(){
-        CollisionHandler handler = new DoorMovableCollisionHandler();
+        CollisionHandler handler = new GameObjectMovableCollisionHandler();
         Boulder boulder = new Boulder(new Point(1, 1));
 
         assertEquals(door.getState(), Door.CLOSED);

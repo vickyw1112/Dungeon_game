@@ -5,6 +5,9 @@ import GameEngine.utils.Point;
 
 import java.util.LinkedList;
 
+/**
+ * Super class for all Monster instance
+ */
 public abstract class Monster extends StandardObject implements Movable {
     private static final double SPEED = 2;
     static final PathGenerator DEFAULT_PATHGEN = null;

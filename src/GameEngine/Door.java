@@ -8,6 +8,8 @@ public class Door extends StandardObject implements Pairable {
     public static final int OPEN = 1;
     public static final int CLOSED = 0;
 
+
+
     public Door(Point location) {
         super(location);
         this.state = CLOSED;
@@ -41,7 +43,8 @@ public class Door extends StandardObject implements Pairable {
      * Open door check whether the key is match to the door or not if matching set
      * door's status to open otherwise return false
      * If the door is successfully opened, also update all monster's path
-     * 
+     *
+     * @param engine game engine
      * @param key the key that the player is trying to use to open the door
      * @return whether the door is opened
      */
@@ -60,18 +63,12 @@ public class Door extends StandardObject implements Pairable {
     }
 
     /**
-     * Collision handle method override for Player/Door interaction
+     * method override for Player/Door interaction
      */
     @Override
     public void registerCollisionHandler(GameEngine gameEngine) {
-
         //player and door
         gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Player.class),
               new DoorPlayerCollisionHandler());
-
-        // closed door should reject all movable object
-        // for all movable object: can through open door
-        gameEngine.registerCollisionHandler(new CollisionEntities(this.getClass(), Movable.class),
-                new DoorMovableCollisionHandler());
     }
 }

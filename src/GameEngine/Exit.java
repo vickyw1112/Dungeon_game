@@ -1,6 +1,5 @@
 package GameEngine;
 
-import GameEngine.CollisionHandler.CollisionEntities;
 import GameEngine.utils.Point;
 import GameEngine.CollisionHandler.*;
 

@@ -149,7 +149,7 @@ public class Player extends StandardObject implements Movable {
             return null;
 
         map.updateObjectLocation(bomb, setPosition);
-        bomb.changeState(Bomb.ALMOSTLIT);
+        bomb.changeState(Bomb.LIT);
         return bomb; // the front end will see an almost lit bomb and then use bomb.destroy (front
                      // end deals with most of this)
     }
@@ -194,7 +194,6 @@ public class Player extends StandardObject implements Movable {
      *
      * @see Player#setBomb
      * @see Player#shootArrow
-     * @see Object TODO: add stategiest path finder here
      * @return the location of that grid or null if that grid is out of bound
      */
     Point getFrontGrid(Map map) {
@@ -268,11 +267,11 @@ public class Player extends StandardObject implements Movable {
      * @param door door to open
      * @return boolean indicating whether the door is successfully opened
      */
-    public boolean openDoor(Door door){
+    public boolean openDoor(GameEngine engine, Door door){
         Key key = (Key) inventory.popObject(Key.class);
         if(key == null)
             return false;
-        return door.openTheDoor(key);
+        return door.openTheDoor(engine, key);
     }
 
     /**

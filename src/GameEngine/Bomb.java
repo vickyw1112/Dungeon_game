@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bomb extends StandardObject implements Collectable {
-    private static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
+    public static final long TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
+    private static final long EXPLOSION_TIMER = 100; // change to EXPLODE state at last 100 ms
 
-    public static final int ALMOSTLIT = 1; // will find a better name
-    public static final int LIT = 2;
-
-    private double timer;
+    public static final int LIT = 1;
+    public static final int EXPLODE = 2; // will find a better name
 
 
     /**
@@ -22,7 +21,6 @@ public class Bomb extends StandardObject implements Collectable {
     public Bomb(Point location) {
         super(location);
         state = COLLECTABLESTATE;
-        timer = TIMER;
     }
 
     /**
@@ -30,8 +28,10 @@ public class Bomb extends StandardObject implements Collectable {
      * Call to change state for different style of bomb
      */
     public void updateTimer(double timer) {
-        this.timer = timer;
-        // TODO: update state for diff remain time
+        // display the explosion pic at very last 100 ms
+        if(timer <= 100){
+            this.changeState(EXPLODE);
+        }
     }
 
     /**
@@ -45,16 +45,10 @@ public class Bomb extends StandardObject implements Collectable {
      *         if no objects are destroyed or null if player is died during
      *         explosion
      */
-    /*
-     * TODO: think about how front end should call bomb's explode method in a
-     * generic way, e.g. could have a interface for all object can be invoke after
-     * delaying for some time period then override them in individual sub class
-     */
     public List<GameObject> explode(GameEngine engine) {
 
         int x = this.location.getX();
         int y = this.location.getY();
-        Map map = engine.getMap();
         // list of positions maybe implement this function in point class
         // (get surrounding points)
         Point[] checkPositions = new Point[5];
@@ -69,11 +63,12 @@ public class Bomb extends StandardObject implements Collectable {
 
         // cycle through each position
         for (Point currPos : checkPositions) {
-            adjacentObj.addAll(map.getObjects(currPos));
+            adjacentObj.addAll(engine.getObjectsAtLocation(currPos));
         }
 
         List<GameObject> ret = new ArrayList<>();
 
+        // remove all adjacent Boulder and Monster
         for (GameObject obj : adjacentObj) {
             if (obj instanceof Boulder || obj instanceof Monster) {
                 engine.removeGameObject(obj);

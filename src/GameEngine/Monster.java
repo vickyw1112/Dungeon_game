@@ -116,7 +116,6 @@ public abstract class Monster extends StandardObject implements Movable {
      * Update monster's path by its strategy
      * also update facing to move towards first point in the path
      *
-     * TODO: also update when somewhere on the path gets blocked!
      * @param map
      * @param player
      */

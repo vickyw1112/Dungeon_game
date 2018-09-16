@@ -38,15 +38,17 @@ public class Door extends StandardObject implements Pairable {
     }
 
     /**
-     * open door check whether the key is match to the door or not if matching set
+     * Open door check whether the key is match to the door or not if matching set
      * door's status to open otherwise return false
+     * If the door is successfully opened, also update all monster's path
      * 
      * @param key the key that the player is trying to use to open the door
      * @return whether the door is opened
      */
-    public boolean openTheDoor(Key key) {
+    public boolean openTheDoor(GameEngine engine, Key key) {
         if (this.key.equals(key)) {
             this.changeState(OPEN);
+            engine.updateMonstersPath();
             return true;
         }
         return false;

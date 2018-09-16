@@ -26,7 +26,7 @@ public abstract class Monster extends StandardObject implements Movable {
     }
 
     public LinkedList<Point> getPath() {
-        return pathToDestination;
+        return new LinkedList<>(pathToDestination);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class Monster extends StandardObject implements Movable {
         }
 
         // if location changed, determine new facing
-        if (ret) {
+        if (ret && pathToDestination.size() > 0) {
             facing = determineFacing(pathToDestination.peek());
         }
         return ret;
@@ -143,5 +143,18 @@ public abstract class Monster extends StandardObject implements Movable {
         }
         // ignore everything else
         return 0;
+    }
+
+    /**
+     * Whenever the monster is changing location
+     * update path if using run away generator
+     * since it only returns one point at a time
+     *
+     * @see RunAwayPathGenerator#generatePath(Map, Monster, Player)
+     * @param engine game engine
+     */
+    @Override
+    public void onUpdatingLocation(GameEngine engine) {
+        updatePath(engine.getMap(), engine.player);
     }
 }

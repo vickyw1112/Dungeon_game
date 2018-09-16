@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
  */
 public class GameEngine {
     private final Map map;
-    private Player player;
     private final List<Movable> movingObjects;
     private final List<Monster> monsters;
+    Player player;
+
 
     /**
      * Map storing all game object and using their ObjId as key

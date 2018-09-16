@@ -59,8 +59,6 @@ public class ShortestPathGeneratorTest {
         long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = map.getShortestPath(monster.getLocation(), player.getLocation());
-        long time = System.nanoTime() - start;
-        System.out.println(time);
         LinkedList<Point> check = new LinkedList<>();
 
         check.add(new Point(1,2));
@@ -80,11 +78,8 @@ public class ShortestPathGeneratorTest {
         Boulder boulder = new Boulder(new Point(1,1 ));
         mb.addObject(boulder);
         map = new Map(mb);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = map.getShortestPath(monster.getLocation(), player.getLocation());
-        long time = System.nanoTime() - start;
-        System.out.println(time);
         LinkedList<Point> check = new LinkedList<>();
 
         check.add(new Point(1,2));
@@ -111,8 +106,6 @@ public class ShortestPathGeneratorTest {
         long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = map.getShortestPath(monster.getLocation(), player.getLocation());
-        long time = System.nanoTime() - start;
-        System.out.println(time);
         LinkedList<Point> check = new LinkedList<>();
 
         check.add(new Point(1,2));
@@ -137,11 +130,8 @@ public class ShortestPathGeneratorTest {
         Door door = new Door(new Point(1,1));
         mb.addObject(door);
         map = new Map(mb);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = map.getShortestPath(monster.getLocation(), player.getLocation());
-        long time = System.nanoTime() - start;
-        System.out.println(time);
         LinkedList<Point> check = new LinkedList<>();
 
         check.add(new Point(1,2));

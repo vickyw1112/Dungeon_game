@@ -49,34 +49,39 @@ public class RunAwayPathGeneratorTest {
         mb.addObject(wall5);
         mb.addObject(wall6);
         mb.addObject(wall7);
+        mb.addObject(monster);
 
         map = new Map(mb);
         engine = new GameEngine(map);
         player.initialize();
+        player.applyPotionEffect(engine, invincibility);
+
     }
 
-    /**
-     *
-     */
+
     @Test
     public void runAwayPathTest() {
-        player.applyPotionEffect(engine, invincibility);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = monster.getPath();
-        long time = System.nanoTime() - start;
-        System.out.println(time);
+        assertTrue(monster.pathGenerator instanceof RunAwayPathGenerator);
 
-        Point check = new Point(4,0);
+        Point check = new Point(3,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(4,0);
+        assertEquals(check, path.pop());
+
+
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(5,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(6,0);
-        assertEquals(check, path.pop());
-
-        check.move(7,0);
         assertEquals(check, path.pop());
     }
 
@@ -87,37 +92,45 @@ public class RunAwayPathGeneratorTest {
     @Test
     public void runAwayPathBoulderTest() {
         Boulder boulder = new Boulder(new Point(8, 1));
-        Wall walltest = new Wall(new Point(9,0));
         mb.addObject(boulder);
-        mb.addObject(walltest);
         map = new Map(mb);
+        engine = new GameEngine(map);
 
         player.applyPotionEffect(engine, invincibility);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = monster.getPath();
-        long time = System.nanoTime() - start;
-        System.out.println(time);
+        Point check = new Point(3,0);
 
-        Point check = new Point(4,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(4,0);
+        assertEquals(check, path.pop());
+
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(5,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(6,0);
         assertEquals(check, path.pop());
 
-        check.move(7,0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(7, 0);
         assertEquals(check, path.pop());
 
-        check.move(8, 0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(8,0);
         assertEquals(check, path.pop());
 
-        check.move(8,1);
-        assertEquals(check, path.pop());
-
-        check.move(8,2);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(9,0);
         assertEquals(check, path.pop());
     }
 
@@ -132,34 +145,44 @@ public class RunAwayPathGeneratorTest {
         mb.addObject(pit);
         mb.addObject(walltest);
         map = new Map(mb);
+        engine = new GameEngine(map);
 
         player.applyPotionEffect(engine, invincibility);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = monster.getPath();
-        long time = System.nanoTime() - start;
-        System.out.println(time);
 
-        Point check = new Point(4,0);
+
+        Point check = new Point(3,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(4,0);
+        assertEquals(check, path.pop());
+
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(5,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(6,0);
         assertEquals(check, path.pop());
 
-        check.move(7,0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(7, 0);
         assertEquals(check, path.pop());
 
-        check.move(8, 0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(8,0);
         assertEquals(check, path.pop());
 
-        check.move(8,1);
-        assertEquals(check, path.pop());
-
-        check.move(8,2);
-        assertEquals(check, path.pop());
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        assertTrue(path.size() == 0);
     }
 
     /**
@@ -169,37 +192,45 @@ public class RunAwayPathGeneratorTest {
     @Test
     public void runAwayDoorTest() {
         Door door = new Door(new Point(8, 1));
-        Wall walltest = new Wall(new Point(9,0));
         mb.addObject(door);
-        mb.addObject(walltest);
         map = new Map(mb);
+        engine = new GameEngine(map);
 
         player.applyPotionEffect(engine, invincibility);
-        long start = System.nanoTime();
         engine.updateMonstersPath();
         LinkedList<Point> path = monster.getPath();
-        long time = System.nanoTime() - start;
-        System.out.println(time);
 
-        Point check = new Point(4,0);
+        Point check = new Point(3,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(4,0);
+        assertEquals(check, path.pop());
+
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(5,0);
         assertEquals(check, path.pop());
 
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
         check.move(6,0);
         assertEquals(check, path.pop());
 
-        check.move(7,0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(7, 0);
         assertEquals(check, path.pop());
 
-        check.move(8, 0);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(8,0);
         assertEquals(check, path.pop());
 
-        check.move(8,1);
-        assertEquals(check, path.pop());
-
-        check.move(8,2);
+        engine.changeObjectLocation(monster, check);
+        path = monster.getPath();
+        check.move(9,0);
         assertEquals(check, path.pop());
     }
 

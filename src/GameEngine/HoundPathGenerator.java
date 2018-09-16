@@ -9,6 +9,8 @@ public class HoundPathGenerator implements PathGenerator {
 
     /**
      * Path generation method for hound monster
+     * takes in parameters map, monster, player
+     * returns a linked list of points
      * @param map
      * @param monster
      * @param player

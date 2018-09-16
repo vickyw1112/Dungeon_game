@@ -32,7 +32,16 @@ public class Player extends StandardObject implements Movable {
      */
     private boolean onPushingBoulder;
 
+    /**
+     * Whether player has picked up a potion
+     * This is changed when player collides with potiion
+     * @see Potion
+     */
     private transient Set<PlayerEffect> effects;
+
+    /**
+     * field for the direction player is facing
+     */
     private Direction facing;
 
 
@@ -50,7 +59,9 @@ public class Player extends StandardObject implements Movable {
         onPushingBoulder = false;
     }
 
-
+    /**
+     * initialize method for player
+     */
     @Override
     public void initialize() {
         inventory = new Inventory();

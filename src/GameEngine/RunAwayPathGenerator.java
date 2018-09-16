@@ -6,6 +6,16 @@ import java.util.*;
 
 public class RunAwayPathGenerator implements PathGenerator {
 
+    /**
+     * runAwayPathGenerator method
+     * path generator method when monsters run away from the player due to effects or inherent behaviours of monsters
+     * takes in map, monster, player parameters
+     * returns a linked list of points
+     * @param map
+     * @param monster
+     * @param player
+     * @return
+     */
     @Override
     public LinkedList<Point> generatePath(Map map, Monster monster, Player player) {
         List<Point> points = map.getNonBlockAdjacentPoints(monster.location);

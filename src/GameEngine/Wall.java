@@ -8,6 +8,11 @@ public class Wall extends StandardObject {
         super(location);
     }
 
+    /**
+     * isBlocking method returns always true for Walls
+     * @return
+     *          boolean
+     */
     @Override
     public boolean isBlocking() {
         return true;

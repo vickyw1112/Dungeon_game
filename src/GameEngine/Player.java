@@ -44,6 +44,10 @@ public class Player extends StandardObject implements Movable {
      */
     private Direction facing;
 
+    /**
+     * If the player is currently moving
+     */
+    private boolean isMoving;
 
 
     /**
@@ -67,6 +71,10 @@ public class Player extends StandardObject implements Movable {
         inventory = new Inventory();
         effects = new HashSet<>();
         onPushingBoulder = false;
+    }
+
+    public void setIsMoving(boolean val){
+        isMoving = val;
     }
 
     /**
@@ -121,7 +129,7 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public double getSpeed() {
-        return onPushingBoulder ? SPEED / 2 : SPEED;
+        return isMoving ? (onPushingBoulder ? SPEED / 2 : SPEED) : 0;
     }
 
     /**

@@ -58,6 +58,8 @@ public class Map implements Serializable {
      * Remove a specific object from the map
      */
     public void removeObject(GameObject obj) {
+        if(obj instanceof Monster)
+            GameEngine.MONSTERKILLED++; // add static to count monster to be killed
         map[obj.getLocation().getX()][obj.getLocation().getY()].remove(obj);
     }
 

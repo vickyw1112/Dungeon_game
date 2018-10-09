@@ -14,7 +14,7 @@ public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player Unit is grid per second
      */
-    public static final double SPEED = 2;
+    public static final double SPEED = 4;
 
     /**
      * transient field so that won't be serialized
@@ -115,11 +115,11 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public boolean setLocation(Point point) {
-        if (this.location == point)
-            return false;
-        this.onPushingBoulder = false;
-        this.location = point;
-        return true;
+        if(super.setLocation(point)) {
+            this.onPushingBoulder = false;
+            return true;
+        }
+        return false;
     }
 
     /**

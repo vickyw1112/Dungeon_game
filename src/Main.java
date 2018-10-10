@@ -1,4 +1,4 @@
-import View.DungeonPlayScreen;
+import View.DungeonPlay;
 import javafx.application.Application;
 import java.io.IOException;
 import javafx.stage.Stage;
@@ -11,8 +11,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        DungeonPlayScreen dungeonPlayScreen = new DungeonPlayScreen(primaryStage);
-        dungeonPlayScreen.start();
+        DungeonPlay dungeonPlay = new DungeonPlay(primaryStage);
+        dungeonPlay.start();
     }
 
 }

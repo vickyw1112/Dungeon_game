@@ -29,7 +29,7 @@ public class InstructionScreenController extends Controller {
 
 	@FXML
 	public void handleBackButton() {
-		Screen cs = new StartScreen(this.getStage(), "Dungeon instruction", "View/InstructionScreen.fxml");
+		Screen cs = new StartScreen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
 		Controller controller = new StartScreenController(this.getStage());
 		cs.display(controller);
 	}

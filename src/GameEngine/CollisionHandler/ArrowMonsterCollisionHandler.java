@@ -14,12 +14,15 @@ public class ArrowMonsterCollisionHandler implements CollisionHandler {
 
         // Check if arrow is in the moving state
         if (arrow.getState() == MOVING) {
-            res.addFlag(CollisionResult.DELETE_BOTH);
-            engine.removeGameObject(arrow);
-            engine.removeGameObject(monster);
+            res.addFlag(CollisionResult.DELETE_FIRST);
+            res.addFlag(CollisionResult.DELETE_SECOND);
+
+            engine.removeGameObject(obj1);
+            engine.removeGameObject(obj2);
+
+            if(engine.checkWiningCondition())
+                res.addFlag(CollisionResult.WIN);
         }
-        if(engine.checkWiningCondition())
-            res.addFlag(CollisionResult.WIN);
         return res;
 
     }

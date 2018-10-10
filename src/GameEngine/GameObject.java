@@ -98,4 +98,15 @@ public interface GameObject extends Observable {
     default void onUpdatingLocation(GameEngine engine) {
 
     }
+
+    /**
+     * Get the class name
+     *
+     * @return classname
+     */
+    default String getClassName(){
+        return getClass().getSimpleName();
+    }
+
+
 }

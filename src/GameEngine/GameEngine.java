@@ -56,6 +56,7 @@ public class GameEngine {
         this.objects = new HashMap<>();
         this.movingObjects = new LinkedList<>();
         this.monsters = new LinkedList<>();
+        this.collisionHandlerMap = new HashMap<>();
 
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
@@ -68,12 +69,12 @@ public class GameEngine {
                 this.monsters.add((Monster) obj);
 
             this.objects.put(obj.getObjID(), obj);
+            obj.registerCollisionHandler(this);
         }
 
         // sort monsters in correct order
         monsters.sort(Monster::compare);
 
-        this.collisionHandlerMap = new HashMap<>();
 
         // register collisionHandler for (GameObject, GameObject) for default handler
         // fall back mechanism see GameEngine#getCollisionHandler
@@ -82,6 +83,8 @@ public class GameEngine {
         // register collisionHandler for (GameObject, Movable) for GameObjectMovableCollisionHandler
         registerCollisionHandler(new CollisionEntities(GameObject.class, Movable.class),
                 new GameObjectMovableCollisionHandler());
+
+        updateMonstersPath();
     }
 
     /**
@@ -121,7 +124,10 @@ public class GameEngine {
      * @return the arrow instance being shot or null if cannot shoot arrow
      */
     public Arrow playerShootArrow() {
-        return player.shootArrow(map);
+        Arrow arrow = player.shootArrow(map);
+        if(arrow != null)
+            movingObjects.add(arrow);
+        return arrow;
     }
 
     /**
@@ -249,6 +255,7 @@ public class GameEngine {
         if (object.setLocation(location)) {
             map.updateObjectLocation(object, location);
             object.onUpdatingLocation(this);
+            System.out.format("%s updated location\n", object);
         }
     }
 

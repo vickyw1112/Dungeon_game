@@ -42,7 +42,8 @@ public class MonsterCollisionTests {
         CollisionEntities ent = new CollisionEntities(Arrow.class, Monster.class);
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, arrow, hunter);
-        assertTrue(res.containFlag(CollisionResult.DELETE_BOTH));
+        assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
+        assertTrue(res.containFlag(CollisionResult.DELETE_SECOND));
         assertTrue(res.containFlag(CollisionResult.WIN));
     }
 

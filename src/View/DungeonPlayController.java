@@ -258,6 +258,12 @@ public class DungeonPlayController {
 		cs.start();
 	}
 
+	@FXML
+	public void handleRestartButton(){
+		DungeonPlayScreen cs = new DungeonPlayScreen(currStage);
+		cs.start();
+	}
+
 
 	private void initMap() {
 		Monster hunter;

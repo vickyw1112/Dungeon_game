@@ -1,17 +1,10 @@
 package View;
 import GameEngine.*;
-import GameEngine.CollisionHandler.CollisionResult;
 import GameEngine.Map;
-import GameEngine.utils.Direction;
 import GameEngine.utils.Point;
 import javafx.animation.AnimationTimer;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -20,16 +13,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-import static GameEngine.utils.Direction.DOWN;
-import static GameEngine.utils.Direction.RIGHT;
-import static View.DungeonPlay.GRID_SIZE;
 
 public class DungeonPlayScreen {
 

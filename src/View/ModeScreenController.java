@@ -3,7 +3,6 @@ package View;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,12 +33,7 @@ public class ModeScreenController {
 
 	@FXML
 	public void handlePlayButton() {
-		try {
-			new DungeonPlayScreen(currStage).start();
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-
+		new DungeonPlayScreen(currStage).start();
 	}
 
 	@FXML

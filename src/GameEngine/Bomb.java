@@ -58,11 +58,12 @@ public class Bomb extends StandardObject implements Collectable {
         // include the location of bomb as boulder/monster can go over it
         checkPositions[4] = new Point(x, y);
 
-        ArrayList<GameObject> adjacentObj = new ArrayList<>();
+        List<GameObject> adjacentObj = new ArrayList<>();
 
         // cycle through each position
         for (Point currPos : checkPositions) {
-            adjacentObj.addAll(engine.getObjectsAtLocation(currPos));
+            if(engine.getMap().isValidPoint(currPos))
+                adjacentObj.addAll(engine.getObjectsAtLocation(currPos));
         }
 
         List<GameObject> ret = new ArrayList<>();
@@ -78,6 +79,8 @@ public class Bomb extends StandardObject implements Collectable {
         }
 
         engine.removeGameObject(this); // remove reference of this Lit Bomb
+        // removal of a boulder can lead to new path for monsters
+        engine.updateMonstersPath();
         return ret;
     }
 }

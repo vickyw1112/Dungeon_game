@@ -47,6 +47,8 @@ public class CheckWinningConditionTest {
 
     @Test
     public void treasureWinTest(){
+        boolean haha = ge.checkWiningCondition();
+        assertFalse(haha);
         treasure1.getCollected(ge, player.getInventory());
         assertFalse(ge.checkWiningCondition());
         treasure2.getCollected(ge, player.getInventory());
@@ -59,6 +61,8 @@ public class CheckWinningConditionTest {
         assertFalse(ge.checkWiningCondition());
         ge.removeGameObject(hunter);
         assertTrue(ge.checkWiningCondition());
+        GameEngine.MONSTERKILLED = 0;
+        assertFalse(ge.checkWiningCondition());
 
     }
 

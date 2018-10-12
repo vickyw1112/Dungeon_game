@@ -6,13 +6,19 @@ import GameEngine.Map;
 import GameEngine.utils.Direction;
 import GameEngine.utils.Point;
 import javafx.animation.AnimationTimer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -24,6 +30,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class DungeonPlayScreen {
 
@@ -109,6 +116,39 @@ public class DungeonPlayScreen {
                     }
                 }
 
+                if(keyCodes.contains(KeyCode.B)){
+                    Bomb bomb = engine.playerSetBomb();
+                    if(bomb != null){
+                        ImageView imageView = new ImageView(imgMap.get(bomb.getClassName()));
+                        imageView.setId(Integer.toString(bomb.getObjID()));
+                        imageView.setTranslateX(bomb.getLocation().getX() * GRID_SIZE);
+                        imageView.setTranslateY(bomb.getLocation().getY() * GRID_SIZE);
+                        dungeon.getChildren().add(imageView);
+                        Timeline timeline = new Timeline();
+                        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                System.out.format("%s exploded\n", bomb);
+                                List<GameObject> destroyedObjects = bomb.explode(engine);
+
+                                if(destroyedObjects == null){
+                                    System.out.println("You got bombed!");
+                                    restart();
+                                } else {
+                                    // remove all destroyed nodes
+                                    dungeon.getChildren().removeAll(
+                                            destroyedObjects.stream()
+                                                    .map(o -> dungeon.lookup("#" + o.getObjID()))
+                                                    .collect(Collectors.toList()));
+                                    // remove the bomb itself
+                                    dungeon.getChildren().remove(imageView);
+                                }
+                            }
+                        }));
+                        timeline.play();
+                    }
+                }
+
                 for(Movable movingObj : engine.getMovingObjects()){
                     double dx = 0, dy = 0;
                     switch (movingObj.getFacing()){
@@ -126,6 +166,7 @@ public class DungeonPlayScreen {
                             break;
                     }
                     Node movingNode = dungeon.lookup("#" + Integer.toString(movingObj.getObjID()));
+                    if(movingNode == null) break; // if the node is deleted
                     double oldX = movingNode.getTranslateX();
                     double oldY = movingNode.getTranslateY();
                     double newX = oldX + dx;
@@ -157,10 +198,10 @@ public class DungeonPlayScreen {
                                 System.out.println("You've LOST the game!");
                                 restart();
                             }
-//                            if(result.containFlag(CollisionResult.WIN)){
-//                                System.out.println("You've WON the game!");
-//                                restart();
-//                            }
+                            if(result.containFlag(CollisionResult.WIN)){
+                                System.out.println("You've WON the game!");
+                                restart();
+                            }
                             if(result.containFlag(CollisionResult.DELETE_FIRST)){
                                 dungeon.getChildren().remove(movingNode);
                             }
@@ -226,6 +267,7 @@ public class DungeonPlayScreen {
         Wall wall5;
         Wall wall6;
         Wall wall7;
+        Wall wall8;
         Boulder boulder1;
         Boulder boulder2;
         MapBuilder mb;
@@ -239,17 +281,29 @@ public class DungeonPlayScreen {
         wall5 = new Wall(new Point(5, 1));
         wall6 = new Wall(new Point(6, 1));
         wall7 = new Wall(new Point(7,1 ));
-        boulder1 = new Boulder(new Point(3, 3));
-        boulder2 = new Boulder(new Point(3, 4));
+        wall8 = new Wall(new Point(8,1 ));
+        boulder1 = new Boulder(new Point(3, 1));
+        boulder2 = new Boulder(new Point(9, 1));
         hunter = new Hunter(new Point(0,9));
 
+        Hound hound = new Hound(new Point(4, 9));
+        hound.setPair(hunter);
+        Coward coward = new Coward(new Point(1, 9));
+        Strategist strategist = new Strategist(new Point(3, 9));
         Sword sword = new Sword(new Point(1, 0));
         Arrow arrow = new Arrow(new Point(2, 0));
+        Bomb bomb = new Bomb(new Point(3, 0));
+        Exit exit = new Exit(new Point(9, 9));
 
 
         mb.addObject(player);
+        mb.addObject(exit);
+        mb.addObject(bomb);
+        mb.addObject(hound);
         mb.addObject(sword);
         mb.addObject(arrow);
+        mb.addObject(coward);
+        mb.addObject(strategist);
         mb.addObject(wall0);
         mb.addObject(wall1);
         mb.addObject(wall2);
@@ -257,6 +311,7 @@ public class DungeonPlayScreen {
         mb.addObject(wall5);
         mb.addObject(wall6);
         mb.addObject(wall7);
+        mb.addObject(wall8);
         mb.addObject(boulder1);
         mb.addObject(boulder2);
         mb.addObject(hunter);
@@ -270,7 +325,7 @@ public class DungeonPlayScreen {
      * @return
      */
     private boolean isColliding(Node node1, Node node2){
-        final int offset = 2;
+        final int offset = 3;
         Bounds bounds1 = node1.getBoundsInParent();
         Bounds bounds2 = node2.getBoundsInParent();
         bounds1 = new BoundingBox(bounds1.getMinX() + offset, bounds1.getMinY() + offset,
@@ -280,6 +335,10 @@ public class DungeonPlayScreen {
         return bounds1.intersects(bounds2);
     }
 
+    /**
+     * Debug only, draw grid lines on given parent
+     * @param parent
+     */
     private void drawGridLine(Group parent){
         // vertical lines
         for(int i = 0; i < 11; i++){

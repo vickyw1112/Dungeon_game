@@ -1,16 +1,10 @@
 package Controller;
 
-import Controller.Controller;
-import View.DungeonPlayScreen;
 import View.Screen;
-import View.StartScreen;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class ModeScreenController extends Controller {
 
@@ -36,7 +30,7 @@ public class ModeScreenController extends Controller {
 
 	@FXML
 	public void handlePlayButton() {
-        Screen cs = new StartScreen(this.getStage(), "Dungeon play", "View/DungeonPlayScreen.fxml");
+        Screen cs = new Screen(this.getStage(), "Dungeon play", "View/DungeonPlayScreen.fxml");
         Controller controller = new DungeonPlayController(this.getStage());
         cs.display(controller);
 	}

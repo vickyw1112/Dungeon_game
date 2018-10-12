@@ -4,9 +4,7 @@ import GameEngine.*;
 import GameEngine.Map;
 import GameEngine.utils.*;
 import GameEngine.CollisionHandler.*;
-import View.ModeScreen;
 import View.Screen;
-import View.StartScreen;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -15,7 +13,6 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -251,14 +248,14 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
 	public void handleStartScreenButton(){
-		Screen cs = new StartScreen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
+		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
 		Controller controller = new StartScreenController(this.getStage());
 		cs.display(controller);
 	}
 
 	@FXML
 	public void handleModeScreenButton(){
-		Screen cs = new ModeScreen(this.getStage(), "Selection", "View/ModeScreen.fxml");
+		Screen cs = new Screen(this.getStage(), "Selection", "View/ModeScreen.fxml");
 		Controller controller = new ModeScreenController(this.getStage());
 		cs.display(controller);
 	}

@@ -1,8 +1,6 @@
 package Controller;
 
-import Controller.Controller;
 import View.Screen;
-import View.StartScreen;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -29,7 +27,7 @@ public class InstructionScreenController extends Controller {
 
 	@FXML
 	public void handleBackButton() {
-		Screen cs = new StartScreen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
+		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
 		Controller controller = new StartScreenController(this.getStage());
 		cs.display(controller);
 	}

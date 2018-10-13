@@ -38,7 +38,7 @@ public class Map implements Serializable {
     }
 
     /**
-     * Construct a Map from a saved file
+     * Construct a SampleMaps from a saved file
      *
      * @param inputStream map input stream
      */

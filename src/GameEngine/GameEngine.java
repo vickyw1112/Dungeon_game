@@ -24,14 +24,14 @@ public class GameEngine {
 
 
     /**
-     * Map storing all game object and using their ObjId as key
+     * SampleMaps storing all game object and using their ObjId as key
      * @see GameObject#getObjID()
      * @see StandardObject#objId
      */
     private final HashMap<Integer, GameObject> objects;
 
     /**
-     * Map for finding collision handler for two specific type of object
+     * SampleMaps for finding collision handler for two specific type of object
      * Key is CollisionEntities which contains two classes
      * Value is CollisionHandler
      * Also contains CollisionEntities key which include one or two
@@ -243,7 +243,7 @@ public class GameEngine {
 
     /**
      * Wrapper of {@link GameObject#setLocation} Updates indexes for this object in
-     * Map Call {@link Monster#updatePath} for each {@link GameEngine#monsters} if
+     * SampleMaps Call {@link Monster#updatePath} for each {@link GameEngine#monsters} if
      * player's location changed
      *
      * @param object
@@ -347,5 +347,9 @@ public class GameEngine {
      */
     public List<GameObject> getObjectsAtLocation(Point p) {
         return map.getObjects(p);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

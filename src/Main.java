@@ -1,18 +1,19 @@
-import View.DungeonPlayScreen;
+import Controller.*;
+import View.Screen;
 import javafx.application.Application;
-import java.io.IOException;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    public static void main(String[] args) {
-        launch(args);
-    }
 
+	@Override
+	public void start(Stage primaryStage) {
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        DungeonPlayScreen dungeonPlayScreen = new DungeonPlayScreen(primaryStage);
-        dungeonPlayScreen.start();
-    }
+		Screen startScreen = new Screen(primaryStage, "Dungeon", "View/StartScreen.fxml");
+		Controller controller = new StartScreenController(primaryStage);
+		startScreen.display(controller);
+	}
 
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

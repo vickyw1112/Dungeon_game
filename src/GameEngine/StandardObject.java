@@ -87,8 +87,10 @@ public abstract class StandardObject implements GameObject, Serializable {
      */
     @Override
     public void changeState(int state) {
-        this.state = state;
-        notifyObservers();
+        if(state != this.state) {
+            this.state = state;
+            notifyObservers();
+        }
     }
 
     /**

@@ -186,7 +186,11 @@ public class GameEngine {
             e.printStackTrace();
             System.exit(1);
         }
-        return handler.handle(this, obj1, obj2);
+        // TODO DELETE this later
+        CollisionResult result = handler.handle(this, obj1, obj2);
+        if(!result.containFlag(CollisionResult.REJECT))
+            System.out.format("%s and %s => %s\n", obj1, obj2, result);
+        return result;
     }
 
     /**

@@ -7,8 +7,6 @@ import GameEngine.CollisionHandler.*;
 import Sample.SampleMaps;
 import View.Screen;
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -18,7 +16,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -27,7 +25,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +37,9 @@ public class DungeonPlayController extends Controller{
 	@FXML
 	private AnchorPane dungeonPane;
 
+	@FXML
+    private Label timerLabel;
+
 	public static final int GRID_SIZE = 32;
 
 	private HashMap<String, Image> imgMap;
@@ -47,11 +47,13 @@ public class DungeonPlayController extends Controller{
 	private Map map;
 	private AnimationTimer mainAnimation;
 	private Set<KeyCode> keyCodes; // currently pressed keys
+    private TimerCollection timers;
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
         keyCodes = new HashSet<>();
         imgMap = new HashMap<>();
+        timers = new TimerCollection();
         this.map = map;
 	}
 
@@ -60,7 +62,7 @@ public class DungeonPlayController extends Controller{
      * @param s the stage
      */
 	public DungeonPlayController(Stage s){
-	    this(s, SampleMaps.getMap1());
+	    this(s, SampleMaps.getMap2());
     }
 
 	@FXML
@@ -95,6 +97,7 @@ public class DungeonPlayController extends Controller{
         }
     }
 
+
 	private Group initDungeon() {
 		Group dungeon = new Group();
 
@@ -120,6 +123,8 @@ public class DungeonPlayController extends Controller{
 				double elapsedSeconds = (now - lastUpdateTime.get()) / 1000000000.0 ;
 				// make sure at most go 40 ms
 				elapsedSeconds = elapsedSeconds > 0.04 ? 0.04 : elapsedSeconds;
+
+				timers.updateAll((int)(elapsedSeconds * 1000));
 
 				// get player's moving status
 				if(keyCodes.contains(KeyCode.LEFT)){
@@ -157,25 +162,28 @@ public class DungeonPlayController extends Controller{
 						imageView.setTranslateX(bomb.getLocation().getX() * GRID_SIZE);
 						imageView.setTranslateY(bomb.getLocation().getY() * GRID_SIZE);
 						dungeon.getChildren().add(imageView);
-						Timeline timeline = new Timeline();
-						timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(3), event -> {
-							System.out.format("%s exploded\n", bomb);
-							List<GameObject> destroyedObjects = bomb.explode(engine);
 
-							if (destroyedObjects == null) {
-								System.out.println("You got bombed!");
-								restart();
-							} else {
-								// remove all destroyed nodes
-								dungeon.getChildren().removeAll(
-										destroyedObjects.stream()
-												.map(o -> dungeon.lookup("#" + o.getObjID()))
-												.collect(Collectors.toList()));
-								// remove the bomb itself
-								dungeon.getChildren().remove(imageView);
-							}
-						}));
-						timeline.play();
+						Timer timer = new Timer(bomb, arg -> {
+                            System.out.format("%s exploded\n", bomb);
+                            List<GameObject> destroyedObjects = bomb.explode(engine);
+
+                            if (destroyedObjects == null) {
+                                System.out.println("You've got bombed!");
+                                restart();
+                            } else {
+                                // remove all destroyed nodes
+                                dungeon.getChildren().removeAll(
+                                        destroyedObjects.stream()
+                                                .map(o -> dungeon.lookup("#" + o.getObjID()))
+                                                .collect(Collectors.toList()));
+                                // remove the bomb itself
+                                dungeon.getChildren().remove(imageView);
+                            }
+                        });
+						timer.setOnUpdateTimer(remain -> {
+						    timerLabel.setText("Bomb will explode in: " + (remain/1000 + 1) + " s.");
+                        });
+						timers.add(timer);
 					}
 				}
 
@@ -216,7 +224,6 @@ public class DungeonPlayController extends Controller{
 
 						if(isColliding(movingNode, anotherNode)){
 							CollisionResult result = engine.handleCollision(movingObj, anotherObj);
-							System.out.format("%s and %s => %s\n", movingObj, anotherObj, result);
 							if(result.containFlag(CollisionResult.REJECT)){
 								// set translate co-ord back to before
 								newX = oldX;
@@ -227,15 +234,15 @@ public class DungeonPlayController extends Controller{
 							if(result.containFlag(CollisionResult.LOSE)){
 								System.out.println("You've LOST the game!");
                                 mainAnimation.stop();
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've LOST the game");
-                                Platform.runLater(alert::showAndWait);
+//                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've LOST the game");
+//                                Platform.runLater(alert::showAndWait);
 								restart();
 							}
 							if(result.containFlag(CollisionResult.WIN)){
 								System.out.println("You've WON the game!");
                                 mainAnimation.stop();
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've WON the game");
-                                Platform.runLater(alert::showAndWait);
+//                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've WON the game");
+//                                Platform.runLater(alert::showAndWait);
 								restart();
 							}
 							if(result.containFlag(CollisionResult.DELETE_FIRST)){
@@ -247,6 +254,16 @@ public class DungeonPlayController extends Controller{
 							if(result.containFlag(CollisionResult.REFRESH_INVENTORY)){
 								System.out.print(player.getInventory());
 							}
+							if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){
+                                Potion potion = (Potion) anotherObj;
+                                Timer timer = new Timer(potion, arg -> {
+                                    player.removePotionEffect(engine, potion);
+                                });
+                                timer.setOnUpdateTimer(remain -> {
+                                    timerLabel.setText(String.format("%s: %.2f", potion, remain/1000.0));
+                                });
+                                timers.add(timer);
+                            }
 						}
 					}
 

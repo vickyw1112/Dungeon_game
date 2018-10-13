@@ -5,33 +5,20 @@ import GameEngine.utils.*;
 
 public class SampleMaps {
     public static Map getMap1(){
-        Monster hunter;
-        Wall wall0;
-        Wall wall1;
-        Wall wall2;
-        Wall wall4;
-        Wall wall5;
-        Wall wall6;
-        Wall wall7;
-        Wall wall8;
-        Boulder boulder1;
-        Boulder boulder2;
-        MapBuilder mb;
-        Player player;
 
-        mb = new MapBuilder();
-        player = new Player(new Point(0, 0));
-        wall0 = new Wall(new Point(0,1));
-        wall1 = new Wall(new Point(1,1));
-        wall2 = new Wall(new Point(2,1));
-        wall4 = new Wall(new Point(4,1));
-        wall5 = new Wall(new Point(5, 1));
-        wall6 = new Wall(new Point(6, 1));
-        wall7 = new Wall(new Point(7,1 ));
-        wall8 = new Wall(new Point(8,1 ));
-        boulder1 = new Boulder(new Point(3, 1));
-        boulder2 = new Boulder(new Point(9, 1));
-        hunter = new Hunter(new Point(0,9));
+        MapBuilder mb = new MapBuilder();
+        Player player = new Player(new Point(0, 0));
+        Wall wall0 = new Wall(new Point(0,1));
+        Wall wall1 = new Wall(new Point(1,1));
+        Wall wall2 = new Wall(new Point(2,1));
+        Wall wall4 = new Wall(new Point(4,1));
+        Wall wall5 = new Wall(new Point(5, 1));
+        Wall wall6 = new Wall(new Point(6, 1));
+        Wall wall7 = new Wall(new Point(7,1 ));
+        Wall wall8 = new Wall(new Point(8,1 ));
+        Boulder boulder1 = new Boulder(new Point(3, 1));
+        Boulder boulder2 = new Boulder(new Point(9, 1));
+        Hunter hunter = new Hunter(new Point(0,9));
 
         Hound hound = new Hound(new Point(4, 9));
         hound.setPair(hunter);
@@ -62,6 +49,28 @@ public class SampleMaps {
         mb.addObject(boulder1);
         mb.addObject(boulder2);
         mb.addObject(hunter);
+        return new Map(mb);
+    }
+
+    public static Map getMap2(){
+        MapBuilder mb = new MapBuilder();
+        for(int x = 2; x <= 6; x++){
+            mb.addObject(new Wall(new Point(x, 1)));
+            mb.addObject(new Wall(new Point(x, 3)));
+        }
+        Pit pit = new Pit(new Point(3, 2));
+        mb.addObject(pit);
+        Potion potion = new HoverPotion(new Point(4, 2));
+        mb.addObject(potion);
+        Potion potion2 = new InvinciblePotion(new Point(1, 2));
+        mb.addObject(potion2);
+        Player player = new Player(new Point(2, 2));
+        mb.addObject(player);
+        Hunter hunter = new Hunter(new Point(1, 5));
+        mb.addObject(hunter);
+        Hound hound = new Hound(new Point(1, 6));
+        mb.addObject(hound);
+        hound.setPair(hunter);
         return new Map(mb);
     }
 }

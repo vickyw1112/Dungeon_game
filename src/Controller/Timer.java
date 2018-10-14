@@ -9,10 +9,10 @@ public class Timer {
     // in ms
     private int remain;
     private TimerRequired obj;
-    private Consumer<Integer> onUpdateTimer;
-    private Consumer<Object> onTimerExpired;
+    private Consumer<Timer> onUpdateTimer;
+    private Consumer<Timer> onTimerExpired;
 
-    public Timer(TimerRequired object, Consumer<Object> onTimerExpired){
+    public Timer(TimerRequired object, Consumer<Timer> onTimerExpired){
         this.obj = object;
         this.remain = object.getDuration();
         this.onTimerExpired = onTimerExpired;
@@ -23,7 +23,11 @@ public class Timer {
         return remain;
     }
 
-    public void setOnUpdateTimer(Consumer<Integer> onUpdateTimer){
+    public int getTotalDuration() {
+    	return obj.getDuration();
+	}
+
+    public void setOnUpdateTimer(Consumer<Timer> onUpdateTimer){
         this.onUpdateTimer = onUpdateTimer;
     }
 
@@ -36,13 +40,13 @@ public class Timer {
     public boolean update(int elapsed){
         remain -= elapsed;
         if(remain <= 0){
-            onTimerExpired.accept(null);
+            onTimerExpired.accept(this);
             return true;
         } else if(onUpdateTimer != null){
             // run backend event
             obj.onTimerUpdate(remain);
             // run front-end registered event
-            onUpdateTimer.accept(remain);
+            onUpdateTimer.accept(this);
         }
         return false;
     }
@@ -58,4 +62,5 @@ public class Timer {
     public boolean equalByInstance(Timer anotherObject){
         return obj.equals(anotherObject.obj);
     }
+
 }

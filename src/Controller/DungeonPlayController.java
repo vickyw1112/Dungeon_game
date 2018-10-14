@@ -6,6 +6,7 @@ import GameEngine.utils.*;
 import GameEngine.CollisionHandler.*;
 import Sample.SampleMaps;
 import View.Screen;
+import com.sun.javaws.progress.Progress;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
@@ -17,6 +18,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -39,6 +41,9 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
     private Label timerLabel;
+
+	@FXML
+	private ProgressBar timerInvincibilityPotion;
 
 	public static final int GRID_SIZE = 32;
 
@@ -82,6 +87,7 @@ public class DungeonPlayController extends Controller{
 		loadResources();
 	    Group dungeon = initDungeon();
 		dungeonPane.getChildren().add(dungeon);
+		timerInvincibilityPotion.setOpacity(0.0);
 	}
 
 	private void loadResources(){
@@ -180,9 +186,6 @@ public class DungeonPlayController extends Controller{
                                 dungeon.getChildren().remove(imageView);
                             }
                         });
-						timer.setOnUpdateTimer(remain -> {
-						    timerLabel.setText("Bomb will explode in: " + (remain/1000 + 1) + " s.");
-                        });
 						timers.add(timer);
 					}
 				}
@@ -258,12 +261,15 @@ public class DungeonPlayController extends Controller{
                                 Potion potion = (Potion) anotherObj;
                                 Timer timer = new Timer(potion, arg -> {
                                     player.removePotionEffect(engine, potion);
+                                    timerInvincibilityPotion.setOpacity(0.0);
                                 });
-                                timer.setOnUpdateTimer(remain -> {
-                                    timerLabel.setText(String.format("%s: %.2f", potion, remain/1000.0));
-                                });
+                                timer.setOnUpdateTimer(t -> {
+                                	timerInvincibilityPotion.setOpacity(1.0);
+									timerInvincibilityPotion.setProgress(t.getRemain() * 1.0 / t.getTotalDuration());
+								});
                                 timers.add(timer);
                             }
+
 						}
 					}
 

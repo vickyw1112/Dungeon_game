@@ -38,7 +38,7 @@ public class Map implements Serializable {
     }
 
     /**
-     * Construct a Map from a saved file
+     * Construct a SampleMaps from a saved file
      *
      * @param inputStream map input stream
      */
@@ -58,7 +58,11 @@ public class Map implements Serializable {
      * Remove a specific object from the map
      */
     public void removeObject(GameObject obj) {
-        map[obj.getLocation().getX()][obj.getLocation().getY()].remove(obj);
+        if(obj instanceof Monster)
+            GameEngine.MONSTERKILLED++; // add static to count monster to be killed
+        for(int i = 0; i < DUNGEON_SIZE_X; i++)
+            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
+                map[i][j].remove(obj);
     }
 
     /**

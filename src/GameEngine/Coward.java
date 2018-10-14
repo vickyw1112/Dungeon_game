@@ -40,4 +40,17 @@ public class Coward extends Monster {
     public PathGenerator getDefaultPathGenerator() {
         return new ShortestPathGenerator();
     }
+
+    /**
+     * Whenever the monster is changing location
+     * update path if using run away generator
+     * since it only returns one point at a time
+     *
+     * @see RunAwayPathGenerator#generatePath(Map, Monster, Player)
+     * @param engine game engine
+     */
+    @Override
+    public void onUpdatingLocation(GameEngine engine) {
+        updatePath(engine.getMap(), engine.player);
+    }
 }

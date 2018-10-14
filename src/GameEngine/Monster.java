@@ -35,6 +35,15 @@ public abstract class Monster extends StandardObject implements Movable {
      */
     private Direction facing;
 
+    /**
+     * bool set true when need to update the path
+     * path is delayed updated after monster finish current move
+     * to the next grid
+     */
+    private boolean needUpdatePath;
+
+    private Map map;
+    private Player player;
 
     /**
      * Constructor for Monster
@@ -52,6 +61,7 @@ public abstract class Monster extends StandardObject implements Movable {
     public void initialize() {
         pathToDestination = new LinkedList<>();
         pathGenerator = getDefaultPathGenerator();
+        needUpdatePath = false;
     }
 
     /**
@@ -112,13 +122,15 @@ public abstract class Monster extends StandardObject implements Movable {
 
         if (ret && !pathToDestination.pop().equals(point)) {
             System.err.println("Inconsistent move: " + this);
-            System.exit(1);
+//            System.exit(1);
         }
 
         // if location changed, determine new facing
         if (ret && pathToDestination.size() > 0) {
             facing = determineFacing(pathToDestination.peek());
         }
+        if(ret && needUpdatePath)
+            delayedUpdate();
         return ret;
     }
 
@@ -142,7 +154,7 @@ public abstract class Monster extends StandardObject implements Movable {
             return Direction.UP;
         }
         System.err.format("Cannot determine next location (%s) for :%s\n", next, this);
-        System.exit(1);
+//        System.exit(1);
         return null;
     }
 
@@ -154,9 +166,21 @@ public abstract class Monster extends StandardObject implements Movable {
      * @param player
      */
     public void updatePath(Map map, Player player) {
+        this.map = map;
+        this.player = player;
+        if(pathToDestination.size() == 0) {
+            delayedUpdate();
+            return;
+        }
+        needUpdatePath = true;
+    }
+
+    private void delayedUpdate() {
         pathToDestination = pathGenerator.generatePath(map, this, player);
         if(pathToDestination.peek() != null)
             facing = determineFacing(pathToDestination.peek());
+        needUpdatePath = false;
+        System.out.format("%s updated path: %s\n", this, this.pathToDestination);
     }
 
     public abstract PathGenerator getDefaultPathGenerator();
@@ -177,16 +201,4 @@ public abstract class Monster extends StandardObject implements Movable {
         return 0;
     }
 
-    /**
-     * Whenever the monster is changing location
-     * update path if using run away generator
-     * since it only returns one point at a time
-     *
-     * @see RunAwayPathGenerator#generatePath(Map, Monster, Player)
-     * @param engine game engine
-     */
-    @Override
-    public void onUpdatingLocation(GameEngine engine) {
-        updatePath(engine.getMap(), engine.player);
-    }
 }

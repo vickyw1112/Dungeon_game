@@ -59,6 +59,7 @@ public abstract class Monster extends StandardObject implements Movable {
      */
     @Override
     public void initialize() {
+        super.initialize();
         pathToDestination = new LinkedList<>();
         pathGenerator = getDefaultPathGenerator();
         needUpdatePath = false;

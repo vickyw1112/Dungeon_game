@@ -3,10 +3,14 @@ package Controller;
 import javafx.stage.Stage;
 
 public abstract class Controller {
-    private Stage s;
+    protected Stage stage;
     public Controller(Stage s){
-        this.s = s;
+        this.stage = s;
     }
 
-    public Stage getStage(){ return this.s; }
+    public Stage getStage(){ return this.stage; }
+
+    public void afterInitialize() {
+
+    }
 }

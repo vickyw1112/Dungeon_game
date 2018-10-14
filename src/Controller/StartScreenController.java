@@ -30,7 +30,7 @@ public class StartScreenController extends Controller {
 
 	@FXML
 	public void handleStartButton() {
-		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/ModeScreen.fxml");
+		Screen cs = new Screen(this.getStage(), "Select Mode", "View/ModeScreen.fxml");
 		Controller controller = new ModeScreenController(this.getStage());
 		cs.display(controller);
 	}

@@ -30,14 +30,16 @@ public class ModeScreenController extends Controller {
 
 	@FXML
 	public void handlePlayButton() {
-        Screen cs = new Screen(this.getStage(), "Dungeon play", "View/DungeonPlayScreen.fxml");
-        Controller controller = new DungeonPlayController(this.getStage());
+        Screen cs = new Screen(this.getStage(), "Select Map", "View/MapSelectScreen.fxml");
+        Controller controller = new MapSelectScreenController(this.getStage());
         cs.display(controller);
 	}
 
 	@FXML
 	public void handleCreateDungeon() {
-		// TODO
+		Screen cs = new Screen(this.getStage(), "Dungeon design", "View/DesignScreen.fxml");
+		Controller controller = new DesignScreenController(this.getStage());
+		cs.display(controller);
 	}
 
 }

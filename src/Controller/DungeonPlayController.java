@@ -7,7 +7,6 @@ import GameEngine.CollisionHandler.*;
 import Sample.SampleMaps;
 import View.Screen;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,10 +24,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static Controller.Config.GRID_SIZE;
 
 
 public class DungeonPlayController extends Controller{
@@ -40,18 +42,17 @@ public class DungeonPlayController extends Controller{
 	@FXML
     private Label timerLabel;
 
-	public static final int GRID_SIZE = 32;
 
 	private HashMap<String, Image> imgMap;
 	private Player player;
 	private Map map;
 	private AnimationTimer mainAnimation;
-	private Set<KeyCode> keyCodes; // currently pressed keys
+	private Set<KeyCode> keyPressed; // currently pressed keys
     private TimerCollection timers;
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
-        keyCodes = new HashSet<>();
+        keyPressed = new HashSet<>();
         imgMap = new HashMap<>();
         timers = new TimerCollection();
         this.map = map;
@@ -65,19 +66,13 @@ public class DungeonPlayController extends Controller{
 	    this(s, SampleMaps.getMap2());
     }
 
-	@FXML
-	void onKeyPressed(KeyEvent event) {
-		keyCodes.add(event.getCode());
-		event.consume();
-	}
+    @Override
+    public void afterInitialize() {
+        stage.getScene().setOnKeyPressed(event -> keyPressed.add(event.getCode()));
+        stage.getScene().setOnKeyReleased(event -> keyPressed.remove(event.getCode()));
+    }
 
-	@FXML
-	void onKeyReleased(KeyEvent event) {
-		keyCodes.remove(event.getCode());
-		event.consume();
-	}
-
-	@FXML
+    @FXML
 	public void initialize() {
 		loadResources();
 	    Group dungeon = initDungeon();
@@ -127,23 +122,23 @@ public class DungeonPlayController extends Controller{
 				timers.updateAll((int)(elapsedSeconds * 1000));
 
 				// get player's moving status
-				if(keyCodes.contains(KeyCode.LEFT)){
+				if(keyPressed.contains(KeyCode.LEFT)){
 					player.setFacing(Direction.LEFT);
 					player.setIsMoving(true);
-				} else if(keyCodes.contains(KeyCode.RIGHT)){
+				} else if(keyPressed.contains(KeyCode.RIGHT)){
 					player.setFacing(Direction.RIGHT);
 					player.setIsMoving(true);
-				} else if(keyCodes.contains(KeyCode.UP)){
+				} else if(keyPressed.contains(KeyCode.UP)){
 					player.setFacing(Direction.UP);
 					player.setIsMoving(true);
-				} else if(keyCodes.contains(KeyCode.DOWN)){
+				} else if(keyPressed.contains(KeyCode.DOWN)){
 					player.setFacing(Direction.DOWN);
 					player.setIsMoving(true);
 				} else {
 					player.setIsMoving(false);
 				}
 
-				if(keyCodes.contains(KeyCode.A)){
+				if(keyPressed.contains(KeyCode.A)){
 					Arrow arrow = engine.playerShootArrow();
 					if(arrow != null){
 						ImageView imageView = new ImageView(imgMap.get(arrow.getClassName()));
@@ -154,7 +149,7 @@ public class DungeonPlayController extends Controller{
 					}
 				}
 
-				if(keyCodes.contains(KeyCode.B)){
+				if(keyPressed.contains(KeyCode.B)){
 					Bomb bomb = engine.playerSetBomb();
 					if(bomb != null){
 						ImageView imageView = new ImageView(imgMap.get(bomb.getClassName()));

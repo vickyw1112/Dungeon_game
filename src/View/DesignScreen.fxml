@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="518.0" prefWidth="762.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane fx:id="dungeonGridPane" alignment="CENTER" gridLinesVisible="true" layoutX="1.0" layoutY="1.0" prefHeight="196.0" prefWidth="244.0">
+      </GridPane>
+      <ListView fx:id="objectsListView" layoutX="498.0" layoutY="59.0" prefHeight="308.0" prefWidth="209.0" />
+      <Label layoutX="498.0" layoutY="23.0" text="Available GameObjects:" />
+      <Label layoutX="481.0" layoutY="397.0" text="Map Name:" />
+      <TextField fx:id="mapNameTextField" layoutX="561.0" layoutY="392.0" />
+      <TextField fx:id="mapAuthorTextField" layoutX="561.0" layoutY="432.0" />
+      <Label layoutX="475.0" layoutY="437.0" text="Map Author:" />
+      <Button layoutX="561.0" layoutY="471.0" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" text="Save Map" />
+   </children>
+</AnchorPane>

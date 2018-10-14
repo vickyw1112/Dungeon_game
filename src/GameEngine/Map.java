@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public class Map implements Serializable {
     // TODO: we can probably do multi-sized dungeon by changing these const to variable for extension
-    public static final int DUNGEON_SIZE_X = 10;
-    public static final int DUNGEON_SIZE_Y = 10;
+    public static final int DUNGEON_SIZE_X = 11;
+    public static final int DUNGEON_SIZE_Y = 11;
 
     private List<GameObject>[][] map;
 

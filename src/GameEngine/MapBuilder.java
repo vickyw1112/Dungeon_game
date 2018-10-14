@@ -30,10 +30,12 @@ public class MapBuilder {
      *
      * @param location location
      */
-    public void deleteObject(Point location) {
-        // simply delete the reference
+    public GameObject deleteObject(Point location) {
+        GameObject ret = map[location.getX()][location.getY()];
         map[location.getX()][location.getY()] = null;
+        return ret;
     }
+
 
     /**
      * Get the object in specific location

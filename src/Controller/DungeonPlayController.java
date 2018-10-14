@@ -4,12 +4,15 @@ import GameEngine.*;
 import GameEngine.Map;
 import GameEngine.utils.*;
 import GameEngine.CollisionHandler.*;
+import GameEngine.utils.Observable;
 import Sample.SampleMaps;
 import View.Screen;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -17,6 +20,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -40,6 +45,10 @@ public class DungeonPlayController extends Controller{
 	@FXML
     private Label timerLabel;
 
+	@FXML
+	private ListView<String> inventoryList;
+
+
 	public static final int GRID_SIZE = 32;
 
 	private HashMap<String, Image> imgMap;
@@ -48,12 +57,14 @@ public class DungeonPlayController extends Controller{
 	private AnimationTimer mainAnimation;
 	private Set<KeyCode> keyCodes; // currently pressed keys
     private TimerCollection timers;
+    private ObservableList<String> inventoryItems;
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
         keyCodes = new HashSet<>();
         imgMap = new HashMap<>();
         timers = new TimerCollection();
+        inventoryItems = FXCollections.observableArrayList();
         this.map = map;
 	}
 
@@ -79,6 +90,26 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
 	public void initialize() {
+		inventoryList.setItems(inventoryItems);
+		inventoryList.setCellFactory(param -> new ListCell<String>() {
+			private ImageView imageView = new ImageView();
+            @Override
+			public void updateItem(String name, boolean empty) {
+				super.updateItem(name,empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					for(String string: imgMap.keySet())
+						if(name.equals(string)) {
+							imageView.setImage(imgMap.get(string));
+                            setText(name);
+                            setGraphic(imageView);
+						}
+				}
+			}
+		});
+
 		loadResources();
 	    Group dungeon = initDungeon();
 		dungeonPane.getChildren().add(dungeon);
@@ -252,6 +283,7 @@ public class DungeonPlayController extends Controller{
 								dungeon.getChildren().remove(anotherNode);
 							}
 							if(result.containFlag(CollisionResult.REFRESH_INVENTORY)){
+							    inventoryItems.add(anotherObj.getClassName());
 								System.out.print(player.getInventory());
 							}
 							if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){

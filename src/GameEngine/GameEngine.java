@@ -19,18 +19,19 @@ public class GameEngine {
     private final Map map;
     private final List<Movable> movingObjects;
     private final List<Monster> monsters;
+    public static int MONSTERKILLED = 0;
     Player player;
 
 
     /**
-     * Map storing all game object and using their ObjId as key
+     * SampleMaps storing all game object and using their ObjId as key
      * @see GameObject#getObjID()
      * @see StandardObject#objId
      */
     private final HashMap<Integer, GameObject> objects;
 
     /**
-     * Map for finding collision handler for two specific type of object
+     * SampleMaps for finding collision handler for two specific type of object
      * Key is CollisionEntities which contains two classes
      * Value is CollisionHandler
      * Also contains CollisionEntities key which include one or two
@@ -105,6 +106,8 @@ public class GameEngine {
         this(map, obj -> System.out.println(obj + " changed state to: "+ obj.getState()));
         // to suppress null pointer exception in tests does not involve map
         this.player = player == null ? new Player(new Point(0, 0)) : player;
+        // initialize player
+        player.initialize();
     }
 
     /**
@@ -183,7 +186,11 @@ public class GameEngine {
             e.printStackTrace();
             System.exit(1);
         }
-        return handler.handle(this, obj1, obj2);
+        // TODO DELETE this later
+        CollisionResult result = handler.handle(this, obj1, obj2);
+        if(!result.containFlag(CollisionResult.REJECT))
+            System.out.format("%s and %s => %s\n", obj1, obj2, result);
+        return result;
     }
 
     /**
@@ -194,12 +201,13 @@ public class GameEngine {
     public boolean checkWiningCondition() {
         // TODO: refactor this function
 
-        boolean isAllTreasure = true;
+        boolean isAllTreasure = false;
         boolean isAllMonster = false;
         boolean isAllSwitch = false;
         List<Point> boulders = new ArrayList<>();
         List<Point> floorSwitches = new ArrayList<>();
         List<Point> exits = new ArrayList<>();
+        List<Point> treasure = new ArrayList<>();
 
         for(GameObject obj: objects.values()){
             if(obj instanceof Boulder)
@@ -208,34 +216,38 @@ public class GameEngine {
                 floorSwitches.add(((FloorSwitch) obj).location);
             if(obj instanceof Exit)
                 exits.add(((Exit) obj).location);
+            if(obj instanceof Treasure)
+                treasure.add(((Treasure) obj).location);
         }
 
         // check exit
-        if(exits.contains(this.player.location))
-            return true;
-        if(!exits.isEmpty())
-            return false;
-
-        // check boulder on switch
-        if(boulders.equals(floorSwitches))
-            isAllSwitch = true;
-
-        // check treasure in player's inventory
-        for(GameObject obj: objects.values()){
-            if(obj instanceof Treasure)
-                isAllTreasure = false;
+        if(!exits.isEmpty()) {
+            if (exits.contains(this.player.location))
+                return true;
         }
+        else {
+            // check boulder on switch
+            if(!(boulders.isEmpty() && floorSwitches.isEmpty())) {
+                if (boulders.equals(floorSwitches))
+                    isAllSwitch = true;
+            }
 
-        // monster condition
-        if(this.monsters.size() == 0)
-            isAllMonster = true;
+            // check treasure in player's inventory
+            // if there is no treasure in map and player's inventory has treasure player wins
+            // otherwise player doesn't win
+            if (treasure.isEmpty() && (this.player.getInventory().getCount(Treasure.class) > 0))
+                isAllTreasure = true;
 
+            if(MONSTERKILLED > 0 && this.monsters.isEmpty()) {
+                isAllMonster = true;
+            }
+        }
         return (isAllTreasure || isAllMonster || isAllSwitch);
     }
 
     /**
      * Wrapper of {@link GameObject#setLocation} Updates indexes for this object in
-     * Map Call {@link Monster#updatePath} for each {@link GameEngine#monsters} if
+     * SampleMaps Call {@link Monster#updatePath} for each {@link GameEngine#monsters} if
      * player's location changed
      *
      * @param object
@@ -339,5 +351,9 @@ public class GameEngine {
      */
     public List<GameObject> getObjectsAtLocation(Point p) {
         return map.getObjects(p);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

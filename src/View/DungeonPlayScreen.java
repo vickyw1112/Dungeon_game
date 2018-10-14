@@ -1,4 +1,5 @@
 package View;
+import Controller.DungeonPlayController;
 import GameEngine.*;
 import GameEngine.Map;
 import GameEngine.utils.Point;

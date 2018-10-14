@@ -13,12 +13,15 @@
          <children>
             <SplitPane dividerPositions="0.6959798994974874" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <Button fx:id="startScreenButton" layoutX="31.0" layoutY="76.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" />
-                        <Button fx:id="modeScreenButton" layoutX="29.0" layoutY="45.0" mnemonicParsing="false" onAction="#handleModeScreenButton" text="Mode Screen" />
-                        <Button fx:id="restartButton" layoutX="47.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleRestartButton" text="Restart" />
+                        <Label fx:id="timerLabel" layoutX="14.0" layoutY="37.0" prefHeight="56.0" prefWidth="112.0" text="timer" wrapText="true" />
+                        <ProgressBar fx:id="timerInvincibilityPotion" layoutX="48.0" layoutY="227.0" nodeOrientation="RIGHT_TO_LEFT" opacity="0.0" prefHeight="14.0" prefWidth="62.0" progress="1.0" />
+                     </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <Button fx:id="startScreenButton" layoutX="32.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" />
+                        <Button fx:id="modeScreenButton" layoutX="29.0" layoutY="32.0" mnemonicParsing="false" onAction="#handleModeScreenButton" text="Mode Screen" />
                      </children>
                   </AnchorPane>
               </items>

@@ -6,7 +6,7 @@ public class Hound extends Monster implements Pairable {
     /**
      * Paired hunter
      */
-    private Hunter hunter;
+    private Hunter hunter = null;
 
     /**
      * Constructor for Hound
@@ -42,6 +42,6 @@ public class Hound extends Monster implements Pairable {
      */
     @Override
     public PathGenerator getDefaultPathGenerator() {
-        return new HoundPathGenerator();
+        return hunter == null ? new ShortestPathGenerator() : new HoundPathGenerator();
     }
 }

@@ -3,8 +3,7 @@ package GameEngine;
 import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 
-public abstract class Potion extends StandardObject {
-    public static final int LAST_FOREVER = -1;
+public abstract class Potion extends StandardObject implements TimerRequired {
 
     PlayerEffect playerEffect;
 
@@ -21,8 +20,14 @@ public abstract class Potion extends StandardObject {
         return playerEffect;
     }
 
+    @Override
     public int getDuration(){
         return duration;
+    }
+
+    @Override
+    public TimerType getTimerType() {
+        return TimerType.CLASS_SPECIFIC;
     }
 
     /**

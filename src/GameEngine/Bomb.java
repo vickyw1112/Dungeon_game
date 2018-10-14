@@ -1,17 +1,17 @@
 package GameEngine;
 
+import GameEngine.utils.PlayerEffect;
 import GameEngine.utils.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bomb extends StandardObject implements Collectable {
-    public static final long TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
-    private static final long EXPLOSION_TIMER = 100; // change to EXPLODE state at last 100 ms
+public class Bomb extends StandardObject implements Collectable, TimerRequired {
+    public static final int TIMER = 3000; // 3 seconds before it explodes and 3 second explosion time.
+    private static final int EXPLOSION_TIMER = 100; // change to EXPLODE state at last 100 ms
 
     public static final int LIT = 1;
     public static final int EXPLODE = 2; // will find a better name
-
 
 
     /**
@@ -24,13 +24,15 @@ public class Bomb extends StandardObject implements Collectable {
         state = COLLECTABLESTATE;
     }
 
-    /**
-     * Interface to front end to update timer value
-     * Call to change state for different style of bomb
-     */
-    public void updateTimer(double timer) {
+    @Override
+    public int getDuration() {
+        return TIMER;
+    }
+
+    @Override
+    public void onTimerUpdate(int remain) {
         // display the explosion pic at very last 100 ms
-        if(timer <= 100){
+        if(remain <= 500){
             this.changeState(EXPLODE);
         }
     }
@@ -58,11 +60,12 @@ public class Bomb extends StandardObject implements Collectable {
         // include the location of bomb as boulder/monster can go over it
         checkPositions[4] = new Point(x, y);
 
-        ArrayList<GameObject> adjacentObj = new ArrayList<>();
+        List<GameObject> adjacentObj = new ArrayList<>();
 
         // cycle through each position
         for (Point currPos : checkPositions) {
-            adjacentObj.addAll(engine.getObjectsAtLocation(currPos));
+            if(engine.getMap().isValidPoint(currPos))
+                adjacentObj.addAll(engine.getObjectsAtLocation(currPos));
         }
 
         List<GameObject> ret = new ArrayList<>();
@@ -72,12 +75,15 @@ public class Bomb extends StandardObject implements Collectable {
             if (obj instanceof Boulder || obj instanceof Monster) {
                 engine.removeGameObject(obj);
                 ret.add(obj);
-            } else if (obj instanceof Player) {
+            } else if (obj instanceof Player &&
+                    !engine.getPlayer().getPlayerEffects().contains(PlayerEffect.INVINCIBLE)) {
                 return null; // game over
             }
         }
 
         engine.removeGameObject(this); // remove reference of this Lit Bomb
+        // removal of a boulder can lead to new path for monsters
+        engine.updateMonstersPath();
         return ret;
     }
 }

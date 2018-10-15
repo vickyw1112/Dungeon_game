@@ -74,7 +74,7 @@ public abstract class StandardObject implements GameObject, Serializable {
      */
     @Override
     public boolean setLocation(Point point) {
-        if (location.equals(point)) {
+        if (location != null && location.equals(point)) {
             return false;
         }
         this.location = point.clone();

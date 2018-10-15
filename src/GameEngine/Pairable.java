@@ -5,4 +5,8 @@ package GameEngine;
  */
 public interface Pairable {
     void setPair(GameObject pair);
+
+    GameObject getPair();
+
+    String getPairingObjectClassName();
 }

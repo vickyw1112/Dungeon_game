@@ -68,8 +68,17 @@ public class DungeonPlayController extends Controller{
 	    initDungeon();
 	}
 
+	private void handleObjectStateChange(GameObject obj){
+        ImageView imageView = (ImageView) getNodeById(obj.getObjID());
+        if(imageView != null) {
+            imageView.setImage(resources.getImage(obj.getClassName(), obj.getState()));
+            System.out.println(obj + " changed state to: " + obj.getState());
+        }
+    }
+
 	private void initDungeon() {
-		GameEngine engine = new GameEngine(map);
+		GameEngine engine = new GameEngine(map, this::handleObjectStateChange);
+
 		player = engine.getPlayer();
 		ObservableList<Node> nodes = dungeonPane.getChildren();
 
@@ -262,6 +271,7 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
 	public void handleStartScreenButton(){
+	    mainAnimation.stop();
 		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
 		Controller controller = new StartScreenController(this.getStage());
 		cs.display(controller);
@@ -269,6 +279,7 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
 	public void handleModeScreenButton(){
+	    mainAnimation.stop();
 		Screen cs = new Screen(this.getStage(), "Selection", "View/ModeScreen.fxml");
 		Controller controller = new ModeScreenController(this.getStage());
 		cs.display(controller);

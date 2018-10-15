@@ -15,12 +15,19 @@ public class Door extends StandardObject implements Pairable {
         this.state = CLOSED;
     }
 
-    public GameObject getPair() {
-        return key;
+    @Override
+    public String getPairingObjectClassName() {
+        return Key.class.getSimpleName();
     }
 
+    @Override
     public void setPair(GameObject pair) {
         key = (Key) pair;
+    }
+
+    @Override
+    public GameObject getPair() {
+        return key;
     }
 
     /**

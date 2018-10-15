@@ -72,7 +72,7 @@ public class ResourceManager {
     }
 
     public ImageView createImageViewByGameObject(GameObject obj){
-        ImageView imageView = createImageViewByClassName(obj.getClassName());
+        ImageView imageView = new ImageView(getImage(obj.getClassName(), obj.getState()));
         imageView.setId(Integer.toString(obj.getObjID()));
         imageView.setTranslateX(obj.getLocation().getX() * GRID_SIZE);
         imageView.setTranslateY(obj.getLocation().getY() * GRID_SIZE);

@@ -1,11 +1,10 @@
 package Controller;
 
-import GameEngine.GameObject;
-import GameEngine.Map;
-import GameEngine.MapBuilder;
-import GameEngine.Wall;
+import GameEngine.*;
 import GameEngine.utils.Point;
 import View.Screen;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -16,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -45,6 +45,7 @@ public class DesignScreenController extends Controller {
      * Classname of the current dragging object
      */
     private StringProperty draggingClass;
+    private ObjectProperty<GameObject> draggingObject;
     private int maxRow;
     private int maxCol;
 
@@ -54,6 +55,7 @@ public class DesignScreenController extends Controller {
         super(s);
         resources = new ResourceManager();
         draggingClass = new SimpleStringProperty();
+        draggingObject = new SimpleObjectProperty<>();
         keyPressed = new HashSet<>();
         mapBuilder = new MapBuilder();
         maxCol = 11;
@@ -84,72 +86,10 @@ public class DesignScreenController extends Controller {
             objectsListView.getItems().add(imageView);
         }
 
-        objectsListView.setCellFactory(param -> {
-            ListCell<ImageView> cell = new ListCell<ImageView>() {
-                @Override
-                public void updateItem(ImageView imgView, boolean empty) {
-                    super.updateItem(imgView, empty);
-                    if (empty) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        setText(imgView.getId());
-                        setGraphic(imgView);
-                    }
-                }
-            };
-            // event when dragging cell in this ListView
-            cell.setOnDragDetected(event -> handleDragStart(event, (ImageView) cell.getGraphic(), cell.getText(), false));
-            return cell;
-        });
+        objectsListView.setCellFactory(this::objectListViewCellFactory);
 
-        // event when dragging is over dungeonPane
-        dungeonPane.setOnDragOver(event -> {
-            // remove all previous indicator first
-            dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
-            Dragboard db = event.getDragboard();
-
-            Point point = getEventIndex(event.getSceneX(), event.getSceneY());
-
-            if(db.hasImage() && !draggingClass.get().isEmpty() &&
-                    point.getY() > 0 && point.getY() < maxRow - 1 &&
-                    point.getX() > 0 && point.getX() < maxCol - 1) {
-                // continuous placing feature
-                if(keyPressed.contains(KeyCode.CONTROL)) {
-                    if(mapBuilder.getObject(point) != null){
-                        // delete object from map builder
-                        GameObject deletedObj = mapBuilder.deleteObject(point);
-                        // delete ImageView displayed in GridPane
-                        dungeonPane.getChildren().remove(getNodeById(deletedObj.getObjID()));
-                    }
-                    newGameObject(draggingClass.get(), point, true);
-                } else {
-                    // visualise the current drop location
-                    Rectangle indicator = new Rectangle(GRID_SIZE, GRID_SIZE);
-                    indicator.setFill(new Color(0.5, 0.5, 1, 0.8));
-                    indicator.setTranslateX(point.getX() * GRID_SIZE);
-                    indicator.setTranslateY(point.getY() * GRID_SIZE);
-                    dungeonPane.getChildren().add(indicator);
-
-                    event.acceptTransferModes(TransferMode.COPY);
-                }
-            }
-            event.consume();
-        });
-
-        dungeonPane.setOnDragDropped(event -> {
-            // remove all previous indicator first
-            dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
-
-            Point point = getEventIndex(event.getSceneX(), event.getSceneY());
-            GameObject deleted = mapBuilder.deleteObject(point);
-            if(deleted != null){
-                dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
-            }
-
-            newGameObject(draggingClass.get(), point, true);
-            event.consume();
-        });
+        dungeonPane.setOnDragOver(this::handleDragOver);
+        dungeonPane.setOnDragDropped(this::handleDragDropped);
     }
 
     @FXML
@@ -169,19 +109,18 @@ public class DesignScreenController extends Controller {
     }
 
     /**
-     * Create a new game object in map builder and display it in dungeonGridPane
+     * Update a given GameObject's position, and display it in dungeonPane
      *
      * @param enableInteraction whether to add handler to allow drag & delete
      */
-    private void newGameObject(String className, Point point, boolean enableInteraction){
-        GameObject obj = GameObject.build(className, point);
+    private void updateGameObject(GameObject obj, Point point, boolean enableInteraction){
         if(obj == null) return;
-        mapBuilder.addObject(obj);
+        mapBuilder.updateObjectLocation(obj, point);
         ImageView imageView = resources.createImageViewByGameObject(obj, dungeonPane.getChildren());
 
         if(enableInteraction) {
             imageView.setOnMouseClicked(this::handleRightClick);
-            imageView.setOnDragDetected(e -> handleDragStart(e, imageView, obj.getClassName(), true));
+            imageView.setOnDragDetected(e -> handleDragStart(e, imageView, obj, true));
         }
     }
 
@@ -213,15 +152,17 @@ public class DesignScreenController extends Controller {
         }
     }
 
-    private void handleDragStart(MouseEvent event, ImageView draggingNode, String classname, boolean duplicateAllowed) {
+    private void handleDragStart(MouseEvent event, ImageView draggingNode, GameObject obj,
+                                 boolean allowDeleteOriginal) {
         Point point = getEventIndex(event.getSceneX(), event.getSceneY());
 
         Dragboard db = draggingNode.startDragAndDrop(TransferMode.COPY);
         ClipboardContent content = new ClipboardContent();
         content.putImage(draggingNode.getImage());
         db.setContent(content);
-        draggingClass.set(classname);
-        if (duplicateAllowed && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL))) {
+        draggingObject.set(obj);
+//        draggingClass.set(classname);
+        if (allowDeleteOriginal && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL))) {
             draggingNode.setOnDragDone(e2 -> {
                 mapBuilder.deleteObject(point);
             });
@@ -231,14 +172,15 @@ public class DesignScreenController extends Controller {
 
     private void initWallBoundary(){
         String wallClassName = Wall.class.getSimpleName();
+        GameObject wall = GameObject.build(wallClassName, null);
         for(int x = 0; x < maxCol; x++) {
-            newGameObject(wallClassName, new Point(x, 0), false);
-            newGameObject(wallClassName, new Point(x, maxRow - 1), false);
+            updateGameObject(wall.cloneObject(), new Point(x, 0), false);
+            updateGameObject(wall.cloneObject(), new Point(x, maxRow - 1), false);
         }
 
         for(int y = 1; y < maxRow - 1; y++) {
-            newGameObject(wallClassName, new Point(0, y), false);
-            newGameObject(wallClassName, new Point(maxCol - 1, y), false);
+            updateGameObject(wall.cloneObject(), new Point(0, y), false);
+            updateGameObject(wall.cloneObject(), new Point(maxCol - 1, y), false);
         }
     }
 
@@ -251,5 +193,96 @@ public class DesignScreenController extends Controller {
     private Node getNodeById(int objId){
         return dungeonPane.lookup("#" + Integer.toString(objId));
     }
+
+    private void handleDragOver(DragEvent event) {
+        // remove all previous indicator first
+        dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
+        Dragboard db = event.getDragboard();
+
+        Point point = getEventIndex(event.getSceneX(), event.getSceneY());
+
+        if(db.hasImage() && draggingObject.get() != null &&
+                point.getY() > 0 && point.getY() < maxRow - 1 &&
+                point.getX() > 0 && point.getX() < maxCol - 1) {
+            // continuous placing feature
+            if(keyPressed.contains(KeyCode.CONTROL)) {
+                if(mapBuilder.getObject(point) != null){
+                    // delete object from map builder
+                    GameObject deletedObj = mapBuilder.deleteObject(point);
+                    // delete ImageView displayed in GridPane
+                    dungeonPane.getChildren().remove(getNodeById(deletedObj.getObjID()));
+                }
+//                    newGameObject(draggingClass.get(), point, true);
+                updateGameObject(draggingObject.get().cloneObject(), point, true);
+            } else {
+                // visualise the current drop location
+                Rectangle indicator = new Rectangle(GRID_SIZE, GRID_SIZE);
+                indicator.setFill(new Color(0.5, 0.5, 1, 0.8));
+                indicator.setTranslateX(point.getX() * GRID_SIZE);
+                indicator.setTranslateY(point.getY() * GRID_SIZE);
+                dungeonPane.getChildren().add(indicator);
+
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+        }
+        event.consume();
+    }
+
+    private void handleDragDropped(DragEvent event){
+        // remove all previous indicator first
+        dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
+
+        Point point = getEventIndex(event.getSceneX(), event.getSceneY());
+        GameObject deleted = mapBuilder.deleteObject(point);
+        if(deleted != null){
+            dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
+        }
+
+//            newGameObject(draggingClass.get(), point, true);
+
+        GameObject newObj =
+                // duplicate dragging object
+                keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL) ?
+                        draggingObject.get().cloneObject() :
+                        // move original object to here
+                        draggingObject.get();
+
+        updateGameObject(newObj, point, true);
+        // auto create pair if it's pairable
+        if(newObj instanceof Pairable && mapBuilder.getEmptyPoint() != null){
+            Pairable pairable = (Pairable) newObj;
+            if(pairable.getPair() == null){
+                    GameObject pair =
+                            GameObject.build(pairable.getPairingObjectClassName(), null);
+                    pairable.setPair(pair);
+                    updateGameObject(pair, mapBuilder.getEmptyPoint(), true);
+            }
+        }
+
+        event.consume();
+    }
+
+    private ListCell<ImageView> objectListViewCellFactory(ListView<ImageView> param){
+        ListCell<ImageView> cell = new ListCell<ImageView>() {
+            @Override
+            public void updateItem(ImageView imgView, boolean empty) {
+                super.updateItem(imgView, empty);
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(imgView.getId());
+                    setGraphic(imgView);
+                }
+            }
+        };
+        // event when dragging cell in this ListView
+        cell.setOnDragDetected(event -> {
+            GameObject newObj = GameObject.build(cell.getText(), null);
+            handleDragStart(event, (ImageView) cell.getGraphic(), newObj, false);
+        });
+        return cell;
+    }
+
 }
 

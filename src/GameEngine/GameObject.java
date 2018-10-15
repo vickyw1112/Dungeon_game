@@ -137,4 +137,8 @@ public interface GameObject extends Observable {
             return false;
         }
     }
+
+    default public GameObject cloneObject(){
+        return build(this.getClassName(), this.getLocation());
+    }
 }

@@ -8,26 +8,19 @@ import GameEngine.utils.Point;
 import View.Screen;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,19 +33,17 @@ public class DesignScreenController extends Controller {
     private ListView<ImageView> objectsListView;
 
     @FXML
-    private GridPane dungeonGridPane;
+    private AnchorPane dungeonPane;
 
     @FXML
     private TextField mapNameTextField;
 
-    private HashMap<String, Image> imgMap;
-    private ObservableList<ImageView> imgViews;
+    private ResourceManager resources;
+
     private Set<KeyCode> keyPressed;
     /**
-     * Key is GameObject in mapBuilder
-     * Value is the ImageView displayed in dungeonGridPane
+     * Classname of the current dragging object
      */
-    private HashMap<GameObject, ImageView> objectImageViewMap;
     private StringProperty draggingClass;
     private int maxRow;
     private int maxCol;
@@ -61,9 +52,8 @@ public class DesignScreenController extends Controller {
 
     public DesignScreenController(Stage s) {
         super(s);
-        imgMap = new HashMap<>();
+        resources = new ResourceManager();
         draggingClass = new SimpleStringProperty();
-        objectImageViewMap = new HashMap<>();
         keyPressed = new HashSet<>();
         mapBuilder = new MapBuilder();
         maxCol = 11;
@@ -78,39 +68,19 @@ public class DesignScreenController extends Controller {
 
     @FXML
     public void initialize(){
-
         // set the dungeon gird pane to 11 x 11 by default
-        for(int i = 0; i < maxCol; i++){
-            ColumnConstraints colConst = new ColumnConstraints();
-            colConst.setPercentWidth(100.0 / maxCol);
-            dungeonGridPane.getColumnConstraints().add(colConst);
-        }
-        for(int i = 0; i < maxRow; i++){
-            RowConstraints rowConst = new RowConstraints();
-            rowConst.setPercentHeight(100.0 / maxRow);
-            dungeonGridPane.getRowConstraints().add(rowConst);
-        }
-        dungeonGridPane.setMinWidth(maxCol * GRID_SIZE);
-        dungeonGridPane.setMaxWidth(maxCol * GRID_SIZE);
-        dungeonGridPane.setMinHeight(maxRow * GRID_SIZE);
-        dungeonGridPane.setMaxHeight(maxRow * GRID_SIZE);
+        dungeonPane.setMinWidth(maxCol * GRID_SIZE);
+        dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
+        dungeonPane.setMinHeight(maxRow * GRID_SIZE);
+        dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
 
-        // load all images
-        File dir = new File(getClass().getClassLoader().getResource("img").getPath());
-        File[] directoryListing = dir.listFiles();
-        try {
-            for (File child : directoryListing) {
-                imgMap.put(child.getName().split("[.]")[0], new Image(new FileInputStream(child)));
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        resources.drawGridLine(dungeonPane.getChildren());
 
         initWallBoundary();
 
-        for (java.util.Map.Entry<String, Image> entry : imgMap.entrySet()) {
-            ImageView imageView = new ImageView(entry.getValue());
-            imageView.setId(entry.getKey());
+        for (String cls : resources.getAllClassNames()) {
+            ImageView imageView = resources.createImageViewByClassName(cls);
+            imageView.setId(cls);
             objectsListView.getItems().add(imageView);
         }
 
@@ -128,40 +98,38 @@ public class DesignScreenController extends Controller {
                     }
                 }
             };
-            // event when dragging a GameObject
+            // event when dragging cell in this ListView
             cell.setOnDragDetected(event -> handleDragStart(event, (ImageView) cell.getGraphic(), cell.getText(), false));
             return cell;
         });
 
-        dungeonGridPane.setOnDragOver(event -> {
+        // event when dragging is over dungeonPane
+        dungeonPane.setOnDragOver(event -> {
             // remove all previous indicator first
-            dungeonGridPane.getChildren().removeIf(node -> node instanceof Rectangle);
+            dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
             Dragboard db = event.getDragboard();
 
-//            System.out.format("(%f, %f)\n", event.getSceneX(), event.getSceneX());
-            double paneX = event.getSceneX() + dungeonGridPane.getLayoutX();
-            double paneY = event.getSceneY() + dungeonGridPane.getLayoutY();
-            int row = (int)(paneY / GRID_SIZE);
-            int col = (int)(paneX / GRID_SIZE);
+            Point point = getEventIndex(event.getSceneX(), event.getSceneY());
 
             if(db.hasImage() && !draggingClass.get().isEmpty() &&
-                    row > 0 && row < maxRow - 1 && col > 0 && col < maxCol - 1) {
-                Point point = new Point(col, row);
+                    point.getY() > 0 && point.getY() < maxRow - 1 &&
+                    point.getX() > 0 && point.getX() < maxCol - 1) {
                 // continuous placing feature
-                if(keyPressed.contains(KeyCode.ALT)) {
+                if(keyPressed.contains(KeyCode.CONTROL)) {
                     if(mapBuilder.getObject(point) != null){
                         // delete object from map builder
                         GameObject deletedObj = mapBuilder.deleteObject(point);
                         // delete ImageView displayed in GridPane
-                        dungeonGridPane.getChildren().remove(objectImageViewMap.get(deletedObj));
-                        objectImageViewMap.remove(deletedObj);
+                        dungeonPane.getChildren().remove(getNodeById(deletedObj.getObjID()));
                     }
                     newGameObject(draggingClass.get(), point, true);
                 } else {
                     // visualise the current drop location
                     Rectangle indicator = new Rectangle(GRID_SIZE, GRID_SIZE);
                     indicator.setFill(new Color(0.5, 0.5, 1, 0.8));
-                    dungeonGridPane.add(indicator, col, row);
+                    indicator.setTranslateX(point.getX() * GRID_SIZE);
+                    indicator.setTranslateY(point.getY() * GRID_SIZE);
+                    dungeonPane.getChildren().add(indicator);
 
                     event.acceptTransferModes(TransferMode.COPY);
                 }
@@ -169,15 +137,14 @@ public class DesignScreenController extends Controller {
             event.consume();
         });
 
-        dungeonGridPane.setOnDragDropped(event -> {
+        dungeonPane.setOnDragDropped(event -> {
             // remove all previous indicator first
-            dungeonGridPane.getChildren().removeIf(node -> node instanceof Rectangle);
+            dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
 
             Point point = getEventIndex(event.getSceneX(), event.getSceneY());
             GameObject deleted = mapBuilder.deleteObject(point);
             if(deleted != null){
-                dungeonGridPane.getChildren().remove(objectImageViewMap.get(deleted));
-                objectImageViewMap.remove(deleted);
+                dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
             }
 
             newGameObject(draggingClass.get(), point, true);
@@ -210,13 +177,12 @@ public class DesignScreenController extends Controller {
         GameObject obj = GameObject.build(className, point);
         if(obj == null) return;
         mapBuilder.addObject(obj);
-        ImageView imageView = new ImageView(imgMap.get(className));
+        ImageView imageView = resources.createImageViewByGameObject(obj, dungeonPane.getChildren());
+
         if(enableInteraction) {
             imageView.setOnMouseClicked(this::handleRightClick);
             imageView.setOnDragDetected(e -> handleDragStart(e, imageView, obj.getClassName(), true));
         }
-        objectImageViewMap.put(obj, imageView);
-        dungeonGridPane.add(imageView, point.getX(), point.getY());
     }
 
     /**
@@ -225,8 +191,8 @@ public class DesignScreenController extends Controller {
      * @return point index in grid pane
      */
     private Point getEventIndex(double sceneX, double sceneY){
-        double paneX = sceneX + dungeonGridPane.getLayoutX();
-        double paneY = sceneY + dungeonGridPane.getLayoutY();
+        double paneX = sceneX - dungeonPane.getLayoutX();
+        double paneY = sceneY - dungeonPane.getLayoutY();
         int row = (int)(paneY / GRID_SIZE);
         int col = (int)(paneX / GRID_SIZE);
         return new Point(col, row);
@@ -242,8 +208,7 @@ public class DesignScreenController extends Controller {
             System.out.println("Right clicked");
             GameObject deleted = mapBuilder.deleteObject(point);
             if(deleted != null){
-                dungeonGridPane.getChildren().remove(objectImageViewMap.get(deleted));
-                objectImageViewMap.remove(deleted);
+                dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
             }
         }
     }
@@ -256,12 +221,11 @@ public class DesignScreenController extends Controller {
         content.putImage(draggingNode.getImage());
         db.setContent(content);
         draggingClass.set(classname);
-        if (duplicateAllowed && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.ALT))) {
+        if (duplicateAllowed && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL))) {
             draggingNode.setOnDragDone(e2 -> {
-                dungeonGridPane.getChildren().remove(draggingNode);
-                GameObject deleted = mapBuilder.deleteObject(point);
-                objectImageViewMap.remove(deleted);
+                mapBuilder.deleteObject(point);
             });
+            dungeonPane.getChildren().remove(draggingNode);
         }
     }
 
@@ -276,6 +240,16 @@ public class DesignScreenController extends Controller {
             newGameObject(wallClassName, new Point(0, y), false);
             newGameObject(wallClassName, new Point(maxCol - 1, y), false);
         }
+    }
+
+    /**
+     * Get a JavaFX Node by it's id which is the same
+     * objId in the backend;
+     * @param objId object id
+     * @return node
+     */
+    private Node getNodeById(int objId){
+        return dungeonPane.lookup("#" + Integer.toString(objId));
     }
 }
 

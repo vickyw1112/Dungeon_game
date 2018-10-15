@@ -36,6 +36,14 @@ public class MapBuilder {
         return ret;
     }
 
+    /**
+     * Update a existing GameObject's location
+     */
+    public void updateObjectLocation(GameObject obj, Point newLocation){
+        map[obj.getLocation().getX()][obj.getLocation().getY()] = null;
+        map[newLocation.getX()][newLocation.getY()] = obj;
+    }
+
 
     /**
      * Get the object in specific location

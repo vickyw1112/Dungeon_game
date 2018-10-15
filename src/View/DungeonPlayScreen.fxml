@@ -13,10 +13,7 @@
          <children>
             <SplitPane dividerPositions="0.6959798994974874" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                     <children>
-                        <Label fx:id="timerLabel" layoutX="6.0" layoutY="43.0" prefHeight="133.0" prefWidth="146.0" text="timer" wrapText="true" />
-                     </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
                         <Button fx:id="startScreenButton" layoutX="32.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" />

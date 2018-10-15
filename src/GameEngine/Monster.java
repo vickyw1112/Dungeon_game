@@ -65,6 +65,11 @@ public abstract class Monster extends StandardObject implements Movable {
         needUpdatePath = false;
     }
 
+    @Override
+    public int getMovingScheme() {
+        return EXACT;
+    }
+
     /**
      * getPath method
      * returns a linked list of points as path for monster

@@ -118,11 +118,23 @@ public interface GameObject extends Observable {
         try {
             // build fully-qualified class name
             clazz = Class.forName(GameObject.class.getPackage().getName() + "." + classname);
-            System.out.println(clazz.getCanonicalName());
             return (GameObject) clazz.getConstructor(Point.class).newInstance(location);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Check if a given simple class name is valid
+     */
+    public static boolean isValidClass(String simpleName){
+        String FQCN = GameObject.class.getPackage().getName() + "." + simpleName;
+        try {
+            Class.forName(FQCN);
+            return true;
+        } catch (Exception e){
+            return false;
         }
     }
 }

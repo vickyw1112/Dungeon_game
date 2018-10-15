@@ -38,6 +38,12 @@ public class DesignScreenController extends Controller {
     @FXML
     private TextField mapNameTextField;
 
+    @FXML
+    private TextField mapRowSizeTextField;
+
+    @FXML
+    private TextField mapColSizeTextField;
+
     private ResourceManager resources;
 
     private Set<KeyCode> keyPressed;
@@ -71,10 +77,8 @@ public class DesignScreenController extends Controller {
     @FXML
     public void initialize(){
         // set the dungeon gird pane to 11 x 11 by default
-        dungeonPane.setMinWidth(maxCol * GRID_SIZE);
-        dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
-        dungeonPane.setMinHeight(maxRow * GRID_SIZE);
-        dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
+        dungeonPane.setPrefWidth(maxCol * GRID_SIZE);
+        dungeonPane.setPrefHeight(maxRow * GRID_SIZE);
 
         resources.drawGridLine(dungeonPane.getChildren());
 
@@ -108,6 +112,14 @@ public class DesignScreenController extends Controller {
         cs.display(controller);
     }
 
+    @FXML
+    public void onResizeMapButtonClicked(){
+        maxRow = Integer.parseInt(mapRowSizeTextField.getText()) + 1;
+        maxCol = Integer.parseInt(mapColSizeTextField.getText()) + 1;
+        dungeonPane.getChildren().removeIf(o -> true);
+        initialize();
+    }
+
     /**
      * Update a given GameObject's position, and display it in dungeonPane
      *
@@ -115,6 +127,13 @@ public class DesignScreenController extends Controller {
      */
     private void updateGameObject(GameObject obj, Point point, boolean enableInteraction){
         if(obj == null) return;
+
+        // delete existing object at target location
+        GameObject deleted = mapBuilder.deleteObject(point);
+        if(deleted != null){
+            dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
+        }
+
         mapBuilder.updateObjectLocation(obj, point);
         ImageView imageView = resources.createImageViewByGameObject(obj, dungeonPane.getChildren());
 
@@ -206,13 +225,6 @@ public class DesignScreenController extends Controller {
                 point.getX() > 0 && point.getX() < maxCol - 1) {
             // continuous placing feature
             if(keyPressed.contains(KeyCode.CONTROL)) {
-                if(mapBuilder.getObject(point) != null){
-                    // delete object from map builder
-                    GameObject deletedObj = mapBuilder.deleteObject(point);
-                    // delete ImageView displayed in GridPane
-                    dungeonPane.getChildren().remove(getNodeById(deletedObj.getObjID()));
-                }
-//                    newGameObject(draggingClass.get(), point, true);
                 updateGameObject(draggingObject.get().cloneObject(), point, true);
             } else {
                 // visualise the current drop location
@@ -233,12 +245,6 @@ public class DesignScreenController extends Controller {
         dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
 
         Point point = getEventIndex(event.getSceneX(), event.getSceneY());
-        GameObject deleted = mapBuilder.deleteObject(point);
-        if(deleted != null){
-            dungeonPane.getChildren().remove(getNodeById(deleted.getObjID()));
-        }
-
-//            newGameObject(draggingClass.get(), point, true);
 
         GameObject newObj =
                 // duplicate dragging object

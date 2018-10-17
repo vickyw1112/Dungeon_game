@@ -106,15 +106,19 @@ public class DungeonPlayController extends Controller{
 				super.updateItem(name, empty);
 				if (empty) {
 					setText(null);
+					setGraphic(null);
 				} else {
 					ImageView imageView = new ImageView(imgMap.get(name));
 					imageView.setPreserveRatio(true);
 					imageView.setFitWidth(10);
 					HashMap<String, Integer> countMap = engine.getInventoryCounts();
 					int count = countMap.get(name);
-
 					setGraphic(imageView);
 					setText(Integer.toString(count));
+					if(count == 0){
+					    imageView.setImage(null);
+					    setText(null);
+                    }
 				}
 			}
 		});

@@ -7,20 +7,22 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +37,9 @@ public class DesignScreenController extends Controller {
 
     @FXML
     private TextField mapNameTextField;
+
+    @FXML
+    private TextField mapAuthorTextField;
 
     @FXML
     private TextField mapRowSizeTextField;
@@ -61,7 +66,6 @@ public class DesignScreenController extends Controller {
         draggingClass = new SimpleStringProperty();
         draggingObject = new SimpleObjectProperty<>();
         keyPressed = new HashSet<>();
-        mapBuilder = new MapBuilder();
         maxCol = 11;
         maxRow = 11;
     }
@@ -74,11 +78,20 @@ public class DesignScreenController extends Controller {
 
     @FXML
     public void initialize(){
-        // set the dungeon gird pane to 11 x 11 by default
-        dungeonPane.setPrefWidth(maxCol * GRID_SIZE);
-        dungeonPane.setPrefHeight(maxRow * GRID_SIZE);
+        mapBuilder = new MapBuilder(maxCol, maxRow);
 
-        resources.drawGridLine(dungeonPane.getChildren());
+        // set the dungeon gird pane to 11 x 11 by default
+        dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
+        dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
+
+        // clear anything on dungeon pane
+        dungeonPane.getChildren().clear();
+
+        // set map size text fields to current size
+        mapColSizeTextField.setText(Integer.toString(maxCol));
+        mapRowSizeTextField.setText(Integer.toString(maxRow));
+
+        resources.drawGridLine(dungeonPane.getChildren(), maxCol, maxRow);
 
         initWallBoundary();
 
@@ -92,17 +105,33 @@ public class DesignScreenController extends Controller {
 
         dungeonPane.setOnDragOver(this::handleDragOver);
         dungeonPane.setOnDragDropped(this::handleDragDropped);
+
+        // resize the stage to fit the scene
+        stage.sizeToScene();
+    }
+
+    private void saveDungeonSnapshot(String mapName) throws IOException {
+        File out = new File("map/" + mapName + ".png");
+        WritableImage writableImage =
+                new WritableImage((int)dungeonPane.getWidth(), (int)dungeonPane.getHeight());
+        dungeonPane.snapshot(null, writableImage);
+        ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", out);
     }
 
     @FXML
     public void onSaveButtonClicked(MouseEvent event){
         new File("map").mkdirs();
 
-        Map map = new Map(mapBuilder);
+        String mapName = mapNameTextField.getText().replaceAll("[^\\w\\-.]", "");
+        String authorName = mapAuthorTextField.getText();
+        mapBuilder.setAuthor(authorName);
+
+        Map map = mapBuilder.build();
         try {
-            map.serialize(new FileOutputStream("map/" + mapNameTextField.getText()));
+            map.serialize(new FileOutputStream("map/" + mapName + ".dungeon"));
+            saveDungeonSnapshot(mapName);
         } catch (Exception e){
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
         }
         System.out.println("Map serialized");
         Screen cs = new Screen(this.getStage(), "Select Mode", "View/ModeScreen.fxml");
@@ -112,9 +141,16 @@ public class DesignScreenController extends Controller {
 
     @FXML
     public void onResizeMapButtonClicked(){
-        maxRow = Integer.parseInt(mapRowSizeTextField.getText()) + 1;
-        maxCol = Integer.parseInt(mapColSizeTextField.getText()) + 1;
-        dungeonPane.getChildren().removeIf(o -> true);
+        try {
+            maxCol = Integer.parseInt(mapColSizeTextField.getText());
+            maxRow = Integer.parseInt(mapRowSizeTextField.getText());
+            if(maxCol < 5 || maxRow < 5 || maxCol > 20 || maxRow > 20)
+                throw new NumberFormatException();
+        } catch (NumberFormatException e){
+            new Alert(Alert.AlertType.ERROR, "Invalid map size!", ButtonType.OK).showAndWait();
+            mapColSizeTextField.setText(Integer.toString(maxCol));
+            mapRowSizeTextField.setText(Integer.toString(maxRow));
+        }
         initialize();
     }
 

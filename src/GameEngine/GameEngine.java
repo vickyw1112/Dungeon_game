@@ -92,7 +92,7 @@ public class GameEngine {
      * @throws ClassNotFoundException
      */
     public GameEngine(InputStream mapInput, GameObjectObserver observer) throws IOException, ClassNotFoundException {
-        this(new Map(mapInput), observer);
+        this(Map.loadFromFile(mapInput), observer);
     }
 
     /**

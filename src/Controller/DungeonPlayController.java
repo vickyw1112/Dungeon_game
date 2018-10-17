@@ -83,7 +83,7 @@ public class DungeonPlayController extends Controller{
 		ObservableList<Node> nodes = dungeonPane.getChildren();
 
         // draw grids
-        resources.drawGridLine(nodes);
+        resources.drawGridLine(nodes, map.getSizeX(), map.getSizeY());
 
 		for(GameObject obj: engine.getAllObjects()) {
             resources.createImageViewByGameObject(obj, nodes);

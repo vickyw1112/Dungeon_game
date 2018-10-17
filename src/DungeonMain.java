@@ -13,7 +13,7 @@ public class DungeonMain extends Application {
 
         Screen startScreen = new Screen(primaryStage, "Dungeon", "View/DungeonPlayScreen.fxml");
         try {
-            Controller controller = new DungeonPlayController(primaryStage, new Map(new FileInputStream("map/testMap2")));
+            Controller controller = new DungeonPlayController(primaryStage, Map.loadFromFile(new FileInputStream("map/testMap2")));
             startScreen.display(controller);
         } catch (Exception e){
             e.printStackTrace();

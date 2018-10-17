@@ -166,7 +166,7 @@ public class MapTest {
         byte[] buffer = output.toByteArray();
 
         ByteArrayInputStream input  = new ByteArrayInputStream(buffer);
-        map = new Map(input);
+        map = Map.loadFromFile(input);
         // check new map is the same
         key = (Key) map.getObjects(keyLocation).get(0);
         assertNotNull(key);

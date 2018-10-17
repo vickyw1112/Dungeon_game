@@ -93,26 +93,30 @@ public class ResourceManager {
         return allClasses;
     }
 
-    public void drawGridLine(ObservableList<Node> mountPoint){
+    public void drawGridLine(ObservableList<Node> mountPoint) {
+        drawGridLine(mountPoint, Map.DEFAULT_DUNGEON_SIZE_X, Map.DEFAULT_DUNGEON_SIZE_Y);
+    }
+
+    public void drawGridLine(ObservableList<Node> mountPoint, int sizeX, int sizeY){
         // vertical lines
-        for(int i = 0; i < 11; i++){
+        for(int i = 0; i < sizeX; i++){
             Line line = new Line();
             line.setStartX(i * GRID_SIZE);
             line.setEndX(i * GRID_SIZE);
             line.setStartY(0);
-            line.setStartY(GRID_SIZE * Map.DUNGEON_SIZE_Y);
+            line.setStartY(GRID_SIZE * sizeY);
             line.setStrokeWidth(1);
             line.setStroke(new Color(0, 0, 0, 0.5));
             mountPoint.add(line);
         }
 
         // horizontal lines
-        for(int i = 0; i < 11; i++){
+        for(int i = 0; i < sizeY; i++){
             Line line = new Line();
             line.setStartY(i * GRID_SIZE);
             line.setEndY(i * GRID_SIZE);
             line.setStartX(0);
-            line.setStartX(GRID_SIZE * Map.DUNGEON_SIZE_X);
+            line.setStartX(GRID_SIZE * sizeX);
             line.setStrokeWidth(1);
             line.setStroke(new Color(0, 0, 0, 0.5));
             mountPoint.add(line);

@@ -6,11 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="487.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button layoutX="122.0" layoutY="317.0" mnemonicParsing="false" onMouseClicked="#onModeSelectButtonClicked" text="Mode Select" />
-      <ListView fx:id="mapListView" layoutX="128.0" layoutY="33.0" prefHeight="246.0" prefWidth="270.0" />
-      <Button layoutX="355.0" layoutY="317.0" mnemonicParsing="false" onMouseClicked="#onPlayButtonClicked" text="Play" />
+      <Button layoutX="96.0" layoutY="390.0" mnemonicParsing="false" onMouseClicked="#onModeSelectButtonClicked" text="Mode Select" />
+      <ListView fx:id="mapListView" layoutX="50.0" layoutY="33.0" minWidth="520.0" prefHeight="318.0" prefWidth="520.0" />
+      <Button layoutX="439.0" layoutY="390.0" mnemonicParsing="false" onMouseClicked="#onPlayButtonClicked" text="Play" />
    </children>
 </AnchorPane>

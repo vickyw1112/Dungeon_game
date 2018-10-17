@@ -356,4 +356,13 @@ public class GameEngine {
     public Player getPlayer() {
         return player;
     }
+
+    public HashMap<String, Integer> getInventoryCounts(){
+        HashMap<Class<?>, Integer> countMap = player.getInventory().getCountMap();
+        HashMap<String, Integer> ret = new HashMap<>();
+        for(Class<?> clazz : countMap.keySet()){
+            ret.put(clazz.getSimpleName(), countMap.get(clazz));
+        }
+        return ret;
+    }
 }

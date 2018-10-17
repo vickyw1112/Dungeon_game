@@ -10,7 +10,7 @@ public abstract class Potion extends StandardObject implements TimerRequired {
     /**
      * Duration of the effect of the potion in seconds
      */
-    int duration;
+    protected int duration;
 
     public Potion(Point location) {
         super(location);

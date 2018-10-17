@@ -5,7 +5,7 @@ package GameEngine;
  * to have a timer associated with it
  */
 public interface TimerRequired extends GameObject {
-    public static final int LAST_FOREVER = -1;
+    public static final int LAST_FOREVER = Integer.MIN_VALUE;
 
     /**
      * Get duration for the timer

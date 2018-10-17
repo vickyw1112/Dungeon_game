@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -35,13 +36,13 @@ public class DungeonPlayController extends Controller {
     private AnimationTimer mainAnimation;
 
 	@FXML
-	private ProgressBar timerInvincibilityPotion;
-
-	@FXML
 	private Label timerLabel;
 
 	@FXML
 	private ListView<String> inventoryItems;
+
+	@FXML
+    private HBox timerBox;
 
 	private GameEngine engine;
     private TimerCollection timers;
@@ -56,8 +57,10 @@ public class DungeonPlayController extends Controller {
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
+        // load all resources
+        resources = new ResourceManager();
+
         keyPressed = new HashSet<>();
-        timers = new TimerCollection();
         this.map = map;
         originalMap = map.cloneMap();
 		inventoryList = FXCollections.observableArrayList();
@@ -107,12 +110,10 @@ public class DungeonPlayController extends Controller {
 
     @FXML
 	public void initialize() {
-	    // load all resources
-        resources = new ResourceManager();
+	    timerBox.getChildren().clear();
+        timers = new TimerCollection(timerBox.getChildren(), resources);
 
         initDungeon();
-
-		timerInvincibilityPotion.setOpacity(0.0);
 
 		inventoryItems.setItems(inventoryList);
 		inventoryItems.setCellFactory(this::inventoryListViewCellFactory);
@@ -182,7 +183,6 @@ public class DungeonPlayController extends Controller {
 				// make sure at most go 40 ms for each frame
 				elapsedSeconds = elapsedSeconds > 0.04 ? 0.04 : elapsedSeconds;
 
-				timers.updateAll((int)(elapsedSeconds * 1000));
 
 				updatePlayerMovingStatus();
 
@@ -192,8 +192,11 @@ public class DungeonPlayController extends Controller {
 				if(keyPressed.contains(KeyCode.B))
 				    handlePlayerSetBomb();
 
-				updateMovingObjects(elapsedSeconds);
+				if(updateMovingObjects(elapsedSeconds))
+				    return;
 
+				// update timer last in case bomb went off and player is dead
+                timers.updateAll((int)(elapsedSeconds * 1000));
 				lastUpdateTime.set(now);
 			}
 		};
@@ -252,6 +255,8 @@ public class DungeonPlayController extends Controller {
                 if (destroyedObjects == null) {
                     System.out.println("You've got bombed!");
                     Platform.runLater(this::handleLose);
+                    mainAnimation.stop();
+
                 } else {
                     // remove all destroyed nodes
                     dungeonPane.getChildren().removeAll(
@@ -335,14 +340,12 @@ public class DungeonPlayController extends Controller {
      * When the user wins, move to the win screen
      */
 	private void handleWin(){
-	    mainAnimation.stop();
 		Screen cs = new Screen(this.getStage(), "Highscore", "View/WinScreen.fxml");
 		Controller controller = new HighscoreScreenController(this.getStage());
 		cs.display(controller);
 	}
 
 	private void handleLose(){
-	    mainAnimation.stop();
 	    ButtonType goBackBtn = new ButtonType("Go back to menu");
 	    Alert alert = new Alert(Alert.AlertType.INFORMATION,
                 "You've lost the game, retry?", ButtonType.YES, goBackBtn);
@@ -372,8 +375,11 @@ public class DungeonPlayController extends Controller {
     /**
      * Update all moving objects in game engine
      * by elapsedSeconds
+     *
+     * @return whether to break out current frame
+     *          this is true when game finished
      */
-    private void updateMovingObjects(double elapsedSeconds) {
+    private boolean updateMovingObjects(double elapsedSeconds) {
         for(Movable movingObj : engine.getMovingObjects()){
             double dx = 0, dy = 0;
             switch (movingObj.getFacing()){
@@ -411,12 +417,14 @@ public class DungeonPlayController extends Controller {
 
                 if(isColliding(movingNode, anotherNode)){
                     CollisionResult result = engine.handleCollision(movingObj, anotherObj);
-                    handleCollision(result, movingNode, anotherNode, oldX, oldY);
+                    if(handleCollision(result, movingNode, anotherNode, oldX, oldY))
+                        return true;
                 }
             }
 
             engine.changeObjectLocation(movingObj, getUpdatedPoint(movingObj, newX, newY));
         }
+        return false;
     }
 
     /**
@@ -427,8 +435,10 @@ public class DungeonPlayController extends Controller {
      * @param anotherNode the node being collided
      * @param oldX old X value for moving node
      * @param oldY old Y value for moving node
+     * @return whether to break out current frame
+     *          this is true when game finished
      */
-    private void handleCollision(CollisionResult result, Node movingNode, Node anotherNode,
+    private boolean handleCollision(CollisionResult result, Node movingNode, Node anotherNode,
                                  double oldX, double oldY){
         if(result.containFlag(CollisionResult.REJECT)){
             // set translate co-ord back to before
@@ -437,13 +447,15 @@ public class DungeonPlayController extends Controller {
         }
         if(result.containFlag(CollisionResult.LOSE)){
             System.out.println("You've LOST the game!");
-            mainAnimation.stop();
             Platform.runLater(this::handleLose);
+            mainAnimation.stop();
+            return true;
         }
         if(result.containFlag(CollisionResult.WIN)){
             System.out.println("You've WON the game!");
-            mainAnimation.stop();
             handleWin();
+            mainAnimation.stop();
+            return true;
         }
         if(result.containFlag(CollisionResult.DELETE_FIRST)){
             dungeonPane.getChildren().remove(movingNode);
@@ -457,18 +469,11 @@ public class DungeonPlayController extends Controller {
         if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){
             // second one is the one being collided
             Potion potion = (Potion) result.getCollidingObjects()[1];
-            Timer timer = new Timer(potion, arg -> {
-                player.removePotionEffect(engine, potion);
-                timerInvincibilityPotion.setOpacity(0.0);
-            });
-
-            timer.setOnUpdateTimer(t -> {
-                timerInvincibilityPotion.setOpacity(1.0);
-                timerInvincibilityPotion.setProgress(t.getRemain() * 1.0 / t.getTotalDuration());
-            });
+            Timer timer = new Timer(potion, arg -> player.removePotionEffect(engine, potion));
 
             timers.add(timer);
         }
+        return false;
     }
 
 }

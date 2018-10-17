@@ -1,11 +1,9 @@
 package GameEngine;
 
 import GameEngine.utils.Point;
-import com.sun.istack.internal.FinalArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 import static GameEngine.Map.DEFAULT_DUNGEON_SIZE_X;
 import static GameEngine.Map.DEFAULT_DUNGEON_SIZE_Y;

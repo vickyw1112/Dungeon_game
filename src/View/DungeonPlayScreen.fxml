@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.7274247491638796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <items>
-        <AnchorPane fx:id="dungeonPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <children>
-                <SplitPane dividerPositions="0.6959798994974874" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0">
-                    <items>
-                        <AnchorPane fx:id="inventoryPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                     <children>
-                         <ProgressBar fx:id="timerInvincibilityPotion" layoutX="48.0" layoutY="227.0" nodeOrientation="RIGHT_TO_LEFT" opacity="0.0" prefHeight="14.0" prefWidth="62.0" progress="1.0" />
-                        <ListView fx:id="inventoryItems" disable="true" layoutX="17.0" layoutY="27.0" prefHeight="175.0" prefWidth="120.0" />
-                     </children></AnchorPane>
-                        <AnchorPane fx:id="menuPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                            <children>
-                                <Button fx:id="startScreenButton" layoutX="32.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" />
-                                <Button fx:id="modeScreenButton" layoutX="29.0" layoutY="32.0" mnemonicParsing="false" onAction="#handleModeScreenButton" text="Mode Screen" />
-                            </children>
-                        </AnchorPane>
-                    </items>
-                </SplitPane>
-            </children></AnchorPane>
-    </items>
-</SplitPane>
+
+<GridPane prefHeight="433.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" />
+    <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+        <AnchorPane fx:id="dungeonPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="315.0" prefWidth="350.0" GridPane.rowIndex="1" />
+            <AnchorPane fx:id="menuPane" maxWidth="200.0" minHeight="0.0" minWidth="200.0" prefHeight="11.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowSpan="2">
+                <children>
+             <ProgressBar fx:id="timerInvincibilityPotion" layoutX="69.0" layoutY="258.0" nodeOrientation="RIGHT_TO_LEFT" opacity="0.0" prefHeight="14.0" prefWidth="62.0" progress="1.0" AnchorPane.topAnchor="258.0" />
+            <ListView fx:id="inventoryItems" disable="true" layoutX="25.0" layoutY="38.0" prefHeight="200.0" prefWidth="150.0" AnchorPane.topAnchor="38.0" />
+                    <Button fx:id="startScreenButton" layoutX="52.0" layoutY="371.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" AnchorPane.bottomAnchor="35.0" />
+                    <Button fx:id="modeScreenButton" layoutX="50.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleModeScreenButton" text="Mode Screen" AnchorPane.bottomAnchor="74.0" />
+                </children>
+            </AnchorPane>
+      <HBox fx:id="timerBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+   </children>
+</GridPane>

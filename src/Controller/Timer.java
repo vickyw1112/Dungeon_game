@@ -31,6 +31,10 @@ public class Timer {
         this.onUpdateTimer = onUpdateTimer;
     }
 
+    public TimerRequired getObj() {
+        return obj;
+    }
+
     /**
      * Update a timer by a given time
      * If the timer expires, run onTimerExpired
@@ -38,6 +42,8 @@ public class Timer {
      * @return whether the timer is expired
      */
     public boolean update(int elapsed){
+        if(remain == TimerRequired.LAST_FOREVER)
+            return false;
         remain -= elapsed;
         if(remain <= 0){
             onTimerExpired.accept(this);

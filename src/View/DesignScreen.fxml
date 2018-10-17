@@ -25,7 +25,7 @@
             <Label layoutX="24.0" layoutY="462.0" text="Map Author:" />
             <TextField fx:id="mapNameTextField" layoutX="110.0" layoutY="417.0" />
             <Button layoutX="163.0" layoutY="497.0" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" text="Save Map" />
-            <ListView fx:id="objectsListView" layoutX="47.0" layoutY="84.0" prefHeight="308.0" prefWidth="209.0" />
+            <ListView fx:id="objectsListView" onMouseClicked="#onObjectListViewClicked" layoutX="47.0" layoutY="84.0" prefHeight="308.0" prefWidth="209.0" />
             <Button layoutX="36.0" layoutY="497.0" mnemonicParsing="false" text="Exit to Menu" />
          </children>
          <padding>

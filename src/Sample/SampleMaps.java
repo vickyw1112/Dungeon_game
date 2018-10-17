@@ -20,6 +20,8 @@ public class SampleMaps {
         Boulder boulder2 = new Boulder(new Point(9, 1));
         Hunter hunter = new Hunter(new Point(0,9));
 
+
+
         Hound hound = new Hound(new Point(4, 9));
         hound.setPair(hunter);
         Coward coward = new Coward(new Point(1, 9));
@@ -36,8 +38,8 @@ public class SampleMaps {
         mb.addObject(hound);
         mb.addObject(sword);
         mb.addObject(arrow);
-        mb.addObject(coward);
-        mb.addObject(strategist);
+//        mb.addObject(coward);
+//        mb.addObject(strategist);
         mb.addObject(wall0);
         mb.addObject(wall1);
         mb.addObject(wall2);
@@ -66,11 +68,11 @@ public class SampleMaps {
         mb.addObject(potion2);
         Player player = new Player(new Point(2, 2));
         mb.addObject(player);
-        Hunter hunter = new Hunter(new Point(1, 5));
-        mb.addObject(hunter);
-        Hound hound = new Hound(new Point(1, 6));
-        mb.addObject(hound);
-        hound.setPair(hunter);
+//        Hunter hunter = new Hunter(new Point(1, 5));
+//        mb.addObject(hunter);
+//        Hound hound = new Hound(new Point(1, 6));
+//        mb.addObject(hound);
+//        hound.setPair(hunter);
         return new Map(mb);
     }
 }

@@ -43,38 +43,46 @@ public class DungeonPlayController extends Controller{
 	private AnchorPane dungeonPane;
 
 	@FXML
-    private Label timerLabel;
+	private Label timerLabel;
 
 	@FXML
-	private ListView<String> inventoryList;
+	private ListView<String> inventoryItems;
 
 
 	public static final int GRID_SIZE = 32;
 
 	private HashMap<String, Image> imgMap;
+	private GameEngine engine;
 	private Player player;
 	private Map map;
 	private AnimationTimer mainAnimation;
 	private Set<KeyCode> keyCodes; // currently pressed keys
-    private TimerCollection timers;
-    private ObservableList<String> inventoryItems;
+	private TimerCollection timers;
+	private ObservableList<String> inventoryList;
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
-        keyCodes = new HashSet<>();
-        imgMap = new HashMap<>();
-        timers = new TimerCollection();
-        inventoryItems = FXCollections.observableArrayList();
-        this.map = map;
+		keyCodes = new HashSet<>();
+		imgMap = new HashMap<>();
+		timers = new TimerCollection();
+		inventoryList = FXCollections.observableArrayList();
+		this.map = map;
 	}
 
-    /**
-     * Debug only, use sample hardcoded map
-     * @param s the stage
-     */
+	/**
+	 * Debug only, use sample hardcoded map
+	 * @param s the stage
+	 */
 	public DungeonPlayController(Stage s){
-	    this(s, SampleMaps.getMap2());
-    }
+		this(s, SampleMaps.getMap1());
+	}
+
+	private void updateInventory() {
+		// remove all entry
+		inventoryList.removeIf(o -> true);
+
+		inventoryList.addAll(engine.getInventoryCounts().keySet());
+	}
 
 	@FXML
 	void onKeyPressed(KeyEvent event) {
@@ -90,49 +98,52 @@ public class DungeonPlayController extends Controller{
 
 	@FXML
 	public void initialize() {
-		inventoryList.setItems(inventoryItems);
-		inventoryList.setCellFactory(param -> new ListCell<String>() {
-			private ImageView imageView = new ImageView();
-            @Override
+		inventoryItems.setItems(inventoryList);
+		inventoryItems.setCellFactory(param -> new ListCell<>() {
+			@Override
 			public void updateItem(String name, boolean empty) {
-				super.updateItem(name,empty);
+				super.updateItem(name, empty);
 				if (empty) {
 					setText(null);
-					setGraphic(null);
 				} else {
-					for(String string: imgMap.keySet())
-						if(name.equals(string)) {
-							imageView.setImage(imgMap.get(string));
-                            setText(name);
-                            setGraphic(imageView);
-						}
+					ImageView imageView = new ImageView(imgMap.get(name));
+					imageView.setPreserveRatio(true);
+					imageView.setFitWidth(10);
+					HashMap<String, Integer> countMap = engine.getInventoryCounts();
+					int count = countMap.get(name);
+
+					setGraphic(imageView);
+					setText(Integer.toString(count));
 				}
 			}
 		});
 
 		loadResources();
-	    Group dungeon = initDungeon();
+		Group dungeon = initDungeon();
 		dungeonPane.getChildren().add(dungeon);
 	}
 
+
+
+
 	private void loadResources(){
-        // load all images
-        File dir = new File(getClass().getClassLoader().getResource("img").getPath());
-        File[] directoryListing = dir.listFiles();
-        try {
-            for (File child : directoryListing) {
-                imgMap.put(child.getName().split("[.]")[0], new Image(new FileInputStream(child)));
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+		// load all images
+		File dir = new File(getClass().getClassLoader().getResource("img").getPath());
+		File[] directoryListing = dir.listFiles();
+		try {
+			for (File child : directoryListing) {
+				imgMap.put(child.getName().split("[.]")[0], new Image(new FileInputStream(child)));
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
 
 	private Group initDungeon() {
 		Group dungeon = new Group();
 
-		GameEngine engine = new GameEngine(map);
+		engine = new GameEngine(map);
 		player = engine.getPlayer();
 		List<Node> nodes = new LinkedList<>();
 
@@ -156,7 +167,6 @@ public class DungeonPlayController extends Controller{
 				elapsedSeconds = elapsedSeconds > 0.04 ? 0.04 : elapsedSeconds;
 
 				timers.updateAll((int)(elapsedSeconds * 1000));
-
 				// get player's moving status
 				if(keyCodes.contains(KeyCode.LEFT)){
 					player.setFacing(Direction.LEFT);
@@ -182,6 +192,7 @@ public class DungeonPlayController extends Controller{
 						imageView.setTranslateX(arrow.getLocation().getX() * GRID_SIZE);
 						imageView.setTranslateY(arrow.getLocation().getY() * GRID_SIZE);
 						dungeon.getChildren().add(imageView);
+						updateInventory();
 					}
 				}
 
@@ -193,27 +204,25 @@ public class DungeonPlayController extends Controller{
 						imageView.setTranslateX(bomb.getLocation().getX() * GRID_SIZE);
 						imageView.setTranslateY(bomb.getLocation().getY() * GRID_SIZE);
 						dungeon.getChildren().add(imageView);
+						updateInventory();
 
 						Timer timer = new Timer(bomb, arg -> {
-                            System.out.format("%s exploded\n", bomb);
-                            List<GameObject> destroyedObjects = bomb.explode(engine);
+							System.out.format("%s exploded\n", bomb);
+							List<GameObject> destroyedObjects = bomb.explode(engine);
 
-                            if (destroyedObjects == null) {
-                                System.out.println("You've got bombed!");
-                                restart();
-                            } else {
-                                // remove all destroyed nodes
-                                dungeon.getChildren().removeAll(
-                                        destroyedObjects.stream()
-                                                .map(o -> dungeon.lookup("#" + o.getObjID()))
-                                                .collect(Collectors.toList()));
-                                // remove the bomb itself
-                                dungeon.getChildren().remove(imageView);
-                            }
-                        });
-						timer.setOnUpdateTimer(remain -> {
-						    timerLabel.setText("Bomb will explode in: " + (remain/1000 + 1) + " s.");
-                        });
+							if (destroyedObjects == null) {
+								System.out.println("You've got bombed!");
+								restart();
+							} else {
+								// remove all destroyed nodes
+								dungeon.getChildren().removeAll(
+										destroyedObjects.stream()
+												.map(o -> dungeon.lookup("#" + o.getObjID()))
+												.collect(Collectors.toList()));
+								// remove the bomb itself
+								dungeon.getChildren().remove(imageView);
+							}
+						});
 						timers.add(timer);
 					}
 				}
@@ -264,14 +273,14 @@ public class DungeonPlayController extends Controller{
 							}
 							if(result.containFlag(CollisionResult.LOSE)){
 								System.out.println("You've LOST the game!");
-                                mainAnimation.stop();
+								mainAnimation.stop();
 //                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've LOST the game");
 //                                Platform.runLater(alert::showAndWait);
 								restart();
 							}
 							if(result.containFlag(CollisionResult.WIN)){
 								System.out.println("You've WON the game!");
-                                mainAnimation.stop();
+								mainAnimation.stop();
 //                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've WON the game");
 //                                Platform.runLater(alert::showAndWait);
 								restart();
@@ -283,19 +292,19 @@ public class DungeonPlayController extends Controller{
 								dungeon.getChildren().remove(anotherNode);
 							}
 							if(result.containFlag(CollisionResult.REFRESH_INVENTORY)){
-							    inventoryItems.add(anotherObj.getClassName());
 								System.out.print(player.getInventory());
+								updateInventory();
 							}
 							if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){
-                                Potion potion = (Potion) anotherObj;
-                                Timer timer = new Timer(potion, arg -> {
-                                    player.removePotionEffect(engine, potion);
-                                });
-                                timer.setOnUpdateTimer(remain -> {
-                                    timerLabel.setText(String.format("%s: %.2f", potion, remain/1000.0));
-                                });
-                                timers.add(timer);
-                            }
+								Potion potion = (Potion) anotherObj;
+								Timer timer = new Timer(potion, arg -> {
+									player.removePotionEffect(engine, potion);
+								});
+								timer.setOnUpdateTimer(remain -> {
+									timerLabel.setText(String.format("%s: %.2f", potion, remain/1000.0));
+								});
+								timers.add(timer);
+							}
 						}
 					}
 
@@ -400,9 +409,9 @@ public class DungeonPlayController extends Controller{
 	}
 
 	private void restart(){
-        Screen cs = new Screen(this.getStage(), "Dungeon", "View/DungeonPlayScreen.fxml");
-        Controller controller = new DungeonPlayController(this.getStage());
-        cs.display(controller);
+		Screen cs = new Screen(this.getStage(), "Dungeon", "View/DungeonPlayScreen.fxml");
+		Controller controller = new DungeonPlayController(this.getStage());
+		cs.display(controller);
 	}
 
 }

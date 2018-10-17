@@ -29,6 +29,10 @@ public class Inventory {
         this.items = new ArrayList<>();
     }
 
+    protected HashMap<Class<?>, Integer> getCountMap() {
+        return countMap;
+    }
+
     /**
      * Check if a specific instance of game object is inside the inventory
      *
@@ -63,6 +67,8 @@ public class Inventory {
      */
     public void setCount(Class<?> cls, int count) {
         countMap.put(cls, count);
+        if(count == 0)
+            countMap.remove(cls);
     }
 
     /**
@@ -102,6 +108,8 @@ public class Inventory {
                 return item;
             }
         }
+        if(countMap.get(cls) == 0)
+            countMap.remove(cls);
         return null;
     }
 

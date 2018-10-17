@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -43,6 +44,9 @@ public class DungeonPlayController extends Controller {
 
 	@FXML
     private HBox timerBox;
+
+	@FXML
+    private StackPane pausePane;
 
 	private GameEngine engine;
     private TimerCollection timers;
@@ -102,6 +106,7 @@ public class DungeonPlayController extends Controller {
                 else
                     mainAnimation.stop();
                 paused = !paused;
+                pausePane.setVisible(paused);
             }
             keyPressed.add(event.getCode());
         });
@@ -110,6 +115,7 @@ public class DungeonPlayController extends Controller {
 
     @FXML
 	public void initialize() {
+	    pausePane.setVisible(false);
 	    timerBox.getChildren().clear();
         timers = new TimerCollection(timerBox.getChildren(), resources);
 

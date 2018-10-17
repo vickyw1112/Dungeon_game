@@ -30,6 +30,7 @@ public class Screen {
             Parent root = fxmlLoader.load();
             Scene sc = new Scene(root);
             stage.setScene(sc);
+            controller.afterInitialize();
             stage.show();
         }catch(IOException e){
             e.printStackTrace();

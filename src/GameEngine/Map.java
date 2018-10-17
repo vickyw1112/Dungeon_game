@@ -7,20 +7,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Map implements Serializable {
-    // TODO: we can probably do multi-sized dungeon by changing these const to variable for extension
-    public static final int DUNGEON_SIZE_X = 10;
-    public static final int DUNGEON_SIZE_Y = 10;
+    public static final int DEFAULT_DUNGEON_SIZE_X = 11;
+    public static final int DEFAULT_DUNGEON_SIZE_Y = 11;
 
     private List<GameObject>[][] map;
+    private int sizeX = DEFAULT_DUNGEON_SIZE_X;
+    private int sizeY = DEFAULT_DUNGEON_SIZE_Y;
+    private String author;
 
     /**
-     * Empty arg constructor
+     * Empty arg constructor for default sized map
      */
     public Map() {
-        this.map = new List[DUNGEON_SIZE_X][DUNGEON_SIZE_Y];
-        for (int i = 0; i < DUNGEON_SIZE_X; i++)
-            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
-                map[i][j] = new LinkedList<>();
+        init();
     }
 
     /**
@@ -29,22 +28,74 @@ public class Map implements Serializable {
      * @param mapBuilder map builder
      */
     public Map(MapBuilder mapBuilder) {
-        this();
-        GameObject[][] builderMap = mapBuilder.getMap();
-        for (int i = 0; i < DUNGEON_SIZE_X; i++)
-            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
-                if (builderMap[i][j] != null)
-                    map[i][j].add(builderMap[i][j]);
+        init();
+        build(mapBuilder);
     }
 
     /**
-     * Construct a SampleMaps from a saved file
+     * Build given sized map by map builder
+     */
+    public Map(MapBuilder mapBuilder, int sizeX, int sizeY, String author){
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.author = author;
+        init();
+        build(mapBuilder);
+    }
+
+    /**
+     * Initiate the 2D array of list
+     */
+    private void init(){
+        this.map = new List[sizeX][sizeY];
+        for (int i = 0; i < sizeX; i++)
+            for (int j = 0; j < sizeY; j++)
+                map[i][j] = new LinkedList<>();
+    }
+
+    /**
+     * Copy references from map builder to this map
+     */
+    private void build(MapBuilder mapBuilder){
+        GameObject[][] builderMap = mapBuilder.getMap();
+        for (int i = 0; i < sizeX; i++)
+            for (int j = 0; j < sizeY; j++) {
+                if (builderMap[i][j] != null)
+                    map[i][j].add(builderMap[i][j]);
+                // delete reference to pair if it's not in map anymore
+                if (builderMap[i][j] instanceof Pairable){
+                    Pairable p = (Pairable) builderMap[i][j];
+                    if(!mapBuilder.contains(p.getPair()))
+                        p.setPair(null);
+                }
+            }
+    }
+
+    /**
+     * Load a map from a saved file
      *
      * @param inputStream map input stream
      */
-    public Map(InputStream inputStream) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        this.map = (List<GameObject>[][]) in.readObject();
+    public static Map loadFromFile(InputStream inputStream){
+        try {
+            ObjectInputStream in = new ObjectInputStream(inputStream);
+            return (Map) in.readObject();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     /**
@@ -60,8 +111,8 @@ public class Map implements Serializable {
     public void removeObject(GameObject obj) {
         if(obj instanceof Monster)
             GameEngine.MONSTERKILLED++; // add static to count monster to be killed
-        for(int i = 0; i < DUNGEON_SIZE_X; i++)
-            for(int j = 0; j < DUNGEON_SIZE_Y; j++)
+        for(int i = 0; i < sizeX; i++)
+            for(int j = 0; j < sizeY; j++)
                 map[i][j].remove(obj);
     }
 
@@ -108,17 +159,17 @@ public class Map implements Serializable {
 
     public void serialize(OutputStream outputStream) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
-        out.writeObject(this.map);
+        out.writeObject(this);
     }
 
     boolean isValidPoint(Point p) {
-        return p.getX() >= 0 && p.getX() < DUNGEON_SIZE_X && p.getY() >= 0 && p.getY() < DUNGEON_SIZE_Y;
+        return p.getX() >= 0 && p.getX() < sizeX && p.getY() >= 0 && p.getY() < sizeY;
     }
 
     List<GameObject> getAllObjects() {
         List<GameObject> ret = new LinkedList<>();
-        for (int i = 0; i < DUNGEON_SIZE_X; i++)
-            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+        for (int i = 0; i < sizeX; i++)
+            for (int j = 0; j < sizeY; j++)
                 ret.addAll(map[i][j]);
         return ret;
     }

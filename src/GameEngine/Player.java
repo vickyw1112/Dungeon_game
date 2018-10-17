@@ -68,6 +68,7 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public void initialize() {
+        super.initialize();
         inventory = new Inventory();
         effects = new HashSet<>();
         onPushingBoulder = false;

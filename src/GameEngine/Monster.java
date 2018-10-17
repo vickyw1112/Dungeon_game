@@ -59,9 +59,15 @@ public abstract class Monster extends StandardObject implements Movable {
      */
     @Override
     public void initialize() {
+        super.initialize();
         pathToDestination = new LinkedList<>();
         pathGenerator = getDefaultPathGenerator();
         needUpdatePath = false;
+    }
+
+    @Override
+    public int getMovingScheme() {
+        return EXACT;
     }
 
     /**
@@ -111,27 +117,18 @@ public abstract class Monster extends StandardObject implements Movable {
 
     /**
      * Pop entry off from pathToDestination when location changed
-     *
-     * @param point
-     *            new location
-     * @return whether location changed
      */
     @Override
-    public boolean setLocation(Point point) {
-        boolean ret = super.setLocation(point);
-
-        if (ret && !pathToDestination.pop().equals(point)) {
-            System.err.println("Inconsistent move: " + this);
-//            System.exit(1);
-        }
-
+    public void onUpdatingLocation(GameEngine engine) {
+        if(pathToDestination.size() > 0 &&
+                pathToDestination.peek().equals(location))
+            pathToDestination.pop();
         // if location changed, determine new facing
-        if (ret && pathToDestination.size() > 0) {
+        if(pathToDestination.size() > 0) {
             facing = determineFacing(pathToDestination.peek());
         }
-        if(ret && needUpdatePath)
+        if(needUpdatePath)
             delayedUpdate();
-        return ret;
     }
 
     /**

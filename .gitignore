@@ -34,3 +34,6 @@ bin
 .classpath
 .project
 *.DS_Store
+map
+
+*.ser

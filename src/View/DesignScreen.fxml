@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" />
+    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints valignment="TOP" vgrow="ALWAYS" />
+    <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <AnchorPane maxWidth="300.0" prefHeight="520.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowSpan="2">
+         <children>
+            <Label layoutX="47.0" layoutY="48.0" text="Available GameObjects:" />
+            <Label layoutX="30.0" layoutY="422.0" text="Map Name:" />
+            <TextField fx:id="mapAuthorTextField" layoutX="110.0" layoutY="457.0" />
+            <Label layoutX="24.0" layoutY="462.0" text="Map Author:" />
+            <TextField fx:id="mapNameTextField" layoutX="110.0" layoutY="417.0" />
+            <Button layoutX="163.0" layoutY="497.0" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" text="Save Map" />
+            <ListView fx:id="objectsListView" onMouseClicked="#onObjectListViewClicked" layoutX="47.0" layoutY="84.0" prefHeight="308.0" prefWidth="209.0" />
+            <Button layoutX="36.0" layoutY="497.0" mnemonicParsing="false" text="Exit to Menu" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </AnchorPane>
+      <AnchorPane fx:id="dungeonPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="489.0" prefWidth="299.0" />
+      <HBox spacing="20.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+         <children>
+            <Label prefHeight="50.0" text="Map Size:" />
+            <TextField fx:id="mapColSizeTextField" prefHeight="50.0" prefWidth="47.0" />
+            <Label prefHeight="50.0" text="X" />
+            <TextField fx:id="mapRowSizeTextField" prefHeight="50.0" prefWidth="47.0" />
+            <Button mnemonicParsing="false" onAction="#onResizeMapButtonClicked" prefHeight="50.0" text="Apply" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </HBox>
+   </children>
+</GridPane>

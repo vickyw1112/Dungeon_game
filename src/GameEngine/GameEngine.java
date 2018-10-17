@@ -5,10 +5,7 @@ import GameEngine.utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +92,7 @@ public class GameEngine {
      * @throws ClassNotFoundException
      */
     public GameEngine(InputStream mapInput, GameObjectObserver observer) throws IOException, ClassNotFoundException {
-        this(new Map(mapInput), observer);
+        this(Map.loadFromFile(mapInput), observer);
     }
 
     /**
@@ -204,8 +201,8 @@ public class GameEngine {
         boolean isAllTreasure = false;
         boolean isAllMonster = false;
         boolean isAllSwitch = false;
-        List<Point> boulders = new ArrayList<>();
-        List<Point> floorSwitches = new ArrayList<>();
+        Set<Point> boulders = new HashSet<>();
+        Set<Point> floorSwitches = new HashSet<>();
         List<Point> exits = new ArrayList<>();
         List<Point> treasure = new ArrayList<>();
 
@@ -228,7 +225,7 @@ public class GameEngine {
         else {
             // check boulder on switch
             if(!(boulders.isEmpty() && floorSwitches.isEmpty())) {
-                if (boulders.equals(floorSwitches))
+                if (boulders.containsAll(floorSwitches))
                     isAllSwitch = true;
             }
 

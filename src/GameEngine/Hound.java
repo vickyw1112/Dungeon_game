@@ -8,6 +8,11 @@ public class Hound extends Monster implements Pairable {
      */
     private Hunter hunter = null;
 
+    @Override
+    public String getPairingObjectClassName() {
+        return Hunter.class.getSimpleName();
+    }
+
     /**
      * Constructor for Hound
      * takes in parameter of location
@@ -17,12 +22,8 @@ public class Hound extends Monster implements Pairable {
         super(location);
     }
 
-    /**
-     * Method to obtain the paired hunter
-     * @return
-     *          Hunter
-     */
-    public Hunter getPair() {
+    @Override
+    public GameObject getPair() {
         return hunter;
     }
 

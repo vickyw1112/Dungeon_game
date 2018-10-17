@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.7274247491638796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.7274247491638796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <items>
     <AnchorPane fx:id="dungeonPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -15,7 +15,6 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <Label fx:id="timerLabel" layoutX="14.0" layoutY="37.0" prefHeight="56.0" prefWidth="112.0" text="timer" wrapText="true" />
                         <ProgressBar fx:id="timerInvincibilityPotion" layoutX="48.0" layoutY="227.0" nodeOrientation="RIGHT_TO_LEFT" opacity="0.0" prefHeight="14.0" prefWidth="62.0" progress="1.0" />
                      </children></AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

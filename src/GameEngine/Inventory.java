@@ -110,6 +110,7 @@ public class Inventory {
         }
         if(countMap.get(cls) == 0)
             countMap.remove(cls);
+
         return null;
     }
 

@@ -15,14 +15,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -282,6 +280,18 @@ public class DesignScreenController extends Controller {
             handleDragStart(event, (ImageView) cell.getGraphic(), newObj, false);
         });
         return cell;
+    }
+
+    @FXML
+    public void onObjectListViewClicked(MouseEvent event){
+        // double click to add current selected object to the map
+        if(event.getClickCount() == 2){
+            ImageView currSelected = objectsListView.getSelectionModel().getSelectedItem();
+            if(currSelected != null && mapBuilder.getEmptyPoint() != null) {
+                GameObject obj = GameObject.build(currSelected.getId(), mapBuilder.getEmptyPoint());
+                updateGameObject(obj, obj.getLocation(), true);
+            }
+        }
     }
 
 }

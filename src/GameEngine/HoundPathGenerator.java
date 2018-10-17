@@ -20,7 +20,7 @@ public class HoundPathGenerator implements PathGenerator {
     public LinkedList<Point> generatePath(Map map, Monster monster, Player player) {
         Hound hound = (Hound) monster;
         List<Point> hunterPath = ((Hunter)hound.getPair()).getPath();
-        if(hunterPath.size() != 0){
+        if(hunterPath.size() > 1){
             // get the path to target without go through
             // the same route (last point before target) as it's paring Hunter
             List<Point> exception = new LinkedList<>();

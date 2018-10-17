@@ -32,10 +32,18 @@ public class Map implements Serializable {
         this();
         GameObject[][] builderMap = mapBuilder.getMap();
         for (int i = 0; i < DUNGEON_SIZE_X; i++)
-            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+            for (int j = 0; j < DUNGEON_SIZE_Y; j++) {
                 if (builderMap[i][j] != null)
                     map[i][j].add(builderMap[i][j]);
+                // delete reference to pair if it's not in map anymore
+                if (builderMap[i][j] instanceof Pairable){
+                    Pairable p = (Pairable) builderMap[i][j];
+                    if(!mapBuilder.contains(p.getPair()))
+                        p.setPair(null);
+                }
+            }
     }
+
 
     /**
      * Construct a SampleMaps from a saved file

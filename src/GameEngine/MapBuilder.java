@@ -71,11 +71,23 @@ public class MapBuilder {
      * @return
      */
     public Point getEmptyPoint(){
-        for (int i = 0; i < DUNGEON_SIZE_X; i++)
-            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+        for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+            for (int i = 0; i < DUNGEON_SIZE_X; i++)
                 if(map[i][j] == null)
                     return new Point(i, j);
 
         return null;
     }
+
+    /**
+     * Check if the map contains a given GameObject
+     */
+    public boolean contains(GameObject obj){
+        for (int i = 0; i < DUNGEON_SIZE_X; i++)
+            for (int j = 0; j < DUNGEON_SIZE_Y; j++)
+                if(map[i][j] == obj)
+                    return true;
+        return false;
+    }
+
 }

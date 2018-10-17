@@ -16,6 +16,7 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -244,9 +245,7 @@ public class DungeonPlayController extends Controller{
 							if(result.containFlag(CollisionResult.WIN)){
 								System.out.println("You've WON the game!");
                                 mainAnimation.stop();
-//                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You've WON the game");
-//                                Platform.runLater(alert::showAndWait);
-								restart();
+                                won();
 							}
 							if(result.containFlag(CollisionResult.DELETE_FIRST)){
 								dungeon.getChildren().remove(movingNode);
@@ -378,6 +377,12 @@ public class DungeonPlayController extends Controller{
         Screen cs = new Screen(this.getStage(), "Dungeon", "View/DungeonPlayScreen.fxml");
         Controller controller = new DungeonPlayController(this.getStage());
         cs.display(controller);
+	}
+
+	private void won(){
+		Screen cs = new Screen(this.getStage(), "Highscore", "View/HighscoreScreen.fxml");
+		Controller controller = new HighscoreScreenController(this.getStage());
+		cs.display(controller);
 	}
 
 }

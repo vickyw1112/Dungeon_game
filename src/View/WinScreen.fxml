@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="-6.0" layoutY="-8.0" prefHeight="409.0" prefWidth="606.0">
+         <children>
+            <Button fx:id="BackButton" layoutX="268.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleBackButton" text="Go Back" />
+            <ListView fx:id="HighScoreBoard" layoutX="41.0" layoutY="31.0" prefHeight="324.0" prefWidth="524.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

@@ -256,4 +256,25 @@ public class Map implements Serializable {
         return getObjects(point).stream().filter(o -> (!o.canMoveThrough()))
                 .collect(Collectors.toList()).size() == 0 && isValidPoint(point);
     }
+
+    /**
+     * Deep copy of the map
+     */
+    public Map cloneMap() {
+        Map ret = new Map();
+        ret.sizeX = this.sizeX;
+        ret.sizeY = this.sizeY;
+        ret.author = this.author;
+        // re-init for new size
+        ret.init();
+        for(int x = 0; x < sizeX; x++){
+            for(int y = 0; y < sizeY; y++){
+                ret.map[x][y] = new LinkedList<>();
+                ret.map[x][y].addAll(
+                        map[x][y].stream().map(o -> GameObject.build(o.getClassName(), o.getLocation()))
+                                .collect(Collectors.toList()));
+            }
+        }
+        return ret;
+    }
 }

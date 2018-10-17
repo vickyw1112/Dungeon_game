@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Inventory {
     /**
@@ -55,6 +56,27 @@ public class Inventory {
         if (countMap.get(cls) == null)
             return 0;
         return countMap.get(cls);
+    }
+
+    /**
+     * Get count by class name
+     */
+    public int getCount(String classname){
+        try {
+            Class<?> cls = Class.forName(getClass().getPackage().getName() + "." + classname);
+            return getCount(cls);
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return -1; // this line will never be reached
+    }
+
+    /**
+     * Get all types of objects that are currently in the inventory
+     */
+    public List<String> getAllClasses(){
+        return countMap.keySet().stream().map(Class::getSimpleName).collect(Collectors.toList());
     }
 
     /**

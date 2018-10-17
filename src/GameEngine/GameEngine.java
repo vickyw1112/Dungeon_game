@@ -183,8 +183,10 @@ public class GameEngine {
             e.printStackTrace();
             System.exit(1);
         }
-        // TODO DELETE this later
         CollisionResult result = handler.handle(this, obj1, obj2);
+        result.setCollidingObjects(obj1, obj2);
+
+        // TODO DELETE this later
         if(!result.containFlag(CollisionResult.REJECT))
             System.out.format("%s and %s => %s\n", obj1, obj2, result);
         return result;
@@ -208,23 +210,22 @@ public class GameEngine {
 
         for(GameObject obj: objects.values()){
             if(obj instanceof Boulder)
-                boulders.add(((Boulder) obj).location);
+                boulders.add(obj.getLocation());
             if(obj instanceof FloorSwitch)
-                floorSwitches.add(((FloorSwitch) obj).location);
+                floorSwitches.add(obj.getLocation());
             if(obj instanceof Exit)
-                exits.add(((Exit) obj).location);
+                exits.add(obj.getLocation());
             if(obj instanceof Treasure)
-                treasure.add(((Treasure) obj).location);
+                treasure.add(obj.getLocation());
         }
 
-        // check exit
+        // exit win is done by WinCollisionHandler
         if(!exits.isEmpty()) {
-            if (exits.contains(this.player.location))
-                return true;
+            return false;
         }
         else {
             // check boulder on switch
-            if(!(boulders.isEmpty() && floorSwitches.isEmpty())) {
+            if(!floorSwitches.isEmpty()) {
                 if (boulders.containsAll(floorSwitches))
                     isAllSwitch = true;
             }
@@ -354,12 +355,21 @@ public class GameEngine {
         return player;
     }
 
-    public HashMap<String, Integer> getInventoryCounts(){
-        HashMap<Class<?>, Integer> countMap = player.getInventory().getCountMap();
-        HashMap<String, Integer> ret = new HashMap<>();
-        for(Class<?> clazz : countMap.keySet()){
-            ret.put(clazz.getSimpleName(), countMap.get(clazz));
-        }
-        return ret;
+    /**
+     * Delegate method to get the count of given class of object
+     * in player's inventory
+     *
+     * @see Inventory#getCount(String)
+     * @return count
+     */
+    public int getInventoryCounts(String classname){
+        return player.getInventoryCount(classname);
+    }
+
+    /**
+     * @see Inventory#getAllClasses()
+     */
+    public List<String> getInventoryAllClasses(){
+        return player.getInventoryAllClasses();
     }
 }

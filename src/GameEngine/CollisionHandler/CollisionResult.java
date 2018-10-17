@@ -30,6 +30,18 @@ public class CollisionResult {
      */
     private int flags;
 
+    private GameObject[] collidingObjects;
+
+    public void setCollidingObjects(GameObject first, GameObject second){
+        collidingObjects = new GameObject[2];
+        collidingObjects[0] = first;
+        collidingObjects[1] = second;
+    }
+
+    public GameObject[] getCollidingObjects(){
+        return collidingObjects;
+    }
+
     /**
      * Constructor of CollisionResult
      *

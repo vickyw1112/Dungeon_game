@@ -32,7 +32,7 @@ public class Bomb extends StandardObject implements Collectable, TimerRequired {
     @Override
     public void onTimerUpdate(int remain) {
         // display the explosion pic at very last 100 ms
-        if(remain <= 500){
+        if(remain <= 300){
             this.changeState(EXPLODE);
         }
     }

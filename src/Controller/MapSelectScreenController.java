@@ -45,6 +45,12 @@ public class MapSelectScreenController extends Controller {
     }
 
     @FXML
+    public void onModeSelectBtnClicked() {
+        Screen screen = new Screen(stage, "Mode Select", "View/ModeScreen.fxml");
+        screen.display(new ModeScreenController(stage));
+    }
+
+    @FXML
     public void initialize() {
         mapListView.setCellFactory(param -> new ListCell<File>(){
             @Override
@@ -60,6 +66,13 @@ public class MapSelectScreenController extends Controller {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+            }
+        });
+
+        mapListView.setOnMouseClicked(event -> {
+            // load map if double clicked
+            if(event.getClickCount() == 2){
+                onPlayButtonClicked();
             }
         });
 

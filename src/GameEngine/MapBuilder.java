@@ -87,21 +87,21 @@ public class MapBuilder {
     }
 
     public boolean islegalMap() {
-        ArrayList<Player> player = new ArrayList<>();
-        List<Exit> exits = new ArrayList<>();
-        List<Monster> monsters = new ArrayList<>();
-        List<Treasure> treasures = new ArrayList<>();
+        List<Object> player = new ArrayList<>();
+        List<Object> exits = new ArrayList<>();
+        List<Object> monsters = new ArrayList<>();
+        List<Object> treasures = new ArrayList<>();
         int x = 0;
         for (; x < this.map.length; x++) {
             for (int y = 0; y < this.map[x].length; y++) {
                 if (map[x][y] instanceof Player) {
-                    player.add((Player) map[x][y]);
+                    player.add(map[x][y]);
                 } else if (map[x][y] instanceof Monster) {
-                    monsters.add((Monster) map[x][y]);
+                    monsters.add(map[x][y]);
                 } else if (map[x][y] instanceof Treasure) {
-                    treasures.add((Treasure) map[x][y]);
+                    treasures.add(map[x][y]);
                 } else if (map[x][y] instanceof Exit) {
-                    exits.add((Exit) map[x][y]);
+                    exits.add(map[x][y]);
                 }
             }
         }

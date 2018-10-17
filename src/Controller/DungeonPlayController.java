@@ -4,9 +4,9 @@ import GameEngine.*;
 import GameEngine.Map;
 import GameEngine.utils.*;
 import GameEngine.CollisionHandler.*;
-import Sample.SampleMaps;
 import View.Screen;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.collections.FXCollections;
@@ -15,10 +15,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -30,7 +27,7 @@ import java.util.stream.Collectors;
 import static Controller.Config.GRID_SIZE;
 
 
-public class DungeonPlayController extends Controller{
+public class DungeonPlayController extends Controller {
 
 	@FXML
 	private AnchorPane dungeonPane;
@@ -53,37 +50,79 @@ public class DungeonPlayController extends Controller{
     private ObservableList<String> inventoryList;
 
 	private Player player;
+	private Map originalMap;
 	private Map map;
+	private boolean paused;
 
 	public DungeonPlayController(Stage s, Map map){
 		super(s);
         keyPressed = new HashSet<>();
         timers = new TimerCollection();
         this.map = map;
+        originalMap = map.cloneMap();
 		inventoryList = FXCollections.observableArrayList();
+		paused = false;
 	}
 
-	/**
-	 * Debug only, use sample hardcoded map
-	 * @param s the stage
-	 */
-	public DungeonPlayController(Stage s){
-		this(s, SampleMaps.getMap1());
+	@FXML
+	public void handleStartScreenButton(){
+	    mainAnimation.stop();
+		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
+		Controller controller = new StartScreenController(this.getStage());
+		cs.display(controller);
 	}
 
+	@FXML
+	public void handleModeScreenButton(){
+	    mainAnimation.stop();
+		Screen cs = new Screen(this.getStage(), "Select Mode to Play", "View/ModeScreen.fxml");
+		Controller controller = new ModeScreenController(this.getStage());
+		cs.display(controller);
+	}
+
+    /**
+     * Refresh what's in Inventory
+     */
 	private void updateInventory() {
 		// remove all entry
 		inventoryList.removeIf(o -> true);
 
-		inventoryList.addAll(engine.getInventoryCounts().keySet());
+		inventoryList.addAll(engine.getInventoryAllClasses());
 	}
 
     @Override
     public void afterInitialize() {
-        stage.getScene().setOnKeyPressed(event -> keyPressed.add(event.getCode()));
+        stage.getScene().setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ESCAPE){
+                if(paused)
+                    mainAnimation.start();
+                else
+                    mainAnimation.stop();
+                paused = !paused;
+            }
+            keyPressed.add(event.getCode());
+        });
         stage.getScene().setOnKeyReleased(event -> keyPressed.remove(event.getCode()));
     }
 
+    @FXML
+	public void initialize() {
+	    // load all resources
+        resources = new ResourceManager();
+
+        initDungeon();
+
+		timerInvincibilityPotion.setOpacity(0.0);
+
+		inventoryItems.setItems(inventoryList);
+		inventoryItems.setCellFactory(this::inventoryListViewCellFactory);
+
+	}
+
+    /**
+     * Observer callback for state change of a object
+     * @param obj
+     */
     private void handleObjectStateChange(GameObject obj){
         ImageView imageView = (ImageView) getNodeById(obj.getObjID());
         if(imageView != null) {
@@ -92,15 +131,13 @@ public class DungeonPlayController extends Controller{
         }
     }
 
-    @FXML
-	public void initialize() {
-		timerInvincibilityPotion.setOpacity(0.0);
-
-	    resources = new ResourceManager();
-	    initDungeon();
-
-		inventoryItems.setItems(inventoryList);
-		inventoryItems.setCellFactory(param -> new ListCell<String>() {
+    /**
+     * Cell factory for inventory ListView
+     * Given a class string added, figure out the count for that
+     * class of object in user's inventory
+     */
+	private ListCell<String> inventoryListViewCellFactory(ListView<String> param){
+	    return new ListCell<String>() {
 			@Override
 			public void updateItem(String name, boolean empty) {
 				super.updateItem(name, empty);
@@ -111,8 +148,7 @@ public class DungeonPlayController extends Controller{
 					ImageView imageView = resources.createImageViewByClassName(name);
 					imageView.setPreserveRatio(true);
 					imageView.setFitWidth(25);
-					HashMap<String, Integer> countMap = engine.getInventoryCounts();
-					int count = countMap.get(name);
+					int count = engine.getInventoryCounts(name);
 					setGraphic(imageView);
 					setText(Integer.toString(count));
 					if(count == 0){
@@ -121,9 +157,8 @@ public class DungeonPlayController extends Controller{
                     }
 				}
 			}
-		});
-
-	}
+		};
+    }
 
 	private void initDungeon() {
 		engine = new GameEngine(map, this::handleObjectStateChange);
@@ -148,149 +183,100 @@ public class DungeonPlayController extends Controller{
 				elapsedSeconds = elapsedSeconds > 0.04 ? 0.04 : elapsedSeconds;
 
 				timers.updateAll((int)(elapsedSeconds * 1000));
-				// get player's moving status
-				if(keyPressed.contains(KeyCode.LEFT)){
-					player.setFacing(Direction.LEFT);
-					player.setIsMoving(true);
-				} else if(keyPressed.contains(KeyCode.RIGHT)){
-					player.setFacing(Direction.RIGHT);
-					player.setIsMoving(true);
-				} else if(keyPressed.contains(KeyCode.UP)){
-					player.setFacing(Direction.UP);
-					player.setIsMoving(true);
-				} else if(keyPressed.contains(KeyCode.DOWN)){
-					player.setFacing(Direction.DOWN);
-					player.setIsMoving(true);
-				} else {
-					player.setIsMoving(false);
-				}
 
-				if(keyPressed.contains(KeyCode.A)){
-					Arrow arrow = engine.playerShootArrow();
-					if(arrow != null) {
-                        resources.createImageViewByGameObject(arrow, nodes);
-                        updateInventory();
-                    }
-                    keyPressed.remove(KeyCode.A);
-				}
+				updatePlayerMovingStatus();
 
-				if(keyPressed.contains(KeyCode.B)){
-					Bomb bomb = engine.playerSetBomb();
-					if(bomb != null){
-                        updateInventory();
-						ImageView imageView =
-                                resources.createImageViewByGameObject(bomb, nodes);
+				if(keyPressed.contains(KeyCode.A))
+				    handlePlayerShootArrow();
 
-						Timer timer = new Timer(bomb, arg -> {
-                            System.out.format("%s exploded\n", bomb);
-                            List<GameObject> destroyedObjects = bomb.explode(engine);
+				if(keyPressed.contains(KeyCode.B))
+				    handlePlayerSetBomb();
 
-                            if (destroyedObjects == null) {
-                                // LOST
-                                System.out.println("You've got bombed!");
-                                restart();
-                            } else {
-                                // remove all destroyed nodes
-                                dungeonPane.getChildren().removeAll(
-                                        destroyedObjects.stream()
-                                                .map(o -> getNodeById(o.getObjID()))
-                                                .collect(Collectors.toList()));
-                                // remove the bomb itself
-                                nodes.remove(imageView);
-                            }
-                        });
-						timers.add(timer);
-					}
-                    keyPressed.remove(KeyCode.B);
-				}
+				updateMovingObjects(elapsedSeconds);
 
-				for(Movable movingObj : engine.getMovingObjects()){
-					double dx = 0, dy = 0;
-					switch (movingObj.getFacing()){
-						case UP:
-							dy -= movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
-							break;
-						case DOWN:
-							dy += movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
-							break;
-						case LEFT:
-							dx -= movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
-							break;
-						case RIGHT:
-							dx += movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
-							break;
-					}
-					Node movingNode = getNodeById(movingObj.getObjID());
-					if(movingNode == null) break; // if the node is deleted
-					double oldX = movingNode.getTranslateX();
-					double oldY = movingNode.getTranslateY();
-					double newX = oldX + dx;
-					double newY = oldY + dy;
-
-					// translate objs
-					movingNode.setTranslateX(newX);
-					movingNode.setTranslateY(newY);
-
-					// detect collisions
-					for(GameObject anotherObj : engine.getAllObjects()){
-						// ignore self with self
-						if(movingObj.equals(anotherObj)) continue;
-
-						Node anotherNode =
-                                getNodeById(anotherObj.getObjID());
-
-						if(isColliding(movingNode, anotherNode)){
-							CollisionResult result = engine.handleCollision(movingObj, anotherObj);
-							if(result.containFlag(CollisionResult.REJECT)){
-								// set translate co-ord back to before
-								movingNode.setTranslateX(oldX);
-								movingNode.setTranslateY(oldY);
-							}
-							if(result.containFlag(CollisionResult.LOSE)){
-								System.out.println("You've LOST the game!");
-								mainAnimation.stop();
-								restart();
-							}
-							if(result.containFlag(CollisionResult.WIN)){
-								System.out.println("You've WON the game!");
-                                mainAnimation.stop();
-                                won();
-							}
-							if(result.containFlag(CollisionResult.DELETE_FIRST)){
-								nodes.remove(movingNode);
-							}
-							if(result.containFlag(CollisionResult.DELETE_SECOND)){
-								nodes.remove(anotherNode);
-							}
-							if(result.containFlag(CollisionResult.REFRESH_INVENTORY)){
-								System.out.print(player.getInventory());
-								updateInventory();
-							}
-							if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){
-                                Potion potion = (Potion) anotherObj;
-                                Timer timer = new Timer(potion, arg -> {
-                                    player.removePotionEffect(engine, potion);
-                                    timerInvincibilityPotion.setOpacity(0.0);
-                                });
-
-                                timer.setOnUpdateTimer(t -> {
-                                	timerInvincibilityPotion.setOpacity(1.0);
-									timerInvincibilityPotion.setProgress(t.getRemain() * 1.0 / t.getTotalDuration());
-								});
-
-                                timers.add(timer);
-                            }
-						}
-					}
-
-                    engine.changeObjectLocation(movingObj, getUpdatedPoint(movingObj, newX, newY));
-				}
 				lastUpdateTime.set(now);
 			}
 		};
 		mainAnimation.start();
 	}
 
+    /**
+     * Update player's moving status by checking whether
+     * the user is pressing keys for player movement
+     */
+	private void updatePlayerMovingStatus(){
+        // get player's moving status
+        if(keyPressed.contains(KeyCode.LEFT)){
+            player.setFacing(Direction.LEFT);
+            player.setIsMoving(true);
+        } else if(keyPressed.contains(KeyCode.RIGHT)){
+            player.setFacing(Direction.RIGHT);
+            player.setIsMoving(true);
+        } else if(keyPressed.contains(KeyCode.UP)){
+            player.setFacing(Direction.UP);
+            player.setIsMoving(true);
+        } else if(keyPressed.contains(KeyCode.DOWN)){
+            player.setFacing(Direction.DOWN);
+            player.setIsMoving(true);
+        } else {
+            player.setIsMoving(false);
+        }
+    }
+
+    /**
+     * Player shoot arrow
+     */
+	private void handlePlayerShootArrow(){
+        Arrow arrow = engine.playerShootArrow();
+        if(arrow != null) {
+            resources.createImageViewByGameObject(arrow, dungeonPane.getChildren());
+            updateInventory();
+        }
+        keyPressed.remove(KeyCode.A);
+    }
+
+    /**
+     * Player set bomb
+     */
+	private void handlePlayerSetBomb(){
+        Bomb bomb = engine.playerSetBomb();
+        if(bomb != null){
+            updateInventory();
+            ImageView imageView =
+                    resources.createImageViewByGameObject(bomb, dungeonPane.getChildren());
+
+            Timer timer = new Timer(bomb, arg -> {
+                System.out.format("%s exploded\n", bomb);
+                List<GameObject> destroyedObjects = bomb.explode(engine);
+
+                if (destroyedObjects == null) {
+                    System.out.println("You've got bombed!");
+                    Platform.runLater(this::handleLose);
+                } else {
+                    // remove all destroyed nodes
+                    dungeonPane.getChildren().removeAll(
+                            destroyedObjects.stream()
+                                    .map(o -> getNodeById(o.getObjID()))
+                                    .collect(Collectors.toList()));
+                    // remove the bomb itself
+                    dungeonPane.getChildren().remove(imageView);
+                }
+            });
+            timers.add(timer);
+        }
+        keyPressed.remove(KeyCode.B);
+    }
+
+    /**
+     * Calculate the backend coordinate by given front end coordinate
+     * This takes into account the moving scheme of the given movable object
+     *
+     * @see Movable#getMovingScheme()
+     * @param obj the moving object
+     * @param newX new front end X coordinate
+     * @param newY new front end Y coordinate
+     * @return the calculated back end coordinate
+     */
 	private Point getUpdatedPoint(Movable obj, double newX, double newY){
 	    if(obj.getMovingScheme() == Movable.APPROX){
 	        return new Point((int) ((newX + GRID_SIZE / 2) / GRID_SIZE),
@@ -325,21 +311,6 @@ public class DungeonPlayController extends Controller{
         return null;
     }
 
-	@FXML
-	public void handleStartScreenButton(){
-	    mainAnimation.stop();
-		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");
-		Controller controller = new StartScreenController(this.getStage());
-		cs.display(controller);
-	}
-
-	@FXML
-	public void handleModeScreenButton(){
-	    mainAnimation.stop();
-		Screen cs = new Screen(this.getStage(), "Selection", "View/ModeScreen.fxml");
-		Controller controller = new ModeScreenController(this.getStage());
-		cs.display(controller);
-	}
 
 
 	/**
@@ -360,17 +331,33 @@ public class DungeonPlayController extends Controller{
 	}
 
 
-	private void restart(){
-		Screen cs = new Screen(this.getStage(), "Dungeon", "View/DungeonPlayScreen.fxml");
-		Controller controller = new DungeonPlayController(this.getStage());
-		cs.display(controller);
-	}
-
-	private void won(){
-		Screen cs = new Screen(this.getStage(), "Highscore", "View/HighscoreScreen.fxml");
+    /**
+     * When the user wins, move to the win screen
+     */
+	private void handleWin(){
+	    mainAnimation.stop();
+		Screen cs = new Screen(this.getStage(), "Highscore", "View/WinScreen.fxml");
 		Controller controller = new HighscoreScreenController(this.getStage());
 		cs.display(controller);
 	}
+
+	private void handleLose(){
+	    mainAnimation.stop();
+	    ButtonType goBackBtn = new ButtonType("Go back to menu");
+	    Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "You've lost the game, retry?", ButtonType.YES, goBackBtn);
+	    alert.setTitle("Lost");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(!result.isPresent())
+            return;
+        if(result.get() == ButtonType.YES){
+            Screen screen = new Screen(stage, "Dungeon", "View/DungeonPlayScreen.fxml");
+            screen.display(new DungeonPlayController(stage, originalMap));
+        }
+        if(result.get() == goBackBtn){
+            handleModeScreenButton();
+        }
+    }
 
     /**
      * Get a JavaFX Node by it's id which is the same
@@ -380,6 +367,108 @@ public class DungeonPlayController extends Controller{
      */
 	private Node getNodeById(int objId){
         return dungeonPane.lookup("#" + Integer.toString(objId));
+    }
+
+    /**
+     * Update all moving objects in game engine
+     * by elapsedSeconds
+     */
+    private void updateMovingObjects(double elapsedSeconds) {
+        for(Movable movingObj : engine.getMovingObjects()){
+            double dx = 0, dy = 0;
+            switch (movingObj.getFacing()){
+                case UP:
+                    dy -= movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
+                    break;
+                case DOWN:
+                    dy += movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
+                    break;
+                case LEFT:
+                    dx -= movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
+                    break;
+                case RIGHT:
+                    dx += movingObj.getSpeed() * GRID_SIZE * elapsedSeconds;
+                    break;
+            }
+            Node movingNode = getNodeById(movingObj.getObjID());
+            if(movingNode == null) break; // if the node is deleted
+            double oldX = movingNode.getTranslateX();
+            double oldY = movingNode.getTranslateY();
+            double newX = oldX + dx;
+            double newY = oldY + dy;
+
+            // translate objs
+            movingNode.setTranslateX(newX);
+            movingNode.setTranslateY(newY);
+
+            // detect collisions
+            for(GameObject anotherObj : engine.getAllObjects()){
+                // ignore self with self
+                if(movingObj.equals(anotherObj)) continue;
+
+                Node anotherNode =
+                        getNodeById(anotherObj.getObjID());
+
+                if(isColliding(movingNode, anotherNode)){
+                    CollisionResult result = engine.handleCollision(movingObj, anotherObj);
+                    handleCollision(result, movingNode, anotherNode, oldX, oldY);
+                }
+            }
+
+            engine.changeObjectLocation(movingObj, getUpdatedPoint(movingObj, newX, newY));
+        }
+    }
+
+    /**
+     * Given collision result, handle changes to front end
+     *
+     * @param result collision result
+     * @param movingNode the moving node
+     * @param anotherNode the node being collided
+     * @param oldX old X value for moving node
+     * @param oldY old Y value for moving node
+     */
+    private void handleCollision(CollisionResult result, Node movingNode, Node anotherNode,
+                                 double oldX, double oldY){
+        if(result.containFlag(CollisionResult.REJECT)){
+            // set translate co-ord back to before
+            movingNode.setTranslateX(oldX);
+            movingNode.setTranslateY(oldY);
+        }
+        if(result.containFlag(CollisionResult.LOSE)){
+            System.out.println("You've LOST the game!");
+            mainAnimation.stop();
+            Platform.runLater(this::handleLose);
+        }
+        if(result.containFlag(CollisionResult.WIN)){
+            System.out.println("You've WON the game!");
+            mainAnimation.stop();
+            handleWin();
+        }
+        if(result.containFlag(CollisionResult.DELETE_FIRST)){
+            dungeonPane.getChildren().remove(movingNode);
+        }
+        if(result.containFlag(CollisionResult.DELETE_SECOND)){
+            dungeonPane.getChildren().remove(anotherNode);
+        }
+        if(result.containFlag(CollisionResult.REFRESH_INVENTORY)){
+            updateInventory();
+        }
+        if(result.containFlag(CollisionResult.REFRESH_EFFECT_TIMER)){
+            // second one is the one being collided
+            Potion potion = (Potion) result.getCollidingObjects()[1];
+            Timer timer = new Timer(potion, arg -> {
+                player.removePotionEffect(engine, potion);
+                timerInvincibilityPotion.setOpacity(0.0);
+            });
+
+            timer.setOnUpdateTimer(t -> {
+                timerInvincibilityPotion.setOpacity(1.0);
+                timerInvincibilityPotion.setProgress(t.getRemain() * 1.0 / t.getTotalDuration());
+            });
+
+            timers.add(timer);
+        }
     }
 
 }

@@ -317,6 +317,20 @@ public class Player extends StandardObject implements Movable {
     }
 
     /**
+     * Gets the count of the object in the inventory of the player
+     */
+    public int getInventoryCount(String classname) {
+        return inventory.getCount(classname);
+    }
+
+    /**
+     * @see Inventory#getAllClasses()
+     */
+    public List<String> getInventoryAllClasses(){
+        return inventory.getAllClasses();
+    }
+
+    /**
      * Sets the count of the given object in the inventory of the player
      * @see Inventory#setCount(Class, int)
      * @param cls

@@ -3,6 +3,7 @@ package Controller;
 import GameEngine.*;
 import GameEngine.utils.Point;
 import View.Screen;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,7 +25,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static Controller.Config.GRID_SIZE;
 
@@ -47,6 +51,9 @@ public class DesignScreenController extends Controller {
     @FXML
     private TextField mapColSizeTextField;
 
+    @FXML
+    private TextField filterTextField;
+
     private ResourceManager resources;
 
     private Set<KeyCode> keyPressed;
@@ -57,6 +64,7 @@ public class DesignScreenController extends Controller {
     private ObjectProperty<GameObject> draggingObject;
     private int maxRow;
     private int maxCol;
+    private List<ImageView> allObjectImgViews;
 
     private MapBuilder mapBuilder;
 
@@ -66,6 +74,8 @@ public class DesignScreenController extends Controller {
         draggingClass = new SimpleStringProperty();
         draggingObject = new SimpleObjectProperty<>();
         keyPressed = new HashSet<>();
+        allObjectImgViews = new LinkedList<>();
+        // set the dungeon gird pane to 11 x 11 by default
         maxCol = 11;
         maxRow = 11;
     }
@@ -80,7 +90,6 @@ public class DesignScreenController extends Controller {
     public void initialize(){
         mapBuilder = new MapBuilder(maxCol, maxRow);
 
-        // set the dungeon gird pane to 11 x 11 by default
         dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
         dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
 
@@ -95,19 +104,45 @@ public class DesignScreenController extends Controller {
 
         initWallBoundary();
 
+        // clear list view first
+        objectsListView.getItems().clear();
+        allObjectImgViews.clear();
+
         for (String cls : resources.getAllClassNames()) {
             ImageView imageView = resources.createImageViewByClassName(cls);
             imageView.setId(cls);
+            allObjectImgViews.add(imageView);
             objectsListView.getItems().add(imageView);
         }
 
         objectsListView.setCellFactory(this::objectListViewCellFactory);
+        filterTextField.textProperty().addListener(this::handleFilterChange);
 
         dungeonPane.setOnDragOver(this::handleDragOver);
         dungeonPane.setOnDragDropped(this::handleDragDropped);
 
         // resize the stage to fit the scene
         stage.sizeToScene();
+    }
+
+    @FXML
+    public void onExitBtnClicked(){
+        Screen cs = new Screen(this.getStage(), "Select Mode to Play", "View/ModeScreen.fxml");
+        Controller controller = new ModeScreenController(this.getStage());
+        cs.display(controller);
+    }
+
+    public void handleFilterChange(Observable obs) {
+        String filter = filterTextField.getText();
+        objectsListView.getItems().clear();
+        if(filter.isEmpty()){
+            objectsListView.getItems().addAll(allObjectImgViews);
+        } else {
+            objectsListView.getItems().addAll(
+                    allObjectImgViews.stream()
+                            .filter(imageView -> imageView.getId().toLowerCase().contains(filter.toLowerCase()))
+                            .collect(Collectors.toList()));
+        }
     }
 
     private void saveDungeonSnapshot(String mapName) throws IOException {
@@ -126,12 +161,17 @@ public class DesignScreenController extends Controller {
         String authorName = mapAuthorTextField.getText();
         mapBuilder.setAuthor(authorName);
 
-        Map map = mapBuilder.build();
         try {
+            if(!mapBuilder.islegalMap())
+                throw new Exception("Incomplete or illegal map");
+            Map map = mapBuilder.build();
             map.serialize(new FileOutputStream("map/" + mapName + ".dungeon"));
             saveDungeonSnapshot(mapName);
+            if(mapName.isEmpty())
+                throw new Exception("Invalid map name");
         } catch (Exception e){
-            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).showAndWait();
+            return;
         }
         System.out.println("Map serialized");
         Screen cs = new Screen(this.getStage(), "Select Mode", "View/ModeScreen.fxml");

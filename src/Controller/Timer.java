@@ -43,11 +43,11 @@ public class Timer {
             onTimerExpired.accept(this);
             return true;
         } else if(onUpdateTimer != null){
-            // run backend event
-            obj.onTimerUpdate(remain);
             // run front-end registered event
             onUpdateTimer.accept(this);
         }
+        // run backend event
+        obj.onTimerUpdate(remain);
         return false;
     }
 

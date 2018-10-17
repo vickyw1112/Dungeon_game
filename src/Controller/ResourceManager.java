@@ -39,7 +39,7 @@ public class ResourceManager {
 
     private void loadImages(){
         // load all images
-        File dir = new File(getClass().getClassLoader().getResource("img").getPath());
+        File dir = new File(getClass().getClassLoader().getResource("GameObjects").getPath());
         File[] files = dir.listFiles();
         if(files != null) {
             try {

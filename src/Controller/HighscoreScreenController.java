@@ -35,7 +35,7 @@ public class HighscoreScreenController extends Controller {
 		ListOfScore list = new ListOfScore();
 		list.add(data);
 		list.serialise(list);
-		Screen cs = new Screen(this.getStage(), "WinScreen", "View/WinScreen.fxml");
+		Screen cs = new Screen(this.getStage(), "WinScreen", "View/ScoreBoardScreen.fxml");
 		Controller controller = new WinScreenController(this.getStage());
 		cs.display(controller);
 	}

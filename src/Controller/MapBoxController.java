@@ -1,12 +1,15 @@
 package Controller;
 
 import GameEngine.Map;
+import View.Screen;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +31,10 @@ public class MapBoxController {
     @FXML
     private Label mapAuthorTextField;
 
-    public MapBoxController(Map map, String mapName){
+    @FXML
+    private Button modifyMapBtn;
+
+    public MapBoxController(Stage stage, Map map, String mapName){
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("View/MapBox.fxml"));
         fxmlLoader.setController(this);
         try{
@@ -57,6 +63,13 @@ public class MapBoxController {
         mapPreviewImageView.setFitHeight(200);
         mapPreviewImageView.setFitWidth(200);
         mapAuthorTextField.setText("By " + map.getAuthor());
+
+        modifyMapBtn.setOnMouseClicked(event -> {
+            Screen screen = new Screen(stage, "Design Dungeon", "View/DesignScreen.fxml");
+            DesignScreenController controller = new DesignScreenController(stage);
+            screen.display(controller);
+            controller.loadExistingMapBuilder(map, mapName);
+        });
 
     }
 

@@ -41,6 +41,10 @@ public class MapBuilder {
         this.author = author;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     /**
      * Add a new object to the map
      *
@@ -73,6 +77,13 @@ public class MapBuilder {
         obj.setLocation(newLocation);
     }
 
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public int getSizeX() {
+        return sizeX;
+    }
 
     /**
      * Get the object in specific location
@@ -84,11 +95,12 @@ public class MapBuilder {
         return map[location.getX()][location.getY()];
     }
 
-    public boolean islegalMap() {
+    public boolean isLegalMap() {
         List<Object> player = new ArrayList<>();
         List<Object> exits = new ArrayList<>();
         List<Object> monsters = new ArrayList<>();
         List<Object> treasures = new ArrayList<>();
+        List<Object> switches = new ArrayList<>();
         int x = 0;
         for (; x < this.map.length; x++) {
             for (int y = 0; y < this.map[x].length; y++) {
@@ -100,12 +112,17 @@ public class MapBuilder {
                     treasures.add(map[x][y]);
                 } else if (map[x][y] instanceof Exit) {
                     exits.add(map[x][y]);
+                } else if (map[x][y] instanceof FloorSwitch){
+                    switches.add(map[x][y]);
                 }
             }
         }
 
-        if (player.size() != 1) return false;
-        if (!(monsters.size() > 0 || exits.size() > 0 || treasures.size() > 0)) return false;
+        if (player.size() != 1)
+            return false;
+
+        if (exits.size() == 0 && monsters.size() == 0 && switches.size() == 0 && treasures.size() == 0)
+            return false;
         return true;
     }
 

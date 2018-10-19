@@ -78,6 +78,7 @@ public class DesignScreenController extends Controller {
         // set the dungeon gird pane to 11 x 11 by default
         maxCol = 11;
         maxRow = 11;
+        mapBuilder = new MapBuilder(maxCol, maxRow);
     }
 
     @Override
@@ -88,17 +89,14 @@ public class DesignScreenController extends Controller {
 
     @FXML
     public void initialize(){
-        mapBuilder = new MapBuilder(maxCol, maxRow);
-
         dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
         dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
-
-        // clear anything on dungeon pane
-        dungeonPane.getChildren().clear();
 
         // set map size text fields to current size
         mapColSizeTextField.setText(Integer.toString(maxCol));
         mapRowSizeTextField.setText(Integer.toString(maxRow));
+
+        mapAuthorTextField.setText(mapBuilder.getAuthor());
 
         resources.drawGridLine(dungeonPane.getChildren(), maxCol, maxRow);
 
@@ -123,6 +121,34 @@ public class DesignScreenController extends Controller {
 
         // resize the stage to fit the scene
         stage.sizeToScene();
+    }
+
+    /**
+     * Load an existing map to continue to modify
+     */
+    public void loadExistingMapBuilder(Map map, String mapName){
+        // clear anything on dungeon pane
+        dungeonPane.getChildren().clear();
+
+        maxCol = map.getSizeX();
+        maxRow = map.getSizeY();
+        MapBuilder mapBuilder = map.asMapBuilder();
+        // load the objects in map builder to the pane to display
+        this.mapBuilder = mapBuilder;
+        for(int x = 1; x < mapBuilder.getSizeX() - 1; x++) {
+            for (int y = 1; y < mapBuilder.getSizeY() - 1; y++) {
+                GameObject obj = mapBuilder.getObject(new Point(x, y));
+                if(obj != null)
+                    updateGameObject(obj, obj.getLocation(), true);
+            }
+        }
+
+        // load the params of map builder
+        mapColSizeTextField.setText(Integer.toString(mapBuilder.getSizeX()));
+        mapRowSizeTextField.setText(Integer.toString(mapBuilder.getSizeY()));
+        mapNameTextField.setText(mapName);
+
+        initialize();
     }
 
     @FXML
@@ -162,13 +188,13 @@ public class DesignScreenController extends Controller {
         mapBuilder.setAuthor(authorName);
 
         try {
-            if(!mapBuilder.islegalMap())
+            if(!mapBuilder.isLegalMap())
                 throw new Exception("Incomplete or illegal map");
+            if(mapName.isEmpty())
+                throw new Exception("Invalid map name");
             Map map = mapBuilder.build();
             map.serialize(new FileOutputStream("map/" + mapName + ".dungeon"));
             saveDungeonSnapshot(mapName);
-            if(mapName.isEmpty())
-                throw new Exception("Invalid map name");
         } catch (Exception e){
             new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).showAndWait();
             return;
@@ -191,6 +217,10 @@ public class DesignScreenController extends Controller {
             mapColSizeTextField.setText(Integer.toString(maxCol));
             mapRowSizeTextField.setText(Integer.toString(maxRow));
         }
+        mapBuilder = new MapBuilder(maxCol, maxRow);
+        // clear anything on dungeon pane
+        dungeonPane.getChildren().clear();
+        // reinitialize
         initialize();
     }
 
@@ -254,7 +284,6 @@ public class DesignScreenController extends Controller {
         content.putImage(draggingNode.getImage());
         db.setContent(content);
         draggingObject.set(obj);
-//        draggingClass.set(classname);
         if (allowDeleteOriginal && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL))) {
             draggingNode.setOnDragDone(e2 -> {
                 mapBuilder.deleteObject(point);

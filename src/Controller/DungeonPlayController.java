@@ -109,8 +109,12 @@ public class DungeonPlayController extends Controller {
                 pausePane.setVisible(paused);
             }
             keyPressed.add(event.getCode());
+            event.consume();
         });
-        stage.getScene().setOnKeyReleased(event -> keyPressed.remove(event.getCode()));
+        stage.getScene().setOnKeyReleased(event -> {
+            keyPressed.remove(event.getCode());
+            event.consume();
+        });
     }
 
     @FXML

@@ -79,7 +79,15 @@ public class Map implements Serializable {
     public static Map loadFromFile(InputStream inputStream){
         try {
             ObjectInputStream in = new ObjectInputStream(inputStream);
-            return (Map) in.readObject();
+            Map map = (Map) in.readObject();
+            // loop to find max objId
+            int maxId = 0;
+            for (int i = 0; i < map.sizeX; i++)
+                for (int j = 0; j < map.sizeY; j++)
+                    for(GameObject obj : map.map[i][j])
+                        maxId = Math.max(maxId, obj.getObjID());
+            StandardObject.setMaxObjId(maxId);
+            return map;
         } catch (Exception e){
             e.printStackTrace();
             return null;
@@ -276,5 +284,26 @@ public class Map implements Serializable {
             }
         }
         return ret;
+    }
+
+    /**
+     * Return a map builder for this map
+     * This allow user to continue to modify the map after
+     * saving the map
+     */
+    public MapBuilder asMapBuilder() {
+        MapBuilder builder = new MapBuilder(this.sizeX, this.sizeY);
+        builder.setAuthor(author);
+        int maxId = 0;
+        for(int x = 0; x < sizeX; x++){
+            for(int y = 0; y < sizeY; y++){
+                for(GameObject obj : map[x][y]){
+                    builder.addObject(obj);
+                    maxId = Math.max(obj.getObjID(), maxId);
+                }
+            }
+        }
+        StandardObject.setMaxObjId(maxId);
+        return builder;
     }
 }

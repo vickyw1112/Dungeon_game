@@ -62,7 +62,7 @@ public class MapSelectScreenController extends Controller {
                 try {
                     map = Map.loadFromFile(new FileInputStream(item));
                     maps.put(item, map);
-                    setGraphic(new MapBoxController(map, item.getName().split("\\.")[0]).getBox());
+                    setGraphic(new MapBoxController(stage, map, item.getName().split("\\.")[0]).getBox());
                 } catch (Exception e){
                     e.printStackTrace();
                 }

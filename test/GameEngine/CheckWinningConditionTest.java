@@ -47,33 +47,32 @@ public class CheckWinningConditionTest {
 
     @Test
     public void treasureWinTest(){
-        boolean haha = ge.checkWiningCondition();
+        boolean haha = ge.isWinning();
         assertFalse(haha);
         treasure1.getCollected(ge, player.getInventory());
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         treasure2.getCollected(ge, player.getInventory());
-        assertTrue(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
     }
 
     @Test
     public void monsterWinTest(){
         ge.removeGameObject(hunter1);
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         ge.removeGameObject(hunter2);
-        assertTrue(ge.checkWiningCondition());
-        GameEngine.MONSTERKILLED = 0;
-        assertFalse(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
+        assertFalse(ge.isWinning());
 
     }
 
     @Test
     public void floorSwitchWinTest(){
         boulder1.setLocation(new Point(8, 1));
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         boulder2.setLocation(new Point(8, 1));
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         boulder2.setLocation(new Point(9, 1));
-        assertTrue(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
     }
 
     @Test
@@ -83,17 +82,17 @@ public class CheckWinningConditionTest {
 
         treasure1.getCollected(ge, player.getInventory());
         treasure2.getCollected(ge, player.getInventory());
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
 
         boulder1.setLocation(new Point(8, 1));
         boulder2.setLocation(new Point(9, 1));
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
 
         ge.removeGameObject(hunter1);
         ge.removeGameObject(hunter2);
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
 
         player.setLocation(exit.location);
-        assertTrue(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
     }
 }

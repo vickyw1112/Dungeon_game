@@ -1,8 +1,10 @@
 package GameEngine;
 
+import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static GameEngine.Map.DEFAULT_DUNGEON_SIZE_X;
@@ -17,6 +19,7 @@ public class MapBuilder {
     private int sizeY;
     private final GameObject[][] map;
     private String author = "Unknown Author";
+    private List<String> winningConditions;
 
     /**
      * Constructor for MapBuilder
@@ -25,16 +28,22 @@ public class MapBuilder {
         this.sizeX = DEFAULT_DUNGEON_SIZE_X;
         this.sizeY = DEFAULT_DUNGEON_SIZE_Y;
         this.map = new GameObject[DEFAULT_DUNGEON_SIZE_X][DEFAULT_DUNGEON_SIZE_Y];
+        this.winningConditions = new LinkedList<>();
     }
 
     public MapBuilder(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.map = new GameObject[sizeX][sizeY];
+        this.winningConditions = new LinkedList<>();
     }
 
     public Map build() {
-        return new Map(this, sizeX, sizeY, author);
+        return new Map(this, sizeX, sizeY, author, winningConditions);
+    }
+
+    public void addWinningCondition(String winningCondition){
+        this.winningConditions.add(winningCondition);
     }
 
     public void setAuthor(String author){

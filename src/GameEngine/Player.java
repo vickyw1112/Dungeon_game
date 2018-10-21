@@ -312,7 +312,7 @@ public class Player extends StandardObject implements Movable {
      * @return
      *          int
      */
-    public int getInventoryCount(Class<?> cls) {
+    public int getInventoryCount(Class<? extends Collectable> cls) {
         return inventory.getCount(cls);
     }
 
@@ -336,7 +336,7 @@ public class Player extends StandardObject implements Movable {
      * @param cls
      * @param count
      */
-    public void setInventoryCount(Class<?> cls, int count) {
+    public void setInventoryCount(Class<? extends Collectable> cls, int count) {
         inventory.setCount(cls, count);
     }
 

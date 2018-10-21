@@ -115,12 +115,6 @@ public class SampleMaps {
 
     public static Map funMap(){
         MapBuilder mb = initMap(18, 18);
-        // add surounding walls
-        for (int i=0; i < 17; i++){
-            for (int j = 0; j < 17; j++) {
-                mb.addObject(new Wall(new Point(i, j)));
-            }
-        }
 
         // add player
         mb.addObject(new Player(new Point(1,1)));
@@ -169,17 +163,15 @@ public class SampleMaps {
 
         Door door2 = new Door(new Point(16, 5));
         Key key2 = new Key(new Point(16, 1));
-        door2.setKey(key2);
         mb.addObject(door2);
         mb.addObject(key2);
+        door2.setKey(key2);
 
         Door door3 = new Door(new Point(12, 16));
         Key key3 = new Key(new Point(16, 16));
-        door2.setKey(key3);
+        door3.setKey(key3);
         mb.addObject(door3);
         mb.addObject(key3);
-
-
 
         // add pits
         mb.addObject(new Pit(new Point(8,13)));
@@ -188,7 +180,7 @@ public class SampleMaps {
 
         // add boulders
         mb.addObject(new Boulder(new Point(5, 12)));
-        mb.addObject(new Boulder(new Point(5, 11)));
+        mb.addObject(new Boulder(new Point(5, 13)));
 
         return mb.build();
 
@@ -196,25 +188,27 @@ public class SampleMaps {
 
     // creates a horizontal line of walls
     public static void horizontalWalls(int from, int to, int height,  MapBuilder mb) {
-        for (int x = from; x < to; x++) {
+        for (int x = from; x <= to; x++) {
             mb.addObject(new Wall(new Point(x,height)));
         }
     }
     // creates a horizontal line of walls
     public static void verticalWalls(int from, int to, int width,  MapBuilder mb) {
-        for (int y = from; y < to; y++) {
+        for (int y = from; y <= to; y++) {
             mb.addObject(new Wall(new Point(width,y)));
         }
     }
 
-    
+
     public static void generateMaps(){
         File dir = new File("map");
         dir.mkdirs();
         try {
-            getBoulderTestMap().serialize(new FileOutputStream("map/boulderTest.dungeon"));
-            getDoorTestMap().serialize(new FileOutputStream("map/doorTest.dungeon"));
-            getInvinciblePotionTestMap().serialize(new FileOutputStream("map/invinciblePotionTest.dungeon"));
+//            getBoulderTestMap().serialize(new FileOutputStream("map/boulderTest.dungeon"));
+//            getDoorTestMap().serialize(new FileOutputStream("map/doorTest.dungeon"));
+//            getInvinciblePotionTestMap().serialize(new FileOutputStream("map/invinciblePotionTest.dungeon"));
+            funMap().serialize(new FileOutputStream("map/funMap.dungeon"));
+            winningConditionTest().serialize(new FileOutputStream("map/winningCondition.dungeon"));
         } catch (Exception e){
             e.printStackTrace();
         }

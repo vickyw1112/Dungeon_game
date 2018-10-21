@@ -1,6 +1,5 @@
-package Controller;
+package GameEngine;
 
-import Controller.ListOfScore;
 import java.io.*;
 
 public class ScoreData implements Serializable {

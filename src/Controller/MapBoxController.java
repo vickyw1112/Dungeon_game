@@ -13,6 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MapBoxController {
+
+	/**
+	 * field values
+	 */
     @FXML
     private GridPane box;
 
@@ -28,7 +32,13 @@ public class MapBoxController {
     @FXML
     private Label mapAuthorTextField;
 
-    public MapBoxController(Map map, String mapName){
+	/**
+	 * Constructor for MapBoxController
+	 *
+	 * @param map
+	 * @param mapName
+	 */
+	public MapBoxController(Map map, String mapName){
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("View/MapBox.fxml"));
         fxmlLoader.setController(this);
         try{
@@ -60,7 +70,7 @@ public class MapBoxController {
 
     }
 
-    public GridPane getBox() {
+	public GridPane getBox() {
         return box;
     }
 

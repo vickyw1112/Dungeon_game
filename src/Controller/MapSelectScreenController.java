@@ -16,22 +16,31 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 
 public class MapSelectScreenController extends Controller {
+
+	/**
+	 * field values
+	 */
     @FXML
     private ListView<File> mapListView;
 
-    @FXML
-    public void onModeSelectButtonClicked() {
-
-    }
-
     private HashMap<File, Map> maps;
 
-    public MapSelectScreenController(Stage s){
+	/**
+	 * Constructor for MapSelectScreenController
+	 *
+	 * @param s
+	 */
+	public MapSelectScreenController(Stage s){
         super(s);
         maps = new HashMap<>();
     }
 
-    @FXML
+	/**
+	 * onPlayButtonClicked FXML method
+	 *
+	 * Brings player to dungeonPlay screen on pressing Play Button
+	 */
+	@FXML
     public void onPlayButtonClicked() {
         Map map = maps.get(mapListView.getSelectionModel().getSelectedItem());
         try {
@@ -44,13 +53,23 @@ public class MapSelectScreenController extends Controller {
         }
     }
 
-    @FXML
+	/**
+	 * onModeSelectBtnClicked FXML method
+	 *
+	 * Brings player to mode selection screen on pressing Mode Select button
+	 */
+	@FXML
     public void onModeSelectBtnClicked() {
         Screen screen = new Screen(stage, "Mode Select", "View/ModeScreen.fxml");
         screen.display(new ModeScreenController(stage));
     }
 
-    @FXML
+	/**
+	 * initialise FXML method
+	 *
+	 * initalises a list of maps
+	 */
+	@FXML
     public void initialize() {
         mapListView.setCellFactory(param -> new ListCell<File>(){
             @Override
@@ -87,6 +106,14 @@ public class MapSelectScreenController extends Controller {
             }
         }
     }
+
+	/**
+	 * onModeSelectButtonClicked FXML method
+	 */
+	@FXML
+	public void onModeSelectButtonClicked() {
+
+	}
 
 }
 

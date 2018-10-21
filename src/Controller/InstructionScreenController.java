@@ -8,15 +8,23 @@ import javafx.stage.Stage;
 
 public class InstructionScreenController extends Controller {
 
-	//startButton is unused.
+	/**
+	 * field values
+	 */
 	@FXML
 	private Button backButton;
 
-
+	/**
+	 * InstructionScreenController method
+	 * @param s
+	 */
 	public InstructionScreenController(Stage s) {
 		super(s);
 	}
 
+	/**
+	 * initialise FXML method
+	 */
 	@FXML
 	public void initialize() {
 		// This function is for loading initialisation of your controller.
@@ -25,6 +33,11 @@ public class InstructionScreenController extends Controller {
 		// that you may(should) need this function in your project.
 	}
 
+	/**
+	 * handleBackButton FXML method
+	 *
+	 * on BackButton being pressed, brings the player back to the start screen
+	 */
 	@FXML
 	public void handleBackButton() {
 		Screen cs = new Screen(this.getStage(), "Dungeon Start", "View/StartScreen.fxml");

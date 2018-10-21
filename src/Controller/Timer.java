@@ -6,32 +6,59 @@ import GameEngine.TimerType;
 import java.util.function.Consumer;
 
 public class Timer {
-    // in ms
+
+	/**
+	 * field values
+	 * all values given in ms
+	 */
     private int remain;
     private TimerRequired obj;
     private Consumer<Timer> onUpdateTimer;
     private Consumer<Timer> onTimerExpired;
 
-    public Timer(TimerRequired object, Consumer<Timer> onTimerExpired){
+	/**
+	 * Constructor for Timer Class
+	 *
+	 * @param object
+	 * @param onTimerExpired
+	 */
+	public Timer(TimerRequired object, Consumer<Timer> onTimerExpired){
         this.obj = object;
         this.remain = object.getDuration();
         this.onTimerExpired = onTimerExpired;
         this.onUpdateTimer = null;
     }
 
+	/**
+	 * getter for remaing time
+	 * @return
+	 */
     public int getRemain() {
         return remain;
     }
 
-    public int getTotalDuration() {
+	/**
+	 * getter for totalduration
+	 * @return
+	 */
+	public int getTotalDuration() {
     	return obj.getDuration();
 	}
 
+	/**
+	 * setter for Updating timer
+	 * @param onUpdateTimer
+	 */
     public void setOnUpdateTimer(Consumer<Timer> onUpdateTimer){
         this.onUpdateTimer = onUpdateTimer;
     }
 
-    public TimerRequired getObj() {
+	/**
+	 * getObj method
+	 * getter
+	 * @return
+	 */
+	public TimerRequired getObj() {
         return obj;
     }
 
@@ -61,11 +88,25 @@ public class Timer {
         return obj.getTimerType();
     }
 
-    public boolean equalByType(Timer anotherObject){
+	/**
+	 * equals method
+	 *
+	 * Checking equals by class
+	 * @param anotherObject
+	 * @return
+	 */
+	public boolean equalByType(Timer anotherObject){
         return obj.getClass().equals(anotherObject.obj.getClass());
     }
 
-    public boolean equalByInstance(Timer anotherObject){
+	/**
+	 * equals method
+	 *
+	 * checking equals by instance
+	 * @param anotherObject
+	 * @return
+	 */
+	public boolean equalByInstance(Timer anotherObject){
         return obj.equals(anotherObject.obj);
     }
 

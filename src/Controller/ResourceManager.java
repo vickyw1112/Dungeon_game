@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 import static Controller.Config.GRID_SIZE;
 
 public class ResourceManager {
+	/**
+	 * field values
+	 */
+
     /**
      * Key is filename without extension,
      * which will be of format classname-state
@@ -31,13 +35,21 @@ public class ResourceManager {
 
     private Collection<String> allClasses;
 
-    public ResourceManager() {
+	/**
+	 * Constructor for ResourceManager class
+	 */
+	public ResourceManager() {
         imgMap = new HashMap<>();
         boundsMap = new HashMap<>();
         loadImages();
     }
 
-    private void loadImages(){
+	/**
+	 * loadImages method
+	 *
+	 * loads images into directory/file
+	 */
+	private void loadImages(){
         // load all images
         File dir = new File(getClass().getClassLoader().getResource("GameObjects").getPath());
         File[] files = dir.listFiles();
@@ -53,6 +65,14 @@ public class ResourceManager {
         }
     }
 
+	/**
+	 * getImage method
+	 *
+	 * returns a imageMap
+	 * @param className
+	 * @param state
+	 * @return
+	 */
     public Image getImage(String className, int state){
         if(imgMap.containsKey(className + "-" + state))
             return imgMap.get(className + "-" + state);
@@ -67,11 +87,25 @@ public class ResourceManager {
         return imgMap.get(className);
     }
 
-    public ImageView createImageViewByClassName(String cls){
+	/**
+	 * createImageViewByClassName method
+	 *
+	 * creates a imageView through giving a class name
+	 * @param cls
+	 * @return
+	 */
+	public ImageView createImageViewByClassName(String cls){
         return new ImageView(getImage(cls));
     }
 
-    public ImageView createImageViewByGameObject(GameObject obj){
+	/**
+	 * createImageViewByGameObject method
+	 *
+	 * creates a imgaeView through passing in Gameobject
+	 * @param obj
+	 * @return
+	 */
+	public ImageView createImageViewByGameObject(GameObject obj){
         ImageView imageView = new ImageView(getImage(obj.getClassName(), obj.getState()));
         imageView.setId(Integer.toString(obj.getObjID()));
         imageView.setTranslateX(obj.getLocation().getX() * GRID_SIZE);
@@ -79,13 +113,27 @@ public class ResourceManager {
         return imageView;
     }
 
+	/**
+	 * createImageViewByGameObject method
+	 *
+	 * creates an ImageView through passing in GameObject, ObservableList
+	 * @param obj
+	 * @param mountPoint
+	 * @return
+	 */
     public ImageView createImageViewByGameObject(GameObject obj, ObservableList<Node> mountPoint){
         ImageView imageView = createImageViewByGameObject(obj);
         mountPoint.add(imageView);
         return imageView;
     }
 
-    public Collection<String> getAllClassNames(){
+	/**
+	 * getAllClassNames method
+	 *
+	 * returns a collection of classnames
+	 * @return
+	 */
+	public Collection<String> getAllClassNames(){
         if(allClasses == null)
             allClasses = imgMap.keySet().stream()
                 .map(s -> s.contains("-") ? s.split("-")[1] : s)
@@ -93,10 +141,26 @@ public class ResourceManager {
         return allClasses;
     }
 
-    public void drawGridLine(ObservableList<Node> mountPoint) {
+	/**
+	 * drawGridLine method
+	 *
+	 * pass in an observableList
+	 * Draws gridlines for the map
+	 * @param mountPoint
+	 */
+	public void drawGridLine(ObservableList<Node> mountPoint) {
         drawGridLine(mountPoint, Map.DEFAULT_DUNGEON_SIZE_X, Map.DEFAULT_DUNGEON_SIZE_Y);
     }
 
+	/**
+	 * drawGridLine method
+	 *
+	 * pass in observableList, size of the Map (X, Y)
+	 * draws gridlines for the map
+	 * @param mountPoint
+	 * @param sizeX
+	 * @param sizeY
+	 */
     public void drawGridLine(ObservableList<Node> mountPoint, int sizeX, int sizeY){
         // vertical lines
         for(int i = 0; i < sizeX; i++){

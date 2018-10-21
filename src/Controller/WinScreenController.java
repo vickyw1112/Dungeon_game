@@ -1,6 +1,7 @@
 package Controller;
 
 import Controller.Controller;
+import GameEngine.utils.Observable;
 import View.Screen;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,24 +11,32 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import GameEngine.ScoreData;
+import GameEngine.Map;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class WinScreenController extends Controller {
-	// Fields
+	/**
+	 * field values
+	 */
 	@FXML
 	private ListView HighScoreBoard;
 
 	@FXML
 	private Button BackButton;
 
+	private Map map;
+
 	/**
 	 * Constructor WinScreenController
 	 * @param s
 	 */
-	public WinScreenController(Stage s){
+	public WinScreenController(Stage s, Map map){
 		super(s);
+		this.map = map;
 	}
 
 	/**
@@ -35,13 +44,8 @@ public class WinScreenController extends Controller {
 	 */
 	@FXML
 	public void initialize() {
-
-//		ObservableList<String> test = null;
-//		test.add("test");
-//		test.add("score");
-//		test.add("board");
-		ListOfScore list = new ListOfScore();
-		HighScoreBoard.setItems(list.deserialise());
+		ObservableList<ScoreData> list = FXCollections.observableList(map.getHighScoreList());
+		HighScoreBoard.setItems(list);
 	}
 
 

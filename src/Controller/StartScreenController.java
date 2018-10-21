@@ -8,18 +8,26 @@ import javafx.stage.Stage;
 
 public class StartScreenController extends Controller {
 
-	//startButton is unused.
+	/**
+	 * field values
+	 */
 	@FXML
 	private Button StartButton;
 
 	@FXML
 	private Button InstructionButton;
 
-
+	/**
+	 * Constructor for StartScreenController class
+	 * @param s
+	 */
 	public StartScreenController(Stage s) {
 		super(s);
 	}
 
+	/**
+	 * initialise FXML method
+	 */
 	@FXML
 	public void initialize() {
 		// This function is for loading initialisation of your controller.
@@ -28,6 +36,11 @@ public class StartScreenController extends Controller {
 		// that you may(should) need this function in your project.
 	}
 
+	/**
+	 * handleStartButton FXML method
+	 *
+	 * brings player to ModeSelection screen upon pressing button
+	 */
 	@FXML
 	public void handleStartButton() {
 		Screen cs = new Screen(this.getStage(), "Select Mode", "View/ModeScreen.fxml");
@@ -35,6 +48,11 @@ public class StartScreenController extends Controller {
 		cs.display(controller);
 	}
 
+	/**
+	 * handleInstructionButton FXML method
+	 *
+	 * brings player to instruction screen upon pressing instruction button
+	 */
 	@FXML
 	public void handleInstructionButton() {
 		Screen cs = new Screen(this.getStage(), "Dungeon instruction", "View/InstructionScreen.fxml");

@@ -1,6 +1,8 @@
 package GameEngine;
 
 import GameEngine.utils.Point;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.util.*;
@@ -9,11 +11,13 @@ import java.util.stream.Collectors;
 public class Map implements Serializable {
     public static final int DEFAULT_DUNGEON_SIZE_X = 11;
     public static final int DEFAULT_DUNGEON_SIZE_Y = 11;
+    public static final int MAX_HIGHSCORE_SIZE = 10;
 
     private List<GameObject>[][] map;
     private int sizeX = DEFAULT_DUNGEON_SIZE_X;
     private int sizeY = DEFAULT_DUNGEON_SIZE_Y;
     private String author;
+    private List<ScoreData> highScoreList;
 
     /**
      * Empty arg constructor for default sized map
@@ -39,6 +43,7 @@ public class Map implements Serializable {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.author = author;
+        this.highScoreList = new ArrayList<ScoreData>();
         init();
         build(mapBuilder);
     }
@@ -157,7 +162,7 @@ public class Map implements Serializable {
         return ret;
     }
 
-    public void serialize(OutputStream outputStream) throws IOException {
+    public void serialize(OutputStream outputStream) throws IOException{
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
         out.writeObject(this);
     }
@@ -277,4 +282,30 @@ public class Map implements Serializable {
         }
         return ret;
     }
+
+	/**
+	 * add method
+	 * adds ScoreData Data
+	 * Keeps the queue size at 10
+	 *
+	 * @param data
+	 */
+	public void addScoreData(ScoreData data) {
+		highScoreList.add(data);
+		Collections.sort(highScoreList, new Comparator<ScoreData>() {
+			@Override
+			public int compare(ScoreData o1, ScoreData o2) {
+				return Integer.compare(o1.getHighscore(), o2.getHighscore());
+			}
+		});
+		if (highScoreList.size() > MAX_HIGHSCORE_SIZE)
+			highScoreList.remove(MAX_HIGHSCORE_SIZE - 1);
+	}
+
+
+	public List<ScoreData> getHighScoreList() {
+		return this.highScoreList;
+	}
+
+
 }

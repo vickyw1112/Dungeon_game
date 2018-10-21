@@ -11,13 +11,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TimerCollection {
+	/**
+	 * field values
+	 */
     private ObservableList<Node> mountPoint;
     private List<Timer> timers;
     private HashMap<Timer, ImageView> timerImageViewMap;
     private HashMap<Timer, ProgressBar> timerProgressBarHashMap;
     private ResourceManager resources;
 
-    public TimerCollection(ObservableList<Node> timerMountPoint, ResourceManager resourceManager){
+	/**
+	 * Constructor for TimerCollection
+	 *
+	 * @param timerMountPoint
+	 * @param resourceManager
+	 */
+	public TimerCollection(ObservableList<Node> timerMountPoint, ResourceManager resourceManager){
         timers = new LinkedList<>();
         mountPoint = timerMountPoint;
         timerImageViewMap = new HashMap<>();
@@ -25,7 +34,13 @@ public class TimerCollection {
         resources = resourceManager;
     }
 
-    private void removeTimer(Timer t){
+	/**
+	 * removeTimer method
+	 *
+	 * removes the timer
+	 * @param t
+	 */
+	private void removeTimer(Timer t){
         timers.remove(t);
         mountPoint.remove(timerImageViewMap.remove(t));
         mountPoint.remove(timerProgressBarHashMap.remove(t));
@@ -67,6 +82,14 @@ public class TimerCollection {
         timers.add(timer);
     }
 
+	/**
+	 * updateTimer method
+	 *
+	 * method to update the timer
+	 * @param timer
+	 * @param tick
+	 * @return
+	 */
     private boolean updateTimer(Timer timer, int tick){
         boolean ret = timer.update(tick);
         if(timer.getRemain() != TimerRequired.LAST_FOREVER)

@@ -68,7 +68,11 @@ public class DesignScreenController extends Controller {
 
     private MapBuilder mapBuilder;
 
-    public DesignScreenController(Stage s) {
+	/**
+	 * Constructor for DesignScreenController
+	 * @param s
+	 */
+	public DesignScreenController(Stage s) {
         super(s);
         resources = new ResourceManager();
         draggingClass = new SimpleStringProperty();
@@ -80,13 +84,22 @@ public class DesignScreenController extends Controller {
         maxRow = 11;
     }
 
-    @Override
+	/**
+	 * afterInitialize method
+	 */
+	@Override
     public void afterInitialize() {
         stage.getScene().setOnKeyPressed(event -> keyPressed.add(event.getCode()));
         stage.getScene().setOnKeyReleased(event -> keyPressed.remove(event.getCode()));
     }
 
-    @FXML
+	/**
+	 * initialize method
+	 *
+	 * initializes and calls mapbuilder to create the map on the stage
+	 * finally resizes the screen to the size of the map
+	 */
+	@FXML
     public void initialize(){
         mapBuilder = new MapBuilder(maxCol, maxRow);
 
@@ -125,14 +138,26 @@ public class DesignScreenController extends Controller {
         stage.sizeToScene();
     }
 
-    @FXML
+	/**
+	 * onExitBtnClicked FXML method
+	 *
+	 * generic button method for exiting any screen to title screen
+	 * moves to mode screen
+	 */
+	@FXML
     public void onExitBtnClicked(){
         Screen cs = new Screen(this.getStage(), "Select Mode to Play", "View/ModeScreen.fxml");
         Controller controller = new ModeScreenController(this.getStage());
         cs.display(controller);
     }
 
-    public void handleFilterChange(Observable obs) {
+	/**
+	 * handleFilterChange method
+	 *
+	 * method for inventory
+	 * @param obs
+	 */
+	public void handleFilterChange(Observable obs) {
         String filter = filterTextField.getText();
         objectsListView.getItems().clear();
         if(filter.isEmpty()){
@@ -145,7 +170,15 @@ public class DesignScreenController extends Controller {
         }
     }
 
-    private void saveDungeonSnapshot(String mapName) throws IOException {
+	/**
+	 * saveDungeonSnapshot method
+	 *
+	 * method to serialise and create an image to store the file
+	 * This is so when we pick a dungeon to play we have a snapshot of the map
+	 * @param mapName
+	 * @throws IOException
+	 */
+	private void saveDungeonSnapshot(String mapName) throws IOException {
         File out = new File("map/" + mapName + ".png");
         WritableImage writableImage =
                 new WritableImage((int)dungeonPane.getWidth(), (int)dungeonPane.getHeight());
@@ -153,7 +186,15 @@ public class DesignScreenController extends Controller {
         ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", out);
     }
 
-    @FXML
+
+	/**
+	 * onSaveButtonClicked FXML method
+	 *
+	 * method to save the map by serialising it
+	 * Also has checks against maps created illegally: either incomplete or illegal
+	 * @param event
+	 */
+	@FXML
     public void onSaveButtonClicked(MouseEvent event){
         new File("map").mkdirs();
 
@@ -165,7 +206,7 @@ public class DesignScreenController extends Controller {
             if(!mapBuilder.islegalMap())
                 throw new Exception("Incomplete or illegal map");
             Map map = mapBuilder.build();
-            map.serialize(new FileOutputStream("map/" + mapName + ".dungeon"));
+            map.serialize(new FileOutputStream(Config.MAP_BASE_DIR + File.separator + mapName + ".dungeon"));
             saveDungeonSnapshot(mapName);
             if(mapName.isEmpty())
                 throw new Exception("Invalid map name");
@@ -179,7 +220,11 @@ public class DesignScreenController extends Controller {
         cs.display(controller);
     }
 
-    @FXML
+	/**
+	 * onResizeMapButtonClicked FXML method
+	 * method to resize map after selecting a size
+	 */
+	@FXML
     public void onResizeMapButtonClicked(){
         try {
             maxCol = Integer.parseInt(mapColSizeTextField.getText());
@@ -245,6 +290,15 @@ public class DesignScreenController extends Controller {
         }
     }
 
+	/**
+	 * handleDragStart method
+	 *
+	 * method to allow user to drag items in design mode
+	 * @param event
+	 * @param draggingNode
+	 * @param obj
+	 * @param allowDeleteOriginal
+	 */
     private void handleDragStart(MouseEvent event, ImageView draggingNode, GameObject obj,
                                  boolean allowDeleteOriginal) {
         Point point = getEventIndex(event.getSceneX(), event.getSceneY());
@@ -263,7 +317,12 @@ public class DesignScreenController extends Controller {
         }
     }
 
-    private void initWallBoundary(){
+	/**
+	 * initWallBoundary method
+	 *
+	 * method to initialise a wall boundary around every map
+	 */
+	private void initWallBoundary(){
         String wallClassName = Wall.class.getSimpleName();
         GameObject wall = GameObject.build(wallClassName, null);
         for(int x = 0; x < maxCol; x++) {
@@ -314,7 +373,13 @@ public class DesignScreenController extends Controller {
         event.consume();
     }
 
-    private void handleDragDropped(DragEvent event){
+	/**
+	 * handleDragDropped method
+	 *
+	 * event handler for dragging and dropping items/objects on to and off the map
+	 * @param event
+	 */
+	private void handleDragDropped(DragEvent event){
         // remove all previous indicator first
         dungeonPane.getChildren().removeIf(node -> node instanceof Rectangle);
 
@@ -342,7 +407,14 @@ public class DesignScreenController extends Controller {
         event.consume();
     }
 
-    private ListCell<ImageView> objectListViewCellFactory(ListView<ImageView> param){
+	/**
+	 * objectListViewCellFactory method
+	 *
+	 * creates a grid to design the map upon
+	 * @param param
+	 * @return
+	 */
+	private ListCell<ImageView> objectListViewCellFactory(ListView<ImageView> param){
         ListCell<ImageView> cell = new ListCell<ImageView>() {
             @Override
             public void updateItem(ImageView imgView, boolean empty) {
@@ -364,7 +436,15 @@ public class DesignScreenController extends Controller {
         return cell;
     }
 
-    @FXML
+
+	/**
+	 * onObjectListViewClicked FXML method
+	 *
+	 * enables double clicking to add object to map
+	 * adds map top right first in a legal grid square
+	 * @param event
+	 */
+	@FXML
     public void onObjectListViewClicked(MouseEvent event){
         // double click to add current selected object to the map
         if(event.getClickCount() == 2){

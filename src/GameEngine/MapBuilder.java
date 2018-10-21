@@ -1,8 +1,10 @@
 package GameEngine;
 
+import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static GameEngine.Map.DEFAULT_DUNGEON_SIZE_X;
@@ -17,6 +19,7 @@ public class MapBuilder {
     private int sizeY;
     private final GameObject[][] map;
     private String author = "Unknown Author";
+    private List<String> winningConditions;
 
     /**
      * Constructor for MapBuilder
@@ -25,20 +28,30 @@ public class MapBuilder {
         this.sizeX = DEFAULT_DUNGEON_SIZE_X;
         this.sizeY = DEFAULT_DUNGEON_SIZE_Y;
         this.map = new GameObject[DEFAULT_DUNGEON_SIZE_X][DEFAULT_DUNGEON_SIZE_Y];
+        this.winningConditions = new LinkedList<>();
     }
 
     public MapBuilder(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.map = new GameObject[sizeX][sizeY];
+        this.winningConditions = new LinkedList<>();
     }
 
     public Map build() {
-        return new Map(this, sizeX, sizeY, author);
+        return new Map(this, sizeX, sizeY, author, winningConditions);
+    }
+
+    public void addWinningCondition(String winningCondition){
+        this.winningConditions.add(winningCondition);
     }
 
     public void setAuthor(String author){
         this.author = author;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     /**
@@ -73,6 +86,13 @@ public class MapBuilder {
         obj.setLocation(newLocation);
     }
 
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public int getSizeX() {
+        return sizeX;
+    }
 
     /**
      * Get the object in specific location
@@ -84,11 +104,12 @@ public class MapBuilder {
         return map[location.getX()][location.getY()];
     }
 
-    public boolean islegalMap() {
+    public boolean isLegalMap() {
         List<Object> player = new ArrayList<>();
         List<Object> exits = new ArrayList<>();
         List<Object> monsters = new ArrayList<>();
         List<Object> treasures = new ArrayList<>();
+        List<Object> switches = new ArrayList<>();
         int x = 0;
         for (; x < this.map.length; x++) {
             for (int y = 0; y < this.map[x].length; y++) {
@@ -100,12 +121,17 @@ public class MapBuilder {
                     treasures.add(map[x][y]);
                 } else if (map[x][y] instanceof Exit) {
                     exits.add(map[x][y]);
+                } else if (map[x][y] instanceof FloorSwitch){
+                    switches.add(map[x][y]);
                 }
             }
         }
 
-        if (player.size() != 1) return false;
-        if (!(monsters.size() > 0 || exits.size() > 0 || treasures.size() > 0)) return false;
+        if (player.size() != 1)
+            return false;
+
+        if (exits.size() == 0 && monsters.size() == 0 && switches.size() == 0 && treasures.size() == 0)
+            return false;
         return true;
     }
 

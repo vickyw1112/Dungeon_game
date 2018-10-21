@@ -1,12 +1,18 @@
 package Controller;
 
 import GameEngine.Map;
+import GameEngine.WinningCondition.WinningCondition;
+import View.Screen;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +34,16 @@ public class MapBoxController {
     @FXML
     private Label mapAuthorTextField;
 
-    public MapBoxController(Map map, String mapName){
+    @FXML
+    private Button modifyMapBtn;
+
+    @FXML
+    private VBox winningConditions;
+
+    public MapBoxController(Stage stage, Map map, String mapName){
+        // TODO load resources once only in first screen and pass it around
+        ResourceManager resources = new ResourceManager();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("View/MapBox.fxml"));
         fxmlLoader.setController(this);
         try{
@@ -38,8 +53,11 @@ public class MapBoxController {
             System.exit(1);
         }
 
+        // set map info
         mapNameTestField.setText(mapName);
         mapSizeTextField.setText(map.getSizeX() + " x " + map.getSizeY());
+
+        // set map preview img
         Image mapPreview = null;
         try {
             mapPreview = new Image(new FileInputStream(getClass().getClassLoader().getResource("img/question-mark.png").getPath()));
@@ -56,7 +74,26 @@ public class MapBoxController {
         mapPreviewImageView.setPreserveRatio(true);
         mapPreviewImageView.setFitHeight(200);
         mapPreviewImageView.setFitWidth(200);
+
+
+        // set winning conditions
+        for(WinningCondition winningCondition: map.getWinningConditions()){
+            Label label = new Label();
+            label.setGraphic(resources.createImageViewByWinningCondition(winningCondition));
+            label.setText(winningCondition.displayString());
+            winningConditions.getChildren().add(label);
+        }
+
+        // set author
         mapAuthorTextField.setText("By " + map.getAuthor());
+
+        // handle modify map button
+        modifyMapBtn.setOnMouseClicked(event -> {
+            Screen screen = new Screen(stage, "Design Dungeon", "View/DesignScreen.fxml");
+            DesignScreenController controller = new DesignScreenController(stage);
+            screen.display(controller);
+            controller.loadExistingMapBuilder(map, mapName);
+        });
 
     }
 

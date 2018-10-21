@@ -3,7 +3,6 @@ package GameEngine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,7 @@ public class Inventory {
      * NOTE: count is not necessary the actual count but a number associated to the
      * object. i.e. Sword's count would mean number of capable hits
      */
-    private final HashMap<Class<?>, Integer> countMap;
+    private final HashMap<Class<? extends Collectable>, Integer> countMap;
 
     /**
      * Maintain the object instances for all collected items
@@ -30,7 +29,7 @@ public class Inventory {
         this.items = new ArrayList<>();
     }
 
-    protected HashMap<Class<?>, Integer> getCountMap() {
+    protected HashMap<Class<? extends Collectable>, Integer> getCountMap() {
         return countMap;
     }
 
@@ -52,7 +51,7 @@ public class Inventory {
      *            class of the object
      * @return count
      */
-    public int getCount(Class<?> cls) {
+    public int getCount(Class<? extends Collectable> cls) {
         if (countMap.get(cls) == null)
             return 0;
         return countMap.get(cls);
@@ -64,7 +63,8 @@ public class Inventory {
     public int getCount(String classname){
         try {
             Class<?> cls = Class.forName(getClass().getPackage().getName() + "." + classname);
-            return getCount(cls);
+            if(Collectable.class.isAssignableFrom(cls))
+                return getCount((Class<? extends Collectable>) cls);
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -87,7 +87,7 @@ public class Inventory {
      * @param count
      *            number to set
      */
-    public void setCount(Class<?> cls, int count) {
+    public void setCount(Class<? extends Collectable> cls, int count) {
         countMap.put(cls, count);
         if(count == 0)
             countMap.remove(cls);
@@ -120,7 +120,7 @@ public class Inventory {
      *            class of object being popped
      * @return popped object, if no such type object return null
      */
-    public Collectable popObject(Class<?> cls) {
+    public Collectable popObject(Class<? extends Collectable> cls) {
         int count;
         for (Collectable item : items) {
             if (item.getClass().equals(cls)) {
@@ -140,7 +140,7 @@ public class Inventory {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Player Inventory:\n");
-        for(Entry<Class<?>, Integer> ent : countMap.entrySet()){
+        for(Entry<Class<? extends Collectable>, Integer> ent : countMap.entrySet()){
             sb.append(String.format("\t%s: %d\n", ent.getKey().getSimpleName(), ent.getValue()));
         }
         return new String(sb);

@@ -62,7 +62,7 @@ public class SampleMaps {
         return mb.build();
     }
 
-    public static void main(String[] args){
+    public static void generateMaps(){
         File dir = new File("map");
         dir.mkdirs();
         try {
@@ -72,5 +72,9 @@ public class SampleMaps {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args){
+        generateMaps();
     }
 }

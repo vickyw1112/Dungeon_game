@@ -32,6 +32,16 @@ public abstract class StandardObject implements GameObject, Serializable {
         this.observers = new LinkedList<>();
     }
 
+
+    /**
+     * Used for updating objCount after loading
+     * a serialised map
+     * @param objId max objId in the loaded map
+     */
+    public static void setMaxObjId(int objId){
+        objCount = ++objId;
+    }
+
     @Override
     public void initialize() {
         observers = new LinkedList<>();

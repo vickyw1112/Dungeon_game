@@ -221,6 +221,11 @@ public class GameEngine {
 
         // exit win is done by WinCollisionHandler
         if(!exits.isEmpty()) {
+            for(Point e: exits){
+                if(player.location.equals(e)){
+                    return true;
+                }
+            }
             return false;
         }
         else {

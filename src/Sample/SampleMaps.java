@@ -67,12 +67,6 @@ public class SampleMaps {
     public static Map winningConditionTest(){
         MapBuilder mb = initMap(10, 10);
 
-        // add surounding walls
-        for (int i=0; i < 9; i++){
-            for (int j = 0; j < 9; j++) {
-                mb.addObject(new Wall(new Point(i, j)));
-            }
-        }
         // add player
         mb.addObject(new Player(new Point(1,1)));
 
@@ -82,30 +76,29 @@ public class SampleMaps {
         }
 
         // add door and key
-        Key key = new Key(new Point(9, 9));
-        Door door = new Door(new Point(7,9));
+        Key key = new Key(new Point(8, 8));
+        Door door = new Door(new Point(7,8));
         door.setKey(key);
         mb.addObject(key);
         mb.addObject(door);
 
 
         // cage of monsters
-        mb.addObject(new Hunter(new Point(0,9)));
-        mb.addObject(new Hound(new Point(1,9)));
-        mb.addObject(new Strategist(new Point(2,9)));
-        mb.addObject(new Coward(new Point(3,9)));
-        mb.addObject(new Hunter(new Point(4,9)));
-        mb.addObject(new Hound(new Point(5,9)));
-        mb.addObject(new Strategist(new Point(6,9)));
+        mb.addObject(new Hound(new Point(1,8)));
+        mb.addObject(new Strategist(new Point(2,8)));
+        mb.addObject(new Coward(new Point(3,8)));
+        mb.addObject(new Hunter(new Point(4,8)));
+        mb.addObject(new Hound(new Point(5,8)));
+        mb.addObject(new Strategist(new Point(6,8)));
 
         for (int x = 5; x < 7; x++) {
-            mb.addObject(new FloorSwitch(new Point(x, 0 )));
+            mb.addObject(new FloorSwitch(new Point(x, 1 )));
         }
         for (int x = 5; x < 7; x++) {
-            mb.addObject(new Boulder(new Point(x, 1 )));
+            mb.addObject(new Boulder(new Point(x, 2 )));
         }
         for (int x = 0; x < 5; x++) {
-            mb.addObject(new Boulder(new Point(x, 7 )));
+            mb.addObject(new Wall(new Point(x, 7 )));
         }
         mb.addObject(new Exit(new Point (0, 4)));
         return mb.build();
@@ -152,7 +145,7 @@ public class SampleMaps {
 
         // add potions
         mb.addObject(new HoverPotion(new Point(1,14)));
-        mb.addObject(new InvinciblePotion(new Point (16, 9)));
+        mb.addObject(new InvinciblePotion(new Point (16, 8)));
 
         // add doors and key pairs
         Door door1 = new Door(new Point(7, 1));
@@ -179,8 +172,11 @@ public class SampleMaps {
         mb.addObject(new Pit(new Point(10,13)));
 
         // add boulders
-        mb.addObject(new Boulder(new Point(5, 12)));
-        mb.addObject(new Boulder(new Point(5, 13)));
+        mb.addObject(new Boulder(new Point(5, 11)));
+        mb.addObject(new Boulder(new Point(5, 10)));
+
+        // add exist
+        mb.addObject(new Exit(new Point(1, 6)));
 
         return mb.build();
 

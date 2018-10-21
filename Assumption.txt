@@ -1,0 +1,13 @@
+Assumption
+1. Map Size is only valid between 5-20 [5x5 - 20x20]
+2. Strategist path generation:
+    - The destination in the path is the grid the player is facing.
+    - uses the shortest path generation if the grid the player is facing is not a valid path.
+
+3. Boulder can go through collectable items
+4. Monsters can go through collectable items
+5. Upon obtaining invincibility potion, our runaway generation is defined by the monster looking at a grid furthest away from the player and recursively run away
+6. If Hound is not paired with the hunter, the Hound just uses the shortest path generation.
+7. Arrows can go through collectables.
+8. If a bomb is exploding, but the player is invincible the player does not die
+9. We can have an infinite amount of door key pairs

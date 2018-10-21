@@ -250,6 +250,7 @@ public class DesignScreenController extends Controller {
         String mapName = mapNameTextField.getText().replaceAll("[^\\w\\-.]", "");
         String authorName = mapAuthorTextField.getText();
         mapBuilder.setAuthor(authorName);
+        mapBuilder.setMapName(mapName);
 
         try {
             if(!mapBuilder.isLegalMap())

@@ -26,21 +26,15 @@ public class HighscoreScreenController extends Controller {
 	private TextField textHighScore;
 
 	private Map map;
-	private String mapname;
+	private int score;
 
 
-	/**
-	 * Constructor for HighscoreScreenController class
-	 *
-	 * @param s
-	 * @param map
-	 * @param mapname
-	 */
-	public HighscoreScreenController (Stage s, Map map, String mapname){
+	public HighscoreScreenController (Stage s, Map map, int score){
 		super(s);
 		this.map = map;
-		this.mapname = mapname;
+		this.score = score;
 	}
+
 
 	/**
 	 * initialise method
@@ -60,11 +54,12 @@ public class HighscoreScreenController extends Controller {
 	@FXML
 	public void handleScoreButton(){
 		String name = textHighScore.getText();
-		ScoreData data = new ScoreData(name, 100);
+		ScoreData data = new ScoreData(name, score);
 		List<ScoreData> list = map.getHighScoreList();
 		map.addScoreData(data);
 		try {
-			map.serialize(new FileOutputStream(Config.MAP_BASE_DIR + File.separator + mapname + ".dungeon"));
+			map.serialize(new FileOutputStream(Config.MAP_BASE_DIR +
+					File.separator + map.getMapName() + ".dungeon"));
 		} catch (IOException e){
 			e.printStackTrace();
 		}

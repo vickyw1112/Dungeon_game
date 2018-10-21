@@ -1,6 +1,8 @@
 package Sample;
 
 import GameEngine.*;
+import GameEngine.WinningCondition.BouldersOnAllSwitches;
+import GameEngine.WinningCondition.EliminateAllMonsters;
 import GameEngine.utils.*;
 
 import java.io.File;
@@ -33,6 +35,7 @@ public class SampleMaps {
             mb.addObject(new Boulder(new Point(x, 3)));
         }
         mb.addObject(new Player(new Point(1, 4)));
+        mb.addWinningCondition(BouldersOnAllSwitches.class.getSimpleName());
         return mb.build();
     }
 
@@ -40,13 +43,14 @@ public class SampleMaps {
     public static Map getInvinciblePotionTestMap(){
         MapBuilder mb = initMap(5, 11);
         for(int x = 1; x <= 3; x++){
-            for(int y = 1; y <= 6; y++){
+            for(int y = 1; y <= 6; y+=2){
                 mb.addObject(new Hunter(new Point(x, y)));
 
             }
         }
         mb.addObject(new InvinciblePotion(new Point( 2, 8)));
         mb.addObject(new Player(new Point(1, 9)));
+        mb.addWinningCondition(EliminateAllMonsters.class.getSimpleName());
         return mb.build();
     }
 
@@ -179,7 +183,6 @@ public class SampleMaps {
         mb.addObject(new Exit(new Point(1, 6)));
 
         return mb.build();
-
     }
 
     // creates a horizontal line of walls
@@ -204,7 +207,7 @@ public class SampleMaps {
 //            getDoorTestMap().serialize(new FileOutputStream("map/doorTest.dungeon"));
 //            getInvinciblePotionTestMap().serialize(new FileOutputStream("map/invinciblePotionTest.dungeon"));
             funMap().serialize(new FileOutputStream("map/funMap.dungeon"));
-            winningConditionTest().serialize(new FileOutputStream("map/winningCondition.dungeon"));
+            winningConditionTest().serialize(new FileOutputStream("map/checkWinningCondition.dungeon"));
         } catch (Exception e){
             e.printStackTrace();
         }

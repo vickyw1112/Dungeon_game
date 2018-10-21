@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class DungeonPlayController extends Controller {
 	private Map originalMap;
 	private Map map;
 	private boolean paused;
+	private double timeConsumed;
 
 	/**
 	 * Constructor for DungeonPlayController
@@ -76,6 +79,7 @@ public class DungeonPlayController extends Controller {
         originalMap = map.cloneMap();
 		inventoryList = FXCollections.observableArrayList();
 		paused = false;
+		this.timeConsumed = 0;
 	}
 
 	/**
@@ -219,7 +223,7 @@ public class DungeonPlayController extends Controller {
 				double elapsedSeconds = (now - lastUpdateTime.get()) / 1000000000.0 ;
 				// make sure at most go 40 ms for each frame
 				elapsedSeconds = elapsedSeconds > 0.04 ? 0.04 : elapsedSeconds;
-
+				timeConsumed += elapsedSeconds;
 
 				updatePlayerMovingStatus();
 
@@ -378,7 +382,8 @@ public class DungeonPlayController extends Controller {
      */
 	private void handleWin(){
 		Screen cs = new Screen(this.getStage(), "Highscore", "View/WinScreen.fxml");
-		Controller controller = new HighscoreScreenController(this.getStage(), this.map);
+		Controller controller = new HighscoreScreenController(this.getStage(), this.originalMap,
+				 Math.max(100 - (int)(this.timeConsumed), 0));
 		cs.display(controller);
 	}
 
@@ -395,7 +400,13 @@ public class DungeonPlayController extends Controller {
             return;
         if(result.get() == ButtonType.YES){
             Screen screen = new Screen(stage, "Dungeon", "View/DungeonPlayScreen.fxml");
-            screen.display(new DungeonPlayController(stage, originalMap));
+            try {
+                Map reloadedMap = Map.loadFromFile
+						(new FileInputStream("map/" + map.getMapName() + ".dungeon"));
+                screen.display(new DungeonPlayController(stage, reloadedMap));
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
         }
         if(result.get() == goBackBtn){
             handleModeScreenButton();

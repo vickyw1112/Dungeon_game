@@ -40,7 +40,7 @@ public class MapBoxController {
     @FXML
     private VBox winningConditions;
 
-    public MapBoxController(Stage stage, Map map, String mapName){
+    public MapBoxController(Stage stage, Map map){
         // TODO load resources once only in first screen and pass it around
         ResourceManager resources = new ResourceManager();
 
@@ -54,7 +54,7 @@ public class MapBoxController {
         }
 
         // set map info
-        mapNameTestField.setText(mapName);
+        mapNameTestField.setText(map.getMapName());
         mapSizeTextField.setText(map.getSizeX() + " x " + map.getSizeY());
 
         // set map preview img
@@ -66,9 +66,9 @@ public class MapBoxController {
             System.exit(1);
         }
         try {
-            mapPreview = new Image(new FileInputStream("map/" + mapName + ".png"));
+            mapPreview = new Image(new FileInputStream("map/" + map.getMapName() + ".png"));
         } catch (FileNotFoundException e){
-            System.err.println("Map preview image not found for " + mapName);
+            System.err.println("Map preview image not found for " + map.getMapName());
         }
         mapPreviewImageView.setImage(mapPreview);
         mapPreviewImageView.setPreserveRatio(true);
@@ -92,7 +92,7 @@ public class MapBoxController {
             Screen screen = new Screen(stage, "Design Dungeon", "View/DesignScreen.fxml");
             DesignScreenController controller = new DesignScreenController(stage);
             screen.display(controller);
-            controller.loadExistingMapBuilder(map, mapName);
+            controller.loadExistingMapBuilder(map, map.getMapName());
         });
 
     }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<GridPane prefHeight="433.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" />
+    <ColumnConstraints fillWidth="false" hgrow="NEVER" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+        <AnchorPane fx:id="dungeonPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
+            <AnchorPane fx:id="menuPane" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowSpan="2">
+                <children>
+            <ListView fx:id="inventoryItems" disable="true" layoutX="25.0" layoutY="38.0" prefHeight="240.0" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black;" AnchorPane.topAnchor="38.0" />
+                    <Button fx:id="startScreenButton" layoutX="52.0" layoutY="371.0" mnemonicParsing="false" onAction="#handleStartScreenButton" text="Start Screen" AnchorPane.bottomAnchor="35.0" />
+                    <Button fx:id="modeScreenButton" layoutX="50.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleModeScreenButton" text="Mode Screen" AnchorPane.bottomAnchor="74.0" />
+                </children>
+            </AnchorPane>
+      <HBox fx:id="timerBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+      <StackPane fx:id="pausePane" style="-fx-background-color: rgba(0,0,0,0.8);" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <children>
+            <Label text="Press ESC again to continue" textFill="WHITE">
+               <StackPane.margin>
+                  <Insets top="60.0" />
+               </StackPane.margin>
+            </Label>
+            <Label text="Paused" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="38.0" />
+               </font>
+            </Label>
+         </children>
+      </StackPane>
+   </children>
+</GridPane>

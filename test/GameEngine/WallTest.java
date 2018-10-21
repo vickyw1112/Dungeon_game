@@ -9,14 +9,6 @@ import GameEngine.CollisionHandler.*;
 public class WallTest {
 
     @Test
-    public void testBitWise() {
-        int a = CollisionResult.DELETE_FIRST;
-        int b = CollisionResult.DELETE_SECOND;
-        int c = a|b;
-        assertEquals(c, CollisionResult.DELETE_BOTH);
-    }
-
-    @Test
     public void testWallBlockMovement() {
         GameEngine ge = new GameEngine(new Map());
         

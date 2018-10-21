@@ -23,11 +23,12 @@ public class PlayerMonsterCollisionHandler implements CollisionHandler {
             player.setInventoryCount(Sword.class, n - 1);
             res.addFlag(deleteFlag);
             engine.removeGameObject(monster);
+            res.addFlag(CollisionResult.REFRESH_INVENTORY);
         } else {
             res.addFlag(CollisionResult.LOSE);
         }
 
-        if(engine.checkWiningCondition())
+        if(engine.isWinning())
             res.addFlag(CollisionResult.WIN);
         return res;
     }

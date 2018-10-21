@@ -13,7 +13,7 @@ public class InvinciblePotion extends Potion {
     public InvinciblePotion(Point location) {
         super(location);
         this.playerEffect = PlayerEffect.INVINCIBLE;
-        this.duration = 10;
+        this.duration = 5000;
     }
 
     /**
@@ -32,5 +32,6 @@ public class InvinciblePotion extends Potion {
     @Override
     public void onPotionExpires(GameEngine engine) {
         engine.updateMonstersMovementStrategy(Monster.DEFAULT_PATHGEN);
+        engine.updateMonstersPath();
     }
 }

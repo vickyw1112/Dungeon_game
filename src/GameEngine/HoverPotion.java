@@ -13,6 +13,6 @@ public class HoverPotion extends Potion {
     public HoverPotion(Point location) {
         super(location);
         this.playerEffect = PlayerEffect.HOVER;
-        this.duration = Potion.LAST_FOREVER;
+        this.duration = TimerRequired.LAST_FOREVER;
     }
 }

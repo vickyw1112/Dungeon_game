@@ -42,8 +42,8 @@ public class MonsterCollisionTests {
         CollisionEntities ent = new CollisionEntities(Arrow.class, Monster.class);
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, arrow, hunter);
-        assertTrue(res.containFlag(CollisionResult.DELETE_BOTH));
-        assertTrue(res.containFlag(CollisionResult.WIN));
+        assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
+        assertTrue(res.containFlag(CollisionResult.DELETE_SECOND));
     }
 
     @Test
@@ -60,7 +60,6 @@ public class MonsterCollisionTests {
         handler = ge.getCollisionHandler(ent);
         res = handler.handle(ge, hunter, player);
         assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
-        assertTrue(res.containFlag(CollisionResult.WIN));
     }
 
     @Test
@@ -72,7 +71,6 @@ public class MonsterCollisionTests {
         CollisionHandler handler = ge.getCollisionHandler(ent);
         CollisionResult res = handler.handle(ge, hunter, player);
         assertTrue(res.containFlag(CollisionResult.DELETE_FIRST));
-        assertTrue(res.containFlag(CollisionResult.WIN));
         assertFalse(res.containFlag(CollisionResult.LOSE));
     }
 }

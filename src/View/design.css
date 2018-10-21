@@ -1,0 +1,9 @@
+.bodybg{
+     -fx-background-image: url('img/background.png');
+     -fx-background-size: cover;
+  }
+
+.buttonbg{
+     -fx-background-image: url('img/instruction_button.png');
+     -fx-background-size: cover;
+  }

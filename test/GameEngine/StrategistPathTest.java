@@ -95,8 +95,10 @@ public class StrategistPathTest {
         player.setFacing(Direction.RIGHT);
         engine.updateMonstersPath();
 
-        LinkedList<Point> path = strategist.getPath();
+        LinkedList<Point> path = strategist.pathGenerator.generatePath(map, strategist, player);
         LinkedList<Point> check = new LinkedList<>();
+
+        //strategist.getPath();
 
         check.add(new Point(1,2));
         check.add(new Point(2,2));

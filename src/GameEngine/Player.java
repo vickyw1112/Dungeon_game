@@ -14,7 +14,7 @@ public class Player extends StandardObject implements Movable {
     /**
      * Default movement speed for player Unit is grid per second
      */
-    public static final double SPEED = 2;
+    public static final double SPEED = 4;
 
     /**
      * transient field so that won't be serialized
@@ -44,6 +44,10 @@ public class Player extends StandardObject implements Movable {
      */
     private Direction facing;
 
+    /**
+     * If the player is currently moving
+     */
+    private boolean isMoving;
 
 
     /**
@@ -64,9 +68,14 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public void initialize() {
+        super.initialize();
         inventory = new Inventory();
         effects = new HashSet<>();
         onPushingBoulder = false;
+    }
+
+    public void setIsMoving(boolean val){
+        isMoving = val;
     }
 
     /**
@@ -107,11 +116,11 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public boolean setLocation(Point point) {
-        if (this.location == point)
-            return false;
-        this.onPushingBoulder = false;
-        this.location = point;
-        return true;
+        if(super.setLocation(point)) {
+            this.onPushingBoulder = false;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -121,7 +130,7 @@ public class Player extends StandardObject implements Movable {
      */
     @Override
     public double getSpeed() {
-        return onPushingBoulder ? SPEED / 2 : SPEED;
+        return isMoving ? (onPushingBoulder ? SPEED / 2 : SPEED) : 0;
     }
 
     /**
@@ -303,8 +312,22 @@ public class Player extends StandardObject implements Movable {
      * @return
      *          int
      */
-    public int getInventoryCount(Class<?> cls) {
+    public int getInventoryCount(Class<? extends Collectable> cls) {
         return inventory.getCount(cls);
+    }
+
+    /**
+     * Gets the count of the object in the inventory of the player
+     */
+    public int getInventoryCount(String classname) {
+        return inventory.getCount(classname);
+    }
+
+    /**
+     * @see Inventory#getAllClasses()
+     */
+    public List<String> getInventoryAllClasses(){
+        return inventory.getAllClasses();
     }
 
     /**
@@ -313,7 +336,7 @@ public class Player extends StandardObject implements Movable {
      * @param cls
      * @param count
      */
-    public void setInventoryCount(Class<?> cls, int count) {
+    public void setInventoryCount(Class<? extends Collectable> cls, int count) {
         inventory.setCount(cls, count);
     }
 

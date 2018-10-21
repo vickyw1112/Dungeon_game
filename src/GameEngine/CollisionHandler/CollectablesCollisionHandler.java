@@ -20,7 +20,7 @@ public class CollectablesCollisionHandler implements CollisionHandler {
 
         CollisionResult res = new CollisionResult();
 
-        if(engine.checkWiningCondition())
+        if(engine.isWinning())
             res.addFlag(CollisionResult.WIN);
         res.addFlag(obj1 instanceof Collectable ? CollisionResult.DELETE_FIRST : CollisionResult.DELETE_SECOND);
         res.addFlag(CollisionResult.REFRESH_INVENTORY);

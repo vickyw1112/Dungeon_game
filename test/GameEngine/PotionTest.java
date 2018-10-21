@@ -65,12 +65,15 @@ public class PotionTest {
         Monster m1 = new Hunter(new Point(0, 1));
         Monster m2 = new Strategist(new Point(1, 1));
         potion = new InvinciblePotion(new Point(2, 2));
+        player.setLocation(new Point(0,0));
         mb.addObject(m1);
         mb.addObject(m2);
+        mb.addObject(player);
         ge = new GameEngine(new Map(mb));
 
         // player collide with invincible potion
         handler.handle(ge, player, potion);
+        //ge.updateMonstersPath();
         assertTrue(m1.pathGenerator instanceof RunAwayPathGenerator);
         assertTrue(m2.pathGenerator instanceof RunAwayPathGenerator);
 

@@ -6,7 +6,12 @@ public class Hound extends Monster implements Pairable {
     /**
      * Paired hunter
      */
-    private Hunter hunter;
+    private Hunter hunter = null;
+
+    @Override
+    public String getPairingObjectClassName() {
+        return Hunter.class.getSimpleName();
+    }
 
     /**
      * Constructor for Hound
@@ -17,12 +22,8 @@ public class Hound extends Monster implements Pairable {
         super(location);
     }
 
-    /**
-     * Method to obtain the paired hunter
-     * @return
-     *          Hunter
-     */
-    public Hunter getPair() {
+    @Override
+    public GameObject getPair() {
         return hunter;
     }
 
@@ -42,6 +43,6 @@ public class Hound extends Monster implements Pairable {
      */
     @Override
     public PathGenerator getDefaultPathGenerator() {
-        return new HoundPathGenerator();
+        return hunter == null ? new ShortestPathGenerator() : new HoundPathGenerator();
     }
 }

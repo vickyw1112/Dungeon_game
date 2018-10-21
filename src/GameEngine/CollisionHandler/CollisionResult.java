@@ -2,6 +2,9 @@ package GameEngine.CollisionHandler;
 
 import GameEngine.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 /**
  * Result of a collision An instance of this class is returned back to front end
  * upon a finished backend handling of collision which contains information on
@@ -14,7 +17,6 @@ public class CollisionResult {
     public static final int HANDLED = 0x00;
     public static final int DELETE_FIRST = 0x01;
     public static final int DELETE_SECOND = 0x02;
-    public static final int DELETE_BOTH = DELETE_FIRST | DELETE_SECOND;
     public static final int REJECT = 0x04;
     public static final int REFRESH_INVENTORY = 0x08;
     public static final int REFRESH_EFFECT_TIMER = 0x10;
@@ -27,6 +29,18 @@ public class CollisionResult {
      * 32 bits string
      */
     private int flags;
+
+    private GameObject[] collidingObjects;
+
+    public void setCollidingObjects(GameObject first, GameObject second){
+        collidingObjects = new GameObject[2];
+        collidingObjects[0] = first;
+        collidingObjects[1] = second;
+    }
+
+    public GameObject[] getCollidingObjects(){
+        return collidingObjects;
+    }
 
     /**
      * Constructor of CollisionResult
@@ -69,5 +83,24 @@ public class CollisionResult {
      */
     public boolean containFlag(int flag){
         return (this.flags & flag) > 0;
+    }
+
+    /**
+     * Debug only
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Field f : getClass().getDeclaredFields()) {
+            int mod = f.getModifiers();
+            try {
+                if (Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod) &&
+                        containFlag(f.getInt(null)))
+                    sb.append(String.format("%s | ", f.getName()));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return new String(sb);
     }
 }

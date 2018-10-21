@@ -1,5 +1,8 @@
 package GameEngine;
 
+import GameEngine.WinningCondition.BouldersOnAllSwitches;
+import GameEngine.WinningCondition.CollectAllTreasure;
+import GameEngine.WinningCondition.EliminateAllMonsters;
 import GameEngine.utils.Point;
 import static org.junit.Assert.*;
 import org.junit.*;
@@ -11,11 +14,11 @@ public class CheckWinningConditionTest {
     private Treasure treasure2;
     private Boulder boulder1;
     private Boulder boulder2;
-    private Monster hound;
+    private Monster hunter1;
     private FloorSwitch floorSwitch1;
     private FloorSwitch floorSwitch2;
     private Exit exit;
-    private Monster hunter;
+    private Monster hunter2;
     private MapBuilder mb;
 
     @Before
@@ -26,8 +29,8 @@ public class CheckWinningConditionTest {
         treasure2 = new Treasure(new Point(3, 1));
         boulder1 = new Boulder(new Point(7, 8));
         boulder2 = new Boulder(new Point(7, 1));
-        hound = new Hound(new Point(5, 6));
-        hunter = new Hunter(new Point(2, 0));
+        hunter1 = new Hunter(new Point(5, 6));
+        hunter2 = new Hunter(new Point(2, 0));
         floorSwitch1 = new FloorSwitch(new Point(8, 1));
         floorSwitch2 = new FloorSwitch(new Point(9, 1));
         exit = new Exit(new Point(1, 2));
@@ -37,59 +40,45 @@ public class CheckWinningConditionTest {
         mb.addObject(treasure2);
         mb.addObject(boulder1);
         mb.addObject(boulder2);
-        mb.addObject(hound);
-        mb.addObject(hunter);
+        mb.addObject(hunter1);
+        mb.addObject(hunter2);
         mb.addObject(floorSwitch1);
         mb.addObject(floorSwitch2);
-        Map map = new Map(mb);
-        ge = new GameEngine(map);
     }
 
     @Test
     public void treasureWinTest(){
+        mb.addWinningCondition(CollectAllTreasure.class.getSimpleName());
+        Map map = mb.build();
+        ge = new GameEngine(map);
+        assertFalse(ge.isWinning());
         treasure1.getCollected(ge, player.getInventory());
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         treasure2.getCollected(ge, player.getInventory());
-        assertTrue(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
     }
 
     @Test
     public void monsterWinTest(){
-        ge.removeGameObject(hound);
-        assertFalse(ge.checkWiningCondition());
-        ge.removeGameObject(hunter);
-        assertTrue(ge.checkWiningCondition());
-
+        mb.addWinningCondition(EliminateAllMonsters.class.getSimpleName());
+        Map map = mb.build();
+        ge = new GameEngine(map);
+        ge.removeGameObject(hunter1);
+        assertFalse(ge.isWinning());
+        ge.removeGameObject(hunter2);
+        assertTrue(ge.isWinning());
     }
 
     @Test
     public void floorSwitchWinTest(){
+        mb.addWinningCondition(BouldersOnAllSwitches.class.getSimpleName());
+        Map map = mb.build();
+        ge = new GameEngine(map);
         boulder1.setLocation(new Point(8, 1));
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         boulder2.setLocation(new Point(8, 1));
-        assertFalse(ge.checkWiningCondition());
+        assertFalse(ge.isWinning());
         boulder2.setLocation(new Point(9, 1));
-        assertTrue(ge.checkWiningCondition());
-    }
-
-    @Test
-    public void exitWinTest(){
-        mb.addObject(exit);
-        ge = new GameEngine(new Map(mb));
-
-        treasure1.getCollected(ge, player.getInventory());
-        treasure2.getCollected(ge, player.getInventory());
-        assertFalse(ge.checkWiningCondition());
-
-        boulder1.setLocation(new Point(8, 1));
-        boulder2.setLocation(new Point(9, 1));
-        assertFalse(ge.checkWiningCondition());
-
-        ge.removeGameObject(hound);
-        ge.removeGameObject(hunter);
-        assertFalse(ge.checkWiningCondition());
-
-        player.setLocation(exit.location);
-        assertTrue(ge.checkWiningCondition());
+        assertTrue(ge.isWinning());
     }
 }

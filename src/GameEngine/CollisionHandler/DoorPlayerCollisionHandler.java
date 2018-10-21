@@ -15,7 +15,9 @@ public class DoorPlayerCollisionHandler implements CollisionHandler {
         if (door.getState() == Door.CLOSED) {
             // Collision result regardless if player has key is REJECT
             res.addFlag(CollisionResult.REJECT);
-            player.openDoor(engine, door);
+            if(player.openDoor(engine, door))
+                res.addFlag(CollisionResult.REFRESH_INVENTORY);
+
         }
         return res;
     }

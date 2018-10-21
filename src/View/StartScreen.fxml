@@ -11,14 +11,14 @@
       <Pane layoutX="6.0" prefHeight="416.0" prefWidth="623.0">
          <children>
             <Button fx:id="InstructionButton" layoutX="2.0" layoutY="1.0" mnemonicParsing="false" onAction="#handleInstructionButton" prefHeight="36.0" prefWidth="34.0" text="?" />
-            <ImageView fx:id="startButton" fitHeight="117.0" fitWidth="123.0" layoutX="219.0" layoutY="189.0" onMouseClicked="#handleStartButton" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="startButton" fitHeight="222.0" fitWidth="203.0" layoutX="204.0" layoutY="194.0" onMouseClicked="#handleStartButton" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@start_icon.png" />
+                  <Image url="@img/start_icon.png" />
                </image>
             </ImageView>
             <ImageView fitHeight="104.0" fitWidth="466.0" layoutX="79.0" layoutY="116.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@title_image.png" />
+                  <Image url="@img/title_image.png" />
                </image>
             </ImageView>
          </children>

@@ -10,11 +10,11 @@
    <children>
       <Pane layoutX="-3.0" layoutY="-3.0" prefHeight="409.0" prefWidth="609.0">
          <children>
-            <Button fx:id="playDungeonButton" layoutX="98.0" layoutY="101.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="268.0" prefWidth="153.0" text="Play a Dungeon" />
-            <Button fx:id="createDungeonButton" layoutX="326.0" layoutY="101.0" mnemonicParsing="false" onAction="#handleCreateDungeon" prefHeight="268.0" prefWidth="153.0" text="Create a Dungeon" />
+            <Button fx:id="playDungeonButton" layoutX="98.0" layoutY="101.0" mnemonicParsing="false" onAction="#handlePlayButton" prefHeight="268.0" prefWidth="153.0" text="Play" />
+            <Button fx:id="createDungeonButton" layoutX="326.0" layoutY="101.0" mnemonicParsing="false" onAction="#handleCreateDungeon" prefHeight="268.0" prefWidth="153.0" text="Create" />
             <ImageView fitHeight="43.0" fitWidth="267.0" layoutX="164.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@mode_select_title.png" />
+                  <Image url="@img/mode_select_title.png" />
                </image>
             </ImageView>
          </children>

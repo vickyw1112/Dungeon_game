@@ -31,8 +31,8 @@ bin
 
 # Eclipse
 .settings
-.classpath
-.project
+classpath
+project
 *.DS_Store
 map
 

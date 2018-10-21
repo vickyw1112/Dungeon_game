@@ -112,6 +112,32 @@ public class SampleMaps {
 
     }
 
+    public static Map houndHunterPairMap(){
+    	MapBuilder mb = initMap(11, 6);
+
+    	// Player
+    	mb.addObject(new Player(new Point(4,1)));
+
+    	// add Walls
+		mb.addObject(new Wall(new Point(2,2)));
+		mb.addObject(new Wall(new Point(3,2)));
+		mb.addObject(new Wall(new Point(4,2)));
+		mb.addObject(new Wall(new Point(5,2)));
+		mb.addObject(new Wall(new Point(6,2)));
+		mb.addObject(new Wall(new Point(7,2)));
+		mb.addObject(new Wall(new Point(8,2)));
+
+		// add Monsters
+		Hound hound = new Hound(new Point(4,3));
+		Hunter hunter = new Hunter(new Point(3,3));
+		hound.setPair(hunter);
+		mb.addObject(hunter);
+		mb.addObject(hound);
+
+		mb.setMapName("houndHunterPairMap");
+		return mb.build();
+    }
+
 
     public static Map funMap(){
         MapBuilder mb = initMap(18, 18);
@@ -140,14 +166,11 @@ public class SampleMaps {
         mb.addObject(new Strategist(new Point(12, 4)));
         mb.addObject(new Hunter(new Point(15, 12)));
         mb.addObject(new Hunter(new Point(16, 12)));
-        mb.addObject(new Hunter(new Point(15, 14)));
-        mb.addObject(new Hunter(new Point(16, 14)));
 
         mb.addObject(new Coward(new Point(9, 9)));
-        Hound hound = new Hound(new Point (5, 15));
-        Hunter hunter = new Hunter(new Point (3, 15));
-        hound.setPair(hunter);
-        mb.addObject(hound);
+        Hound hunter1 = new Hound(new Point (5, 15));
+        Hunter hunter = new Hunter(new Point (3, 10));
+        mb.addObject(hunter1);
         mb.addObject(hunter);
 
         // add potions
@@ -182,7 +205,10 @@ public class SampleMaps {
         mb.addObject(new Boulder(new Point(5, 11)));
         mb.addObject(new Boulder(new Point(5, 10)));
 
-        // add exist
+        // add sword
+		mb.addObject(new Sword(new Point(15, 14)));
+
+        // add exit
         mb.addObject(new Exit(new Point(1, 6)));
 
         mb.setMapName("FunMap");
@@ -212,6 +238,7 @@ public class SampleMaps {
             getInvinciblePotionTestMap().serialize();
             funMap().serialize();
             winningConditionTest().serialize();
+            houndHunterPairMap().serialize();
         } catch (Exception e){
             e.printStackTrace();
         }

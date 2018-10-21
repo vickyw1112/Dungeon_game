@@ -65,7 +65,7 @@ public class MapSelectScreenController extends Controller {
                     if(map == null)
                         return;
                     maps.put(item, map);
-                    setGraphic(new MapBoxController(stage, map, item.getName().split("\\.")[0]).getBox());
+                    setGraphic(new MapBoxController(stage, map).getBox());
                 } catch (Exception e){
                     e.printStackTrace();
                 }

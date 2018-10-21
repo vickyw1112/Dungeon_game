@@ -368,7 +368,7 @@ public class DungeonPlayController extends Controller {
         if(result.get() == ButtonType.YES){
             Screen screen = new Screen(stage, "Dungeon", "View/DungeonPlayScreen.fxml");
             try {
-                Map reloadedMap = Map.loadFromFile(new FileInputStream("map/" + map.getMapName()));
+                Map reloadedMap = Map.loadFromFile(new FileInputStream("map/" + map.getMapName() + ".dungeon"));
                 screen.display(new DungeonPlayController(stage, reloadedMap));
             } catch (FileNotFoundException e){
                 e.printStackTrace();

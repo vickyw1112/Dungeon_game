@@ -18,7 +18,7 @@ public class Map implements Serializable {
     private String mapName;
 
     /**
-     * Not serialise winning condition code
+     * Not map.getMapName(serialise winning condition code
      * but serialise the class name and load it later
      */
     private transient List<WinningCondition> winningConditions;
@@ -197,6 +197,12 @@ public class Map implements Serializable {
                 ret.add(curr);
         }
         return ret;
+    }
+
+    public void serialize() throws IOException {
+        FileOutputStream outputStream = new FileOutputStream("map" + File.separator + mapName + ".dungeon");
+        ObjectOutputStream out = new ObjectOutputStream(outputStream);
+        out.writeObject(this);
     }
 
     public void serialize(OutputStream outputStream) throws IOException {

@@ -1,5 +1,6 @@
 package GameEngine;
 
+import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +19,13 @@ public class Map implements Serializable {
     private int sizeY = DEFAULT_DUNGEON_SIZE_Y;
     private String author;
     private List<ScoreData> highScoreList;
+
+    /**
+     * Not serialise winning condition code
+     * but serialise the class name and load it later
+     */
+    private transient List<WinningCondition> winningConditions;
+    private List<String> winningConditionClasses;
 
     /**
      * Empty arg constructor for default sized map
@@ -39,11 +47,13 @@ public class Map implements Serializable {
     /**
      * Build given sized map by map builder
      */
-    public Map(MapBuilder mapBuilder, int sizeX, int sizeY, String author){
+    public Map(MapBuilder mapBuilder, int sizeX, int sizeY, String author,
+               List<String> winningConditions){
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.author = author;
         this.highScoreList = new ArrayList<ScoreData>();
+        this.winningConditionClasses = winningConditions;
         init();
         build(mapBuilder);
     }
@@ -52,6 +62,7 @@ public class Map implements Serializable {
      * Initiate the 2D array of list
      */
     private void init(){
+        this.winningConditions = new LinkedList<>();
         this.map = new List[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++)
             for (int j = 0; j < sizeY; j++)
@@ -82,13 +93,32 @@ public class Map implements Serializable {
      * @param inputStream map input stream
      */
     public static Map loadFromFile(InputStream inputStream){
+        Map map;
         try {
             ObjectInputStream in = new ObjectInputStream(inputStream);
-            return (Map) in.readObject();
+            map = (Map) in.readObject();
         } catch (Exception e){
             e.printStackTrace();
             return null;
         }
+        // loop to find max objId
+        int maxId = 0;
+        for (int i = 0; i < map.sizeX; i++)
+            for (int j = 0; j < map.sizeY; j++)
+                for(GameObject obj : map.map[i][j])
+                    maxId = Math.max(maxId, obj.getObjID());
+        StandardObject.setMaxObjId(maxId);
+        map.winningConditions = map.winningConditionClasses.stream().map(cls -> {
+            try {
+                return (WinningCondition) Class.forName(
+                        WinningCondition.class.getPackage().getName() + "." + cls
+                ).getConstructor().newInstance();
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+        return map;
     }
 
     public int getSizeX() {
@@ -103,6 +133,14 @@ public class Map implements Serializable {
         return author;
     }
 
+    public List<WinningCondition> getWinningConditions() {
+        return Collections.unmodifiableList(winningConditions);
+    }
+
+    public List<String> getWinningConditionClasses(){
+        return Collections.unmodifiableList(winningConditionClasses);
+    }
+
     /**
      * Get list of object in specific grid
      */
@@ -114,8 +152,6 @@ public class Map implements Serializable {
      * Remove a specific object from the map
      */
     public void removeObject(GameObject obj) {
-        if(obj instanceof Monster)
-            GameEngine.MONSTERKILLED++; // add static to count monster to be killed
         for(int i = 0; i < sizeX; i++)
             for(int j = 0; j < sizeY; j++)
                 map[i][j].remove(obj);
@@ -177,6 +213,15 @@ public class Map implements Serializable {
             for (int j = 0; j < sizeY; j++)
                 ret.addAll(map[i][j]);
         return ret;
+    }
+
+    /**
+     * Check the game state in engine is winning
+     * @param engine game engine
+     */
+    public boolean isWinning(GameEngine engine){
+        return winningConditions.size() > 0 &&
+                winningConditions.stream().allMatch(condition -> condition.check(engine, this));
     }
 
 
@@ -284,9 +329,8 @@ public class Map implements Serializable {
     }
 
 	/**
-	 * add method
 	 * adds ScoreData Data
-	 * Keeps the queue size at 10
+	 * Keeps the queue size for highscore array at 10
 	 *
 	 * @param data
 	 */
@@ -308,4 +352,24 @@ public class Map implements Serializable {
 	}
 
 
+    /**
+     * Return a map builder for this map
+     * This allow user to continue to modify the map after
+     * saving the map
+     */
+    public MapBuilder asMapBuilder() {
+        MapBuilder builder = new MapBuilder(this.sizeX, this.sizeY);
+        builder.setAuthor(author);
+        int maxId = 0;
+        for(int x = 0; x < sizeX; x++){
+            for(int y = 0; y < sizeY; y++){
+                for(GameObject obj : map[x][y]){
+                    builder.addObject(obj);
+                    maxId = Math.max(obj.getObjID(), maxId);
+                }
+            }
+        }
+        StandardObject.setMaxObjId(maxId);
+        return builder;
+    }
 }

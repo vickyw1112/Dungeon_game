@@ -1,13 +1,13 @@
 package Controller;
 
 import GameEngine.*;
+import GameEngine.Map;
+import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
 import View.Screen;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -24,10 +25,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static Controller.Config.GRID_SIZE;
@@ -54,13 +52,15 @@ public class DesignScreenController extends Controller {
     @FXML
     private TextField filterTextField;
 
+    @FXML
+    private VBox winningConditionsBox;
+
     private ResourceManager resources;
 
     private Set<KeyCode> keyPressed;
     /**
      * Classname of the current dragging object
      */
-    private StringProperty draggingClass;
     private ObjectProperty<GameObject> draggingObject;
     private int maxRow;
     private int maxCol;
@@ -75,13 +75,13 @@ public class DesignScreenController extends Controller {
 	public DesignScreenController(Stage s) {
         super(s);
         resources = new ResourceManager();
-        draggingClass = new SimpleStringProperty();
         draggingObject = new SimpleObjectProperty<>();
         keyPressed = new HashSet<>();
         allObjectImgViews = new LinkedList<>();
         // set the dungeon gird pane to 11 x 11 by default
         maxCol = 11;
         maxRow = 11;
+        mapBuilder = new MapBuilder(maxCol, maxRow);
     }
 
 	/**
@@ -99,34 +99,25 @@ public class DesignScreenController extends Controller {
 	 * initializes and calls mapbuilder to create the map on the stage
 	 * finally resizes the screen to the size of the map
 	 */
-	@FXML
+    @FXML
     public void initialize(){
-        mapBuilder = new MapBuilder(maxCol, maxRow);
+        // init all winning conditions
+        if(winningConditionsBox.getChildren().size() == 0)
+            for(WinningCondition winningCondition : resources.getAllWinningConditions()){
+                CheckBox checkBox = new CheckBox();
+                checkBox.setId(winningCondition.getClass().getSimpleName());
+                checkBox.setText(winningCondition.displayString());
+                checkBox.setGraphic(resources.createImageViewByWinningCondition(winningCondition));
+                winningConditionsBox.getChildren().add(checkBox);
+            }
 
-        dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
-        dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
-
-        // clear anything on dungeon pane
-        dungeonPane.getChildren().clear();
-
-        // set map size text fields to current size
-        mapColSizeTextField.setText(Integer.toString(maxCol));
-        mapRowSizeTextField.setText(Integer.toString(maxRow));
-
-        resources.drawGridLine(dungeonPane.getChildren(), maxCol, maxRow);
-
-        initWallBoundary();
-
-        // clear list view first
-        objectsListView.getItems().clear();
-        allObjectImgViews.clear();
-
-        for (String cls : resources.getAllClassNames()) {
-            ImageView imageView = resources.createImageViewByClassName(cls);
-            imageView.setId(cls);
-            allObjectImgViews.add(imageView);
-            objectsListView.getItems().add(imageView);
-        }
+        if(allObjectImgViews.size() == 0)
+            for (String cls : resources.getAllGameObjectClassNames()) {
+                ImageView imageView = resources.createImageViewByClassName(cls);
+                imageView.setId(cls);
+                allObjectImgViews.add(imageView);
+                objectsListView.getItems().add(imageView);
+            }
 
         objectsListView.setCellFactory(this::objectListViewCellFactory);
         filterTextField.textProperty().addListener(this::handleFilterChange);
@@ -134,8 +125,63 @@ public class DesignScreenController extends Controller {
         dungeonPane.setOnDragOver(this::handleDragOver);
         dungeonPane.setOnDragDropped(this::handleDragDropped);
 
+        reinitialise(false);
+    }
+
+    /**
+     * Re-init size of dungeon after resize
+     */
+    private void reinitialise(boolean clear){
+        // clear anything on dungeon pane
+        if(clear)
+            dungeonPane.getChildren().clear();
+
+        dungeonPane.setMaxWidth(maxCol * GRID_SIZE);
+        dungeonPane.setMaxHeight(maxRow * GRID_SIZE);
+
+        // set map size text fields to current size
+        mapColSizeTextField.setText(Integer.toString(maxCol));
+        mapRowSizeTextField.setText(Integer.toString(maxRow));
+
+        resources.drawGridLine(dungeonPane.getChildren(), maxCol, maxRow);
+        initWallBoundary();
+
+        mapAuthorTextField.setText(mapBuilder.getAuthor());
+
         // resize the stage to fit the scene
         stage.sizeToScene();
+    }
+
+    /**
+     * Load an existing map to continue to modify
+     */
+    public void loadExistingMapBuilder(Map map, String mapName){
+        // clear anything on dungeon pane
+        dungeonPane.getChildren().clear();
+
+        maxCol = map.getSizeX();
+        maxRow = map.getSizeY();
+        MapBuilder mapBuilder = map.asMapBuilder();
+        // load the objects in map builder to the pane to display
+        this.mapBuilder = mapBuilder;
+        for(int x = 1; x < mapBuilder.getSizeX() - 1; x++) {
+            for (int y = 1; y < mapBuilder.getSizeY() - 1; y++) {
+                GameObject obj = mapBuilder.getObject(new Point(x, y));
+                if(obj != null)
+                    updateGameObject(obj, obj.getLocation(), true);
+            }
+        }
+
+        // load the params of map builder
+        mapColSizeTextField.setText(Integer.toString(mapBuilder.getSizeX()));
+        mapRowSizeTextField.setText(Integer.toString(mapBuilder.getSizeY()));
+        mapNameTextField.setText(mapName);
+        winningConditionsBox.getChildren().forEach(checkBox -> {
+            if(map.getWinningConditionClasses().contains(checkBox.getId()))
+                ((CheckBox) checkBox).setSelected(true);
+        });
+
+        initialize();
     }
 
 	/**
@@ -196,6 +242,11 @@ public class DesignScreenController extends Controller {
 	 */
 	@FXML
     public void onSaveButtonClicked(MouseEvent event){
+        // set the winning conditions
+        winningConditionsBox.getChildren().stream()
+                .filter(checkBox -> ((CheckBox)checkBox).isSelected())
+                .forEach(checkBox -> mapBuilder.addWinningCondition(checkBox.getId()));
+
         new File("map").mkdirs();
 
         String mapName = mapNameTextField.getText().replaceAll("[^\\w\\-.]", "");
@@ -203,14 +254,14 @@ public class DesignScreenController extends Controller {
         mapBuilder.setAuthor(authorName);
 
         try {
-            if(!mapBuilder.islegalMap())
-                throw new Exception("Incomplete or illegal map");
+            if(!mapBuilder.isLegalMap())
+                throw new IOException("Incomplete or illegal map");
+            if(mapName.isEmpty())
+                throw new IOException("Invalid map name");
             Map map = mapBuilder.build();
             map.serialize(new FileOutputStream(Config.MAP_BASE_DIR + File.separator + mapName + ".dungeon"));
             saveDungeonSnapshot(mapName);
-            if(mapName.isEmpty())
-                throw new Exception("Invalid map name");
-        } catch (Exception e){
+        } catch (IOException e){
             new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).showAndWait();
             return;
         }
@@ -236,7 +287,9 @@ public class DesignScreenController extends Controller {
             mapColSizeTextField.setText(Integer.toString(maxCol));
             mapRowSizeTextField.setText(Integer.toString(maxRow));
         }
-        initialize();
+        mapBuilder = new MapBuilder(maxCol, maxRow);
+
+        reinitialise(true);
     }
 
     /**
@@ -308,7 +361,6 @@ public class DesignScreenController extends Controller {
         content.putImage(draggingNode.getImage());
         db.setContent(content);
         draggingObject.set(obj);
-//        draggingClass.set(classname);
         if (allowDeleteOriginal && !(keyPressed.contains(KeyCode.SHIFT) || keyPressed.contains(KeyCode.CONTROL))) {
             draggingNode.setOnDragDone(e2 -> {
                 mapBuilder.deleteObject(point);

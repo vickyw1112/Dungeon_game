@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 
 import javafx.stage.Stage;
 
+import javax.swing.text.html.ImageView;
+
 public class InstructionScreenController extends Controller {
 
 	/**

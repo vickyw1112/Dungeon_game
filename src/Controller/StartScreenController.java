@@ -4,6 +4,7 @@ import View.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class StartScreenController extends Controller {

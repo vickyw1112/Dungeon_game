@@ -2,6 +2,7 @@ package Controller;
 
 import GameEngine.GameObject;
 import GameEngine.Map;
+import GameEngine.WinningCondition.WinningCondition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -12,9 +13,9 @@ import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static Controller.Config.GRID_SIZE;
@@ -29,7 +30,12 @@ public class ResourceManager {
      * which will be of format classname-state
      * Value is the Image
      */
-    private HashMap<String, Image> imgMap;
+    private HashMap<String, Image> objImgMap;
+
+    /**
+     * Img map for others
+     */
+    private HashMap<String, Image> winningConditionImgMap;
 
     private HashMap<String, Bounds> boundsMap;
 
@@ -38,58 +44,103 @@ public class ResourceManager {
 	/**
 	 * Constructor for ResourceManager class
 	 */
-	public ResourceManager() {
-        imgMap = new HashMap<>();
+    public ResourceManager() {
+        objImgMap = new HashMap<>();
         boundsMap = new HashMap<>();
-        loadImages();
+        winningConditionImgMap = new HashMap<>();
+        loadObjectImages();
+        loadWinningConditionImages();
+    }
+
+    private void loadWinningConditionImages() {
+        // load all images
+        File dir = new File(getClass().getClassLoader().getResource("WinningConditions").getPath());
+        applyAllFilesUnderDir(dir, file -> {
+            String classname = file.getName().split("[.]")[0];
+            Image image = new Image(new FileInputStream(file));
+            winningConditionImgMap.put(classname, image);
+        });
     }
 
 	/**
-	 * loadImages method
-	 *
 	 * loads images into directory/file
 	 */
-	private void loadImages(){
+    private void loadObjectImages(){
         // load all images
         File dir = new File(getClass().getClassLoader().getResource("GameObjects").getPath());
+        applyAllFilesUnderDir(dir, file -> {
+            String filename = file.getName().split("[.]")[0];
+            objImgMap.put(filename, new Image(new FileInputStream(file)));
+        });
+    }
+
+    private void applyAllFilesUnderDir(File dir, ConsumerWithException<File> action){
         File[] files = dir.listFiles();
         if(files != null) {
             try {
                 for (File file : files) {
-                    String filename = file.getName().split("[.]")[0];
-                    imgMap.put(filename, new Image(new FileInputStream(file)));
+                    action.accept(file);
                 }
-            } catch (IOException e) {
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
 
 	/**
-	 * getImage method
-	 *
+	 * Checks and allows setting of various winning conditions
+	 * @return
+	 */
+	public Collection<WinningCondition> getAllWinningConditions(){
+        return winningConditionImgMap.keySet().stream().map(classname -> {
+            try {
+                return (WinningCondition) Class.forName(WinningCondition.class.getPackage().getName() + "." + classname)
+                        .getConstructor().newInstance();
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+	/**
+	 * creates images based on winning conditions
+	 * @param condition
+	 * @return
+	 */
+	public ImageView createImageViewByWinningCondition(WinningCondition condition){
+        ImageView imageView = new ImageView(winningConditionImgMap.get(condition.getClass().getSimpleName()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(25);
+        return imageView;
+    }
+
+	/**
 	 * returns a imageMap
 	 * @param className
 	 * @param state
 	 * @return
 	 */
     public Image getImage(String className, int state){
-        if(imgMap.containsKey(className + "-" + state))
-            return imgMap.get(className + "-" + state);
+        if(objImgMap.containsKey(className + "-" + state))
+            return objImgMap.get(className + "-" + state);
         // rollback to use default state img
-        else if(imgMap.containsKey(className + "-0"))
-            return imgMap.get(className + "-0");
+        else if(objImgMap.containsKey(className + "-0"))
+            return objImgMap.get(className + "-0");
         else
-            return imgMap.get(className);
-    }
-
-    public Image getImage(String className){
-        return imgMap.get(className);
+            return objImgMap.get(className);
     }
 
 	/**
-	 * createImageViewByClassName method
-	 *
+	 * returns Image
+	 * @param className
+	 * @return
+	 */
+	public Image getImage(String className){
+        return objImgMap.get(className);
+    }
+
+	/**
 	 * creates a imageView through giving a class name
 	 * @param cls
 	 * @return
@@ -99,8 +150,6 @@ public class ResourceManager {
     }
 
 	/**
-	 * createImageViewByGameObject method
-	 *
 	 * creates a imgaeView through passing in Gameobject
 	 * @param obj
 	 * @return
@@ -114,8 +163,6 @@ public class ResourceManager {
     }
 
 	/**
-	 * createImageViewByGameObject method
-	 *
 	 * creates an ImageView through passing in GameObject, ObservableList
 	 * @param obj
 	 * @param mountPoint
@@ -128,22 +175,21 @@ public class ResourceManager {
     }
 
 	/**
-	 * getAllClassNames method
+	 * getAllGameObjectClassNames method
 	 *
-	 * returns a collection of classnames
+	 *
 	 * @return
 	 */
-	public Collection<String> getAllClassNames(){
+    public Collection<String> getAllGameObjectClassNames(){
         if(allClasses == null)
-            allClasses = imgMap.keySet().stream()
-                .map(s -> s.contains("-") ? s.split("-")[1] : s)
-                .filter(GameObject::isValidClass).collect(Collectors.toSet());
+            allClasses = objImgMap.keySet().stream()
+                    .map(s -> s.contains("-") ? s.split("-")[1] : s)
+                    .filter(GameObject::isValidClass).collect(Collectors.toSet());
         return allClasses;
+
     }
 
 	/**
-	 * drawGridLine method
-	 *
 	 * pass in an observableList
 	 * Draws gridlines for the map
 	 * @param mountPoint
@@ -153,8 +199,6 @@ public class ResourceManager {
     }
 
 	/**
-	 * drawGridLine method
-	 *
 	 * pass in observableList, size of the Map (X, Y)
 	 * draws gridlines for the map
 	 * @param mountPoint
@@ -187,3 +231,9 @@ public class ResourceManager {
         }
     }
 }
+
+interface ConsumerWithException<T> {
+    public void accept(T t) throws Exception;
+}
+
+

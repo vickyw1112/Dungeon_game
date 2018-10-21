@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="background" prefHeight="400.0" prefWidth="600.0" styleClass="bodybg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane layoutX="-1.0" layoutY="-1.0" prefHeight="400.0" prefWidth="600.0">
+      <Pane layoutX="6.0" prefHeight="416.0" prefWidth="623.0">
          <children>
-            <Button fx:id="StartButton" layoutX="289.0" layoutY="269.0" mnemonicParsing="false" onAction="#handleStartButton" text="Start" />
-            <Button fx:id="InstructionButton" layoutX="271.0" layoutY="306.0" mnemonicParsing="false" onAction="#handleInstructionButton" text="Instruction" />
+            <Button fx:id="InstructionButton" layoutX="2.0" layoutY="1.0" mnemonicParsing="false" onAction="#handleInstructionButton" prefHeight="36.0" prefWidth="34.0" text="?" />
+            <ImageView fx:id="startButton" fitHeight="222.0" fitWidth="203.0" layoutX="204.0" layoutY="194.0" onMouseClicked="#handleStartButton" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@img/start_icon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="104.0" fitWidth="466.0" layoutX="79.0" layoutY="116.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@img/title_image.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
    </children>

@@ -1,6 +1,7 @@
 package Controller;
 
 import GameEngine.Map;
+import Sample.SampleMaps;
 import View.Screen;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,8 +81,10 @@ public class MapSelectScreenController extends Controller {
                 Map map;
                 try {
                     map = Map.loadFromFile(new FileInputStream(item));
+                    if(map == null)
+                        return;
                     maps.put(item, map);
-                    setGraphic(new MapBoxController(map, item.getName().split("\\.")[0]).getBox());
+                    setGraphic(new MapBoxController(stage, map, item.getName().split("\\.")[0]).getBox());
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -98,12 +101,16 @@ public class MapSelectScreenController extends Controller {
         // list all map
         File dir = new File("map");
         File[] files = dir.listFiles();
-        if(files != null){
-            for (File file: files) {
-                if(!file.getName().matches(".*\\.dungeon"))
-                    continue;
-                mapListView.getItems().add(file);
-            }
+        // generate maps if there are no maps yet
+        if(files == null || files.length == 0) {
+            SampleMaps.generateMaps();
+            files = dir.listFiles();
+        }
+
+        for (File file: files) {
+            if(!file.getName().matches(".*\\.dungeon"))
+                continue;
+            mapListView.getItems().add(file);
         }
     }
 

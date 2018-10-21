@@ -85,7 +85,7 @@ public class DesignScreenController extends Controller {
     }
 
 	/**
-	 * afterInitialize method
+	 * depending on Key pressed/released changes the event
 	 */
 	@Override
     public void afterInitialize() {
@@ -94,8 +94,6 @@ public class DesignScreenController extends Controller {
     }
 
 	/**
-	 * initialize method
-	 *
 	 * initializes and calls mapbuilder to create the map on the stage
 	 * finally resizes the screen to the size of the map
 	 */

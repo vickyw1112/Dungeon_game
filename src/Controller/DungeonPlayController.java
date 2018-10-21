@@ -79,8 +79,6 @@ public class DungeonPlayController extends Controller {
 	}
 
 	/**
-	 * handleStartScreenButton FXML method
-	 *
 	 * handle for Start Screen button
 	 * On pressing initialises and displays Start Screen
 	 */
@@ -93,8 +91,6 @@ public class DungeonPlayController extends Controller {
 	}
 
 	/**
-	 * handleModeScreenButton FXML method
-	 *
 	 * handle for Mode Screen button
 	 * On pressing initialises and displays Mode Screen
 	 */
@@ -107,8 +103,6 @@ public class DungeonPlayController extends Controller {
 	}
 
     /**
-	 * updateInventory method
-	 *
      * Refreshes player's inventory
      */
 	private void updateInventory() {
@@ -119,8 +113,6 @@ public class DungeonPlayController extends Controller {
 	}
 
 	/**
-	 * afterInitalise method
-	 *
 	 * enables pause screen
 	 * initialises map after pause screen
 	 */
@@ -146,8 +138,6 @@ public class DungeonPlayController extends Controller {
 
 
 	/**
-	 * initialise FXML method
-	 *
 	 * initialises Timer, pausePane as not visible, InventoryList, and the cells for inventoryList.
 	 */
 	@FXML
@@ -164,8 +154,6 @@ public class DungeonPlayController extends Controller {
 	}
 
     /**
-	 * handleObjectStateChange method
-	 *
      * Observer callback for state change of a object
      * @param obj
      */
@@ -178,8 +166,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * inventoryListViewCellFactory method
-	 *
      * Cell factory for inventory ListView
      * Given a class string added, figure out the count for that
      * class of object in user's inventory
@@ -209,8 +195,6 @@ public class DungeonPlayController extends Controller {
     }
 
 	/**
-	 * initDungeon method
-	 *
 	 * Initialises the map
 	 * Starts the main animation/game
 	 */
@@ -257,8 +241,6 @@ public class DungeonPlayController extends Controller {
 	}
 
     /**
-	 * updatePlayerMovingStatus method
-	 *
      * Update player's moving status by checking whether
      * the user is pressing keys for player movement
      */
@@ -282,8 +264,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * handlePlayerShootArrow method
-	 *
      * Player shoot arrow
      */
 	private void handlePlayerShootArrow(){
@@ -296,8 +276,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * handlePlayerSetBomb method
-	 *
      * Player set bomb
      */
 	private void handlePlayerSetBomb(){
@@ -332,8 +310,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * getUpdatedPoint method
-	 *
      * Calculate the backend coordinate by given front end coordinate
      * This takes into account the moving scheme of the given movable object
      *
@@ -380,8 +356,6 @@ public class DungeonPlayController extends Controller {
 
 
 	/**
-	 * isColliding method
-	 *
 	 * Detect collision between two JavaFX node
 	 * @param node1
 	 * @param node2
@@ -400,8 +374,6 @@ public class DungeonPlayController extends Controller {
 
 
     /**
-	 * handleWin method
-	 *
      * When the user wins, move to the win screen
      */
 	private void handleWin(){
@@ -411,8 +383,6 @@ public class DungeonPlayController extends Controller {
 	}
 
 	/**
-	 * handleLose method
-	 *
 	 * If player loses, creates a popup to prompt user
 	 */
 	private void handleLose(){
@@ -433,8 +403,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * getNodeById method
-	 *
      * Get a JavaFX Node by it's id which is the same
      * objId in the backend;
      * @param objId object id
@@ -445,8 +413,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * updateMovingObjects method
-	 *
      * Update all moving objects in game engine
      * by elapsedSeconds
      *
@@ -502,8 +468,6 @@ public class DungeonPlayController extends Controller {
     }
 
     /**
-	 * handleCollision method
-	 *
      * Given collision result, handle changes to front end
      *
      * @param result collision result

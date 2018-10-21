@@ -36,8 +36,6 @@ public class InstructionScreenController extends Controller {
 	}
 
 	/**
-	 * handleBackButton FXML method
-	 *
 	 * on BackButton being pressed, brings the player back to the start screen
 	 */
 	@FXML

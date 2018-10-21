@@ -54,8 +54,6 @@ public class HighscoreScreenController extends Controller {
 	}
 
 	/**
-	 * handleScoreButton FXML method
-	 *
 	 * method for when ScoreButton is pressed
 	 * Takes in the String input in textbox and serialises it with the map just played
 	 */

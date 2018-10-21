@@ -38,8 +38,6 @@ public class StartScreenController extends Controller {
 	}
 
 	/**
-	 * handleStartButton FXML method
-	 *
 	 * brings player to ModeSelection screen upon pressing button
 	 */
 	@FXML
@@ -50,8 +48,6 @@ public class StartScreenController extends Controller {
 	}
 
 	/**
-	 * handleInstructionButton FXML method
-	 *
 	 * brings player to instruction screen upon pressing instruction button
 	 */
 	@FXML

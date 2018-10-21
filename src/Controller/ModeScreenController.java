@@ -38,8 +38,6 @@ public class ModeScreenController extends Controller {
 	}
 
 	/**
-	 * handlePlayButton FXML method
-	 *
 	 * Brings player to MapSelection screen on pressing Select Map button
 	 */
 	@FXML
@@ -50,8 +48,6 @@ public class ModeScreenController extends Controller {
 	}
 
 	/**
-	 * handleCreateDungeon FXML method
-	 *
 	 * brings player to Dungeon Creation screen on pressing button
 	 */
 	@FXML

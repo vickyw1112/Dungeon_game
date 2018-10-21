@@ -37,8 +37,6 @@ public class MapSelectScreenController extends Controller {
     }
 
 	/**
-	 * onPlayButtonClicked FXML method
-	 *
 	 * Brings player to dungeonPlay screen on pressing Play Button
 	 */
 	@FXML
@@ -55,8 +53,6 @@ public class MapSelectScreenController extends Controller {
     }
 
 	/**
-	 * onModeSelectBtnClicked FXML method
-	 *
 	 * Brings player to mode selection screen on pressing Mode Select button
 	 */
 	@FXML
@@ -66,8 +62,6 @@ public class MapSelectScreenController extends Controller {
     }
 
 	/**
-	 * initialise FXML method
-	 *
 	 * initalises a list of maps
 	 */
 	@FXML

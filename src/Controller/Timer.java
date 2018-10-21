@@ -89,8 +89,6 @@ public class Timer {
     }
 
 	/**
-	 * equals method
-	 *
 	 * Checking equals by class
 	 * @param anotherObject
 	 * @return
@@ -100,8 +98,6 @@ public class Timer {
     }
 
 	/**
-	 * equals method
-	 *
 	 * checking equals by instance
 	 * @param anotherObject
 	 * @return

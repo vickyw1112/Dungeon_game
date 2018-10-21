@@ -6,7 +6,6 @@ import GameEngine.WinningCondition.EliminateAllMonsters;
 import GameEngine.utils.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 public class SampleMaps {
     /**
@@ -15,7 +14,7 @@ public class SampleMaps {
      */
     private static MapBuilder initMap(int sizeX, int sizeY){
         MapBuilder mb = new MapBuilder(sizeX, sizeY);
-        mb.setAuthor("Chester");
+        mb.setAuthor("Kevin Huang");
         for(int x = 0; x < sizeX; x++){
             mb.addObject(new Wall(new Point(x, 0)));
             mb.addObject(new Wall(new Point(x, sizeY - 1)));
@@ -36,6 +35,7 @@ public class SampleMaps {
         }
         mb.addObject(new Player(new Point(1, 4)));
         mb.addWinningCondition(BouldersOnAllSwitches.class.getSimpleName());
+        mb.setMapName("BoulderTest");
         return mb.build();
     }
 
@@ -51,6 +51,7 @@ public class SampleMaps {
         mb.addObject(new InvinciblePotion(new Point( 2, 8)));
         mb.addObject(new Player(new Point(1, 9)));
         mb.addWinningCondition(EliminateAllMonsters.class.getSimpleName());
+        mb.setMapName("InvinciblePotionTest");
         return mb.build();
     }
 
@@ -65,6 +66,7 @@ public class SampleMaps {
         door.setPair(key);
         mb.addObject(key);
         mb.addObject(new Player(new Point(1, 3)));
+        mb.setMapName("DoorTest");
         return mb.build();
     }
 
@@ -105,6 +107,7 @@ public class SampleMaps {
             mb.addObject(new Wall(new Point(x, 7 )));
         }
         mb.addObject(new Exit(new Point (0, 4)));
+        mb.setMapName("WinningConditionTest");
         return mb.build();
 
     }
@@ -182,6 +185,7 @@ public class SampleMaps {
         // add exist
         mb.addObject(new Exit(new Point(1, 6)));
 
+        mb.setMapName("FunMap");
         return mb.build();
     }
 
@@ -203,11 +207,11 @@ public class SampleMaps {
         File dir = new File("map");
         dir.mkdirs();
         try {
-//            getBoulderTestMap().serialize(new FileOutputStream("map/boulderTest.dungeon"));
-//            getDoorTestMap().serialize(new FileOutputStream("map/doorTest.dungeon"));
-//            getInvinciblePotionTestMap().serialize(new FileOutputStream("map/invinciblePotionTest.dungeon"));
-            funMap().serialize(new FileOutputStream("map/funMap.dungeon"));
-            winningConditionTest().serialize(new FileOutputStream("map/checkWinningCondition.dungeon"));
+            getBoulderTestMap().serialize();
+            getDoorTestMap().serialize();
+            getInvinciblePotionTestMap().serialize();
+            funMap().serialize();
+            winningConditionTest().serialize();
         } catch (Exception e){
             e.printStackTrace();
         }

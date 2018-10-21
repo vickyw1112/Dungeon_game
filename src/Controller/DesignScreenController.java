@@ -258,7 +258,7 @@ public class DesignScreenController extends Controller {
             if(mapName.isEmpty())
                 throw new IOException("Invalid map name");
             Map map = mapBuilder.build();
-            map.serialize(new FileOutputStream(Config.MAP_BASE_DIR + File.separator + mapName + ".dungeon"));
+            map.serialize();
             saveDungeonSnapshot(mapName);
         } catch (IOException e){
             new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK).showAndWait();

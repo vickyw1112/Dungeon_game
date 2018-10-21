@@ -2,8 +2,6 @@ package GameEngine;
 
 import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.util.*;
@@ -22,7 +20,7 @@ public class Map implements Serializable {
     private String mapName;
 
     /**
-     * Not serialise winning condition code
+     * Not map.getMapName(serialise winning condition code
      * but serialise the class name and load it later
      */
     private transient List<WinningCondition> winningConditions;
@@ -204,7 +202,13 @@ public class Map implements Serializable {
         return ret;
     }
 
-    public void serialize(OutputStream outputStream) throws IOException{
+    public void serialize() throws IOException {
+        FileOutputStream outputStream = new FileOutputStream("map" + File.separator + mapName + ".dungeon");
+        ObjectOutputStream out = new ObjectOutputStream(outputStream);
+        out.writeObject(this);
+    }
+
+    public void serialize(OutputStream outputStream) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(outputStream);
         out.writeObject(this);
     }
@@ -323,6 +327,7 @@ public class Map implements Serializable {
         ret.author = this.author;
         ret.mapName = this.mapName;
         ret.highScoreList = this.highScoreList;
+        ret.winningConditionClasses = this.winningConditionClasses;
         // re-init for new size
         ret.init();
         for(int x = 0; x < sizeX; x++){

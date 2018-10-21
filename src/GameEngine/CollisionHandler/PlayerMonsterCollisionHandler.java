@@ -28,7 +28,7 @@ public class PlayerMonsterCollisionHandler implements CollisionHandler {
             res.addFlag(CollisionResult.LOSE);
         }
 
-        if(engine.checkWiningCondition())
+        if(engine.isWinning())
             res.addFlag(CollisionResult.WIN);
         return res;
     }

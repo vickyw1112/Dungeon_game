@@ -20,7 +20,7 @@ public class ArrowMonsterCollisionHandler implements CollisionHandler {
             engine.removeGameObject(obj1);
             engine.removeGameObject(obj2);
 
-            if(engine.checkWiningCondition())
+            if(engine.isWinning())
                 res.addFlag(CollisionResult.WIN);
         }
         return res;

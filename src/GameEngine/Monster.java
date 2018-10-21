@@ -127,8 +127,7 @@ public abstract class Monster extends StandardObject implements Movable {
         if(pathToDestination.size() > 0) {
             facing = determineFacing(pathToDestination.peek());
         }
-        if(needUpdatePath)
-            delayedUpdate();
+        delayedUpdate();
     }
 
     /**

@@ -2,6 +2,7 @@ package Controller;
 
 import GameEngine.GameObject;
 import GameEngine.Map;
+import GameEngine.WinningCondition.WinningCondition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -12,9 +13,9 @@ import javafx.scene.shape.Line;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static Controller.Config.GRID_SIZE;
@@ -25,46 +26,88 @@ public class ResourceManager {
      * which will be of format classname-state
      * Value is the Image
      */
-    private HashMap<String, Image> imgMap;
+    private HashMap<String, Image> objImgMap;
+
+    /**
+     * Img map for others
+     */
+    private HashMap<String, Image> winningConditionImgMap;
 
     private HashMap<String, Bounds> boundsMap;
 
     private Collection<String> allClasses;
 
     public ResourceManager() {
-        imgMap = new HashMap<>();
+        objImgMap = new HashMap<>();
         boundsMap = new HashMap<>();
-        loadImages();
+        winningConditionImgMap = new HashMap<>();
+        loadObjectImages();
+        loadWinningConditionImages();
     }
 
-    private void loadImages(){
+    private void loadWinningConditionImages() {
+        // load all images
+        File dir = new File(getClass().getClassLoader().getResource("WinningConditions").getPath());
+        applyAllFilesUnderDir(dir, file -> {
+            String classname = file.getName().split("[.]")[0];
+            Image image = new Image(new FileInputStream(file));
+            winningConditionImgMap.put(classname, image);
+        });
+    }
+
+    private void loadObjectImages(){
         // load all images
         File dir = new File(getClass().getClassLoader().getResource("GameObjects").getPath());
+        applyAllFilesUnderDir(dir, file -> {
+            String filename = file.getName().split("[.]")[0];
+            objImgMap.put(filename, new Image(new FileInputStream(file)));
+        });
+    }
+
+    private void applyAllFilesUnderDir(File dir, ConsumerWithException<File> action){
         File[] files = dir.listFiles();
         if(files != null) {
             try {
                 for (File file : files) {
-                    String filename = file.getName().split("[.]")[0];
-                    imgMap.put(filename, new Image(new FileInputStream(file)));
+                    action.accept(file);
                 }
-            } catch (IOException e) {
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
 
+    public Collection<WinningCondition> getAllWinningConditions(){
+        return winningConditionImgMap.keySet().stream().map(classname -> {
+            try {
+                return (WinningCondition) Class.forName(WinningCondition.class.getPackage().getName() + "." + classname)
+                        .getConstructor().newInstance();
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    public ImageView createImageViewByWinningCondition(WinningCondition condition){
+        ImageView imageView = new ImageView(winningConditionImgMap.get(condition.getClass().getSimpleName()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(25);
+        return imageView;
+    }
+
     public Image getImage(String className, int state){
-        if(imgMap.containsKey(className + "-" + state))
-            return imgMap.get(className + "-" + state);
+        if(objImgMap.containsKey(className + "-" + state))
+            return objImgMap.get(className + "-" + state);
         // rollback to use default state img
-        else if(imgMap.containsKey(className + "-0"))
-            return imgMap.get(className + "-0");
+        else if(objImgMap.containsKey(className + "-0"))
+            return objImgMap.get(className + "-0");
         else
-            return imgMap.get(className);
+            return objImgMap.get(className);
     }
 
     public Image getImage(String className){
-        return imgMap.get(className);
+        return objImgMap.get(className);
     }
 
     public ImageView createImageViewByClassName(String cls){
@@ -85,12 +128,13 @@ public class ResourceManager {
         return imageView;
     }
 
-    public Collection<String> getAllClassNames(){
+    public Collection<String> getAllGameObjectClassNames(){
         if(allClasses == null)
-            allClasses = imgMap.keySet().stream()
-                .map(s -> s.contains("-") ? s.split("-")[1] : s)
-                .filter(GameObject::isValidClass).collect(Collectors.toSet());
+            allClasses = objImgMap.keySet().stream()
+                    .map(s -> s.contains("-") ? s.split("-")[1] : s)
+                    .filter(GameObject::isValidClass).collect(Collectors.toSet());
         return allClasses;
+
     }
 
     public void drawGridLine(ObservableList<Node> mountPoint) {
@@ -123,3 +167,9 @@ public class ResourceManager {
         }
     }
 }
+
+interface ConsumerWithException<T> {
+    public void accept(T t) throws Exception;
+}
+
+

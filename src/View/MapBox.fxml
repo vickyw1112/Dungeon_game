@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-
 
 <GridPane fx:id="box" maxHeight="200.0" maxWidth="500.0" minHeight="200.0" minWidth="500.0" prefHeight="200.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
@@ -20,24 +20,26 @@
       <ImageView fx:id="mapPreviewImageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
       <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
          <children>
-            <VBox maxHeight="200.0" maxWidth="300.0" minHeight="200.0" minWidth="300.0" prefHeight="200.0" prefWidth="300.0">
+            <VBox maxHeight="200.0" maxWidth="300.0" minHeight="200.0" minWidth="300.0" prefHeight="200.0" prefWidth="300.0" spacing="3.0">
                <children>
-                  <Label fx:id="mapNameTestField" ellipsisString="" prefWidth="270.0" text="HAHAHATWEAW&#10;awrg&#10;" wrapText="true">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="mapSizeTextField" text="10 x 10" />
-                  <Label fx:id="mapAuthorTextField" text="By: Chester">
-                     <VBox.margin>
-                        <Insets top="50.0" />
-                     </VBox.margin>
-                  </Label>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <children>
+                        <Label fx:id="mapNameTestField" ellipsisString="" text="HAHAHATWEAW&#10;">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="mapSizeTextField" text="10 x 10" />
+                     </children>
+                  </HBox>
+                  <VBox fx:id="winningConditions" spacing="3.0" />
                </children>
                <padding>
-                  <Insets left="20.0" top="20.0" />
+                  <Insets left="20.0" top="10.0" />
                </padding>
             </VBox>
+            <Button fx:id="modifyMapBtn" mnemonicParsing="false" text="Modify Map" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" />
+            <Label fx:id="mapAuthorTextField" text="By: Chester" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="20.0" />
          </children>
       </AnchorPane>
    </children>

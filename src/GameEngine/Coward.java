@@ -18,18 +18,24 @@ public class Coward extends Monster {
     public boolean setLocation(Point point) {
         boolean ret = super.setLocation(point);
         // if location changed
-        if (ret) {
-            if (pathGenerator instanceof ShortestPathGenerator &&
-                    this.pathToDestination.size() < 5)
-                // run away
-                this.pathGenerator = new RunAwayPathGenerator();
-            // if running away and reached the furthest location
-            else if (pathGenerator instanceof RunAwayPathGenerator &&
-                    this.pathToDestination.size() == 0)
-                // chase player again
-                this.pathGenerator = new ShortestPathGenerator();
-        }
+        if (ret)
+            updatePathGenerator();
         return ret;
+    }
+
+    /**
+     * Update coward's path generator based on it's path
+     */
+    private void updatePathGenerator(){
+        if (pathGenerator instanceof ShortestPathGenerator &&
+                this.pathToDestination.size() < 5)
+            // run away
+            this.pathGenerator = new RunAwayPathGenerator();
+            // if running away and reached the furthest location
+        else if (pathGenerator instanceof RunAwayPathGenerator &&
+                this.pathToDestination.size() == 0)
+            // chase player again
+            this.pathGenerator = new ShortestPathGenerator();
     }
 
     /**
@@ -39,6 +45,12 @@ public class Coward extends Monster {
     @Override
     public PathGenerator getDefaultPathGenerator() {
         return new ShortestPathGenerator();
+    }
+
+    @Override
+    public void updatePath(Map map, Player player) {
+        updatePathGenerator();
+        super.updatePath(map, player);
     }
 
     /**
@@ -51,6 +63,7 @@ public class Coward extends Monster {
      */
     @Override
     public void onUpdatingLocation(GameEngine engine) {
+        super.onUpdatingLocation(engine);
         updatePath(engine.getMap(), engine.player);
     }
 }

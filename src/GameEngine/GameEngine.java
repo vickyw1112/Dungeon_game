@@ -16,7 +16,7 @@ public class GameEngine {
     private final Map map;
     private final List<Movable> movingObjects;
     private final List<Monster> monsters;
-    public static int MONSTERKILLED = 0;
+    private boolean mapHasMonster;
     Player player;
 
 
@@ -54,6 +54,7 @@ public class GameEngine {
         this.movingObjects = new LinkedList<>();
         this.monsters = new LinkedList<>();
         this.collisionHandlerMap = new HashMap<>();
+        this.mapHasMonster = false;
 
         for (GameObject obj : map.getAllObjects()) {
             obj.initialize();
@@ -68,6 +69,8 @@ public class GameEngine {
             this.objects.put(obj.getObjID(), obj);
             obj.registerCollisionHandler(this);
         }
+
+        this.mapHasMonster = monsters.size() > 0;
 
         // sort monsters in correct order
         monsters.sort(Monster::compare);
@@ -112,6 +115,20 @@ public class GameEngine {
      */
     public GameEngine(){
         this(new Map());
+    }
+
+    /**
+     * @return whether the original map contains any monster
+     */
+    public boolean isMapHasMonster(){
+        return mapHasMonster;
+    }
+
+    /**
+     * @return whether the game currently has monsters
+     */
+    public boolean hasMonster(){
+        return monsters.size() > 0;
     }
 
     /**
@@ -167,6 +184,15 @@ public class GameEngine {
     }
 
     /**
+     * @return list of all game objects compatible with given class
+     */
+    public List<GameObject> getObjectsByClass(Class<? extends GameObject> cls){
+        return objects.values().stream()
+                .filter(o -> cls.isAssignableFrom(o.getClass()))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Find the correct handler for given two object and call to handle the collision
      *
      * @see CollisionResult
@@ -197,50 +223,8 @@ public class GameEngine {
      *
      * @return whether the player has won the game
      */
-    public boolean checkWiningCondition() {
-        // TODO: refactor this function
-
-        boolean isAllTreasure = false;
-        boolean isAllMonster = false;
-        boolean isAllSwitch = false;
-        Set<Point> boulders = new HashSet<>();
-        Set<Point> floorSwitches = new HashSet<>();
-        List<Point> exits = new ArrayList<>();
-        List<Point> treasure = new ArrayList<>();
-
-        for(GameObject obj: objects.values()){
-            if(obj instanceof Boulder)
-                boulders.add(obj.getLocation());
-            if(obj instanceof FloorSwitch)
-                floorSwitches.add(obj.getLocation());
-            if(obj instanceof Exit)
-                exits.add(obj.getLocation());
-            if(obj instanceof Treasure)
-                treasure.add(obj.getLocation());
-        }
-
-        // exit win is done by WinCollisionHandler
-        if(!exits.isEmpty()) {
-            return false;
-        }
-        else {
-            // check boulder on switch
-            if(!floorSwitches.isEmpty()) {
-                if (boulders.containsAll(floorSwitches))
-                    isAllSwitch = true;
-            }
-
-            // check treasure in player's inventory
-            // if there is no treasure in map and player's inventory has treasure player wins
-            // otherwise player doesn't win
-            if (treasure.isEmpty() && (this.player.getInventory().getCount(Treasure.class) > 0))
-                isAllTreasure = true;
-
-            if(MONSTERKILLED > 0 && this.monsters.isEmpty()) {
-                isAllMonster = true;
-            }
-        }
-        return (isAllTreasure || isAllMonster || isAllSwitch);
+    public boolean isWinning() {
+        return map.isWinning(this);
     }
 
     /**
@@ -364,6 +348,10 @@ public class GameEngine {
      */
     public int getInventoryCounts(String classname){
         return player.getInventoryCount(classname);
+    }
+
+    public int getInventoryCounts(Class<? extends Collectable> cls){
+        return player.getInventoryCount(cls);
     }
 
     /**

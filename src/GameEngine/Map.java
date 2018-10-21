@@ -48,14 +48,31 @@ public class Map implements Serializable {
      */
     public Map(MapBuilder mapBuilder, int sizeX, int sizeY, String author,
                List<String> winningConditions, String mapName){
+        init();
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.author = author;
         this.highScoreList = new ArrayList<ScoreData>();
         this.winningConditionClasses = winningConditions;
         this.mapName = mapName;
-        init();
+        loadWinningConditions(this);
         build(mapBuilder);
+    }
+
+    /**
+     * Load all winning conditions
+     */
+    private static void loadWinningConditions(Map map){
+        map.winningConditions = map.winningConditionClasses.stream().map(cls -> {
+            try {
+                return (WinningCondition) Class.forName(
+                        WinningCondition.class.getPackage().getName() + "." + cls
+                ).getConstructor().newInstance();
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -63,6 +80,7 @@ public class Map implements Serializable {
      */
     private void init(){
         this.winningConditions = new LinkedList<>();
+        this.winningConditionClasses = new LinkedList<>();
         this.map = new List[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++)
             for (int j = 0; j < sizeY; j++)
@@ -108,16 +126,7 @@ public class Map implements Serializable {
                 for(GameObject obj : map.map[i][j])
                     maxId = Math.max(maxId, obj.getObjID());
         StandardObject.setMaxObjId(maxId);
-        map.winningConditions = map.winningConditionClasses.stream().map(cls -> {
-            try {
-                return (WinningCondition) Class.forName(
-                        WinningCondition.class.getPackage().getName() + "." + cls
-                ).getConstructor().newInstance();
-            } catch (Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        loadWinningConditions(map);
         return map;
     }
 

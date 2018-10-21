@@ -283,8 +283,7 @@ public class DesignScreenController extends Controller {
                 throw new NumberFormatException();
         } catch (NumberFormatException e){
             new Alert(Alert.AlertType.ERROR, "Invalid map size!", ButtonType.OK).showAndWait();
-            mapColSizeTextField.setText(Integer.toString(maxCol));
-            mapRowSizeTextField.setText(Integer.toString(maxRow));
+            return;
         }
         mapBuilder = new MapBuilder(maxCol, maxRow);
 

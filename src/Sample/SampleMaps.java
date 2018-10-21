@@ -115,13 +115,98 @@ public class SampleMaps {
 
 
     public static Map funMap(){
-        MapBuilder mb = initMap(15, 15);
+        MapBuilder mb = initMap(18, 18);
+        // add surounding walls
+        for (int i=0; i < 17; i++){
+            for (int j = 0; j < 17; j++) {
+                mb.addObject(new Wall(new Point(i, j)));
+            }
+        }
 
-        return null;
+        // add player
+        mb.addObject(new Player(new Point(1,1)));
+
+        // add all the walls first
+        horizontalWalls(1, 15, 5, mb);
+        horizontalWalls(1, 7, 12, mb );
+        horizontalWalls(11, 12, 12, mb);
+        verticalWalls(2, 4, 7, mb);
+        verticalWalls(6, 9, 5, mb);
+        verticalWalls(6, 11, 12, mb);
+        verticalWalls(13, 15, 12, mb);
+
+        // add all weapons
+        mb.addObject(new Arrow(new Point(1, 4)));
+        mb.addObject(new Arrow(new Point(2, 4)));
+        mb.addObject(new Arrow(new Point(3, 4)));
+        mb.addObject(new Bomb(new Point (16,2 )));
+
+
+        // add all monsters
+        mb.addObject(new Strategist(new Point(12, 2)));
+        mb.addObject(new Strategist(new Point(12, 4)));
+        mb.addObject(new Hunter(new Point(15, 12)));
+        mb.addObject(new Hunter(new Point(16, 12)));
+        mb.addObject(new Hunter(new Point(15, 14)));
+        mb.addObject(new Hunter(new Point(16, 14)));
+
+        mb.addObject(new Coward(new Point(9, 9)));
+        Hound hound = new Hound(new Point (5, 15));
+        Hunter hunter = new Hunter(new Point (3, 15));
+        hound.setPair(hunter);
+        mb.addObject(hound);
+        mb.addObject(hunter);
+
+        // add potions
+        mb.addObject(new HoverPotion(new Point(1,14)));
+        mb.addObject(new InvinciblePotion(new Point (16, 9)));
+
+        // add doors and key pairs
+        Door door1 = new Door(new Point(7, 1));
+        Key key1 = new Key(new Point(6, 4));
+        door1.setKey(key1);
+        mb.addObject(door1);
+        mb.addObject(key1);
+
+        Door door2 = new Door(new Point(16, 5));
+        Key key2 = new Key(new Point(16, 1));
+        door2.setKey(key2);
+        mb.addObject(door2);
+        mb.addObject(key2);
+
+        Door door3 = new Door(new Point(12, 16));
+        Key key3 = new Key(new Point(16, 16));
+        door2.setKey(key3);
+        mb.addObject(door3);
+        mb.addObject(key3);
+
+
+
+        // add pits
+        mb.addObject(new Pit(new Point(8,13)));
+        mb.addObject(new Pit(new Point(9,13)));
+        mb.addObject(new Pit(new Point(10,13)));
+
+        // add boulders
+        mb.addObject(new Boulder(new Point(5, 12)));
+        mb.addObject(new Boulder(new Point(5, 11)));
+
+        return mb.build();
 
     }
 
-
+    // creates a horizontal line of walls
+    public static void horizontalWalls(int from, int to, int height,  MapBuilder mb) {
+        for (int x = from; x < to; x++) {
+            mb.addObject(new Wall(new Point(x,height)));
+        }
+    }
+    // creates a horizontal line of walls
+    public static void verticalWalls(int from, int to, int width,  MapBuilder mb) {
+        for (int y = from; y < to; y++) {
+            mb.addObject(new Wall(new Point(width,y)));
+        }
+    }
 
 
 

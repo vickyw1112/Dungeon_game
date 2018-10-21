@@ -25,6 +25,7 @@ public class SampleMaps {
         return mb;
     }
 
+
     public static Map getBoulderTestMap(){
         MapBuilder mb = initMap(5, 6);
         for(int x = 1; x <= 3; x++){
@@ -34,6 +35,7 @@ public class SampleMaps {
         mb.addObject(new Player(new Point(1, 4)));
         return mb.build();
     }
+
 
     public static Map getInvinciblePotionTestMap(){
         MapBuilder mb = initMap(5, 11);
@@ -61,6 +63,67 @@ public class SampleMaps {
         mb.addObject(new Player(new Point(1, 3)));
         return mb.build();
     }
+
+
+    public static Map winningConditionTest(){
+        MapBuilder mb = initMap(10, 10);
+
+        // add surounding walls
+        for (int i=0; i < 9; i++){
+            for (int j = 0; j < 9; j++) {
+                mb.addObject(new Wall(new Point(i, j)));
+            }
+        }
+        // add player
+        mb.addObject(new Player(new Point(1,1)));
+
+        // line of walls
+        for (int x = 0; x < 7; x++) {
+            mb.addObject(new Wall(new Point(x, 8 )));
+        }
+
+        // add door and key
+        Key key = new Key(new Point(9, 9));
+        Door door = new Door(new Point(7,9));
+        door.setKey(key);
+        mb.addObject(key);
+        mb.addObject(door);
+
+
+        // cage of monsters
+        mb.addObject(new Hunter(new Point(0,9)));
+        mb.addObject(new Hound(new Point(1,9)));
+        mb.addObject(new Strategist(new Point(2,9)));
+        mb.addObject(new Coward(new Point(3,9)));
+        mb.addObject(new Hunter(new Point(4,9)));
+        mb.addObject(new Hound(new Point(5,9)));
+        mb.addObject(new Strategist(new Point(6,9)));
+
+        for (int x = 5; x < 7; x++) {
+            mb.addObject(new FloorSwitch(new Point(x, 0 )));
+        }
+        for (int x = 5; x < 7; x++) {
+            mb.addObject(new Boulder(new Point(x, 1 )));
+        }
+        for (int x = 0; x < 5; x++) {
+            mb.addObject(new Boulder(new Point(x, 7 )));
+        }
+        mb.addObject(new Exit(new Point (0, 4)));
+        return mb.build();
+
+    }
+
+
+    public static Map funMap(){
+        MapBuilder mb = initMap(15, 15);
+
+        return null;
+
+    }
+
+
+
+
 
     public static void main(String[] args){
         File dir = new File("map");

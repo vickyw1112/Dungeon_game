@@ -47,7 +47,7 @@ public class DoorTest {
         CollisionHandler ch1 = new DoorPlayerCollisionHandler();
         // test collision results on player and door
         CollisionResult cr1 = ch1.handle(engine, player, door);
-        assertEquals(cr1.getFlags(), CollisionResult.REJECT);
+        assertTrue(cr1.containFlag(CollisionResult.REJECT));
         assertEquals(door.getState(), Door.OPEN);
     }
     

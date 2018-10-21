@@ -223,6 +223,7 @@ public class GameEngine {
      *
      * @return whether the player has won the game
      */
+
     public boolean isWinning() {
         return map.isWinning(this);
     }

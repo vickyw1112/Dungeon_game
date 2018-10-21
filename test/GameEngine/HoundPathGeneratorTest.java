@@ -57,8 +57,8 @@ public class HoundPathGeneratorTest {
     @Test
     public void testMonsterUpdatePathOnPlayerMovement() {
         engine.changeObjectLocation(player, new Point(5, 2));
-        assertEquals(hunter.getPath().size(), 4);
-        assertEquals(hound.getPath().size(), 11);
+        assertEquals(hunter.getPath().size(), 3);
+        assertEquals(hound.getPath().size(), 12);
     }
 
     @Test

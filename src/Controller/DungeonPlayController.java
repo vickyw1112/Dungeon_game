@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -365,7 +367,12 @@ public class DungeonPlayController extends Controller {
             return;
         if(result.get() == ButtonType.YES){
             Screen screen = new Screen(stage, "Dungeon", "View/DungeonPlayScreen.fxml");
-            screen.display(new DungeonPlayController(stage, originalMap));
+            try {
+                Map reloadedMap = Map.loadFromFile(new FileInputStream("map/" + map.getMapName()));
+                screen.display(new DungeonPlayController(stage, reloadedMap));
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
         }
         if(result.get() == goBackBtn){
             handleModeScreenButton();

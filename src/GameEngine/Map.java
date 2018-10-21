@@ -15,6 +15,7 @@ public class Map implements Serializable {
     private int sizeX = DEFAULT_DUNGEON_SIZE_X;
     private int sizeY = DEFAULT_DUNGEON_SIZE_Y;
     private String author;
+    private String mapName;
 
     /**
      * Not serialise winning condition code
@@ -44,11 +45,12 @@ public class Map implements Serializable {
      * Build given sized map by map builder
      */
     public Map(MapBuilder mapBuilder, int sizeX, int sizeY, String author,
-               List<String> winningConditions){
+               List<String> winningConditions, String mapName){
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.author = author;
         this.winningConditionClasses = winningConditions;
+        this.mapName = mapName;
         init();
         build(mapBuilder);
     }
@@ -114,6 +116,10 @@ public class Map implements Serializable {
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
         return map;
+    }
+
+    public String getMapName() {
+        return mapName;
     }
 
     public int getSizeX() {

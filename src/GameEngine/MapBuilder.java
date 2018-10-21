@@ -1,6 +1,5 @@
 package GameEngine;
 
-import GameEngine.WinningCondition.WinningCondition;
 import GameEngine.utils.Point;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ public class MapBuilder {
     private final GameObject[][] map;
     private String author = "Unknown Author";
     private List<String> winningConditions;
+    private String mapName;
 
     /**
      * Constructor for MapBuilder
@@ -39,11 +39,15 @@ public class MapBuilder {
     }
 
     public Map build() {
-        return new Map(this, sizeX, sizeY, author, winningConditions);
+        return new Map(this, sizeX, sizeY, author, winningConditions, mapName);
     }
 
     public void addWinningCondition(String winningCondition){
         this.winningConditions.add(winningCondition);
+    }
+
+    public void setMapName(String mapName){
+        this.mapName = mapName;
     }
 
     public void setAuthor(String author){

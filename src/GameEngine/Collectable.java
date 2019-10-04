@@ -1,18 +1,22 @@
 package GameEngine;
 
-public interface Collectable {
-    static int count = 1;
-
-    public void getCollected();
+/**
+ * GameObject that is able to be collected by player
+ */
+public interface Collectable extends GameObject {
 
     /**
-     * Get the count of this object in player's
-     * inventory if it is stackable otherwise return 1
-     * @param player the player instance
-     * @return the count of this object
+     * Constant Allow us to check Collectable state of collectable objects.
      */
-    public default int getCount(Player player){
-        return 1;
-    }
+    int COLLECTABLESTATE = 0;
 
+    /**
+     * getCollected method will add object to inventory class and remove from map
+     * Sub class implementing this interface will override this for stacking
+     */
+    default boolean getCollected(GameEngine engine, Inventory playerInventory) {
+        playerInventory.addObject(this);
+        engine.removeGameObject(this);
+        return true;
+    }
 }

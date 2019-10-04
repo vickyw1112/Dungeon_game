@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="-4.0" layoutY="-6.0" prefHeight="409.0" prefWidth="606.0">
+         <children>
+            <TextField fx:id="textHighScore" layoutX="205.0" layoutY="273.0" onAction="#handleTextScore" prefHeight="28.0" prefWidth="196.0" />
+            <Button fx:id="SubmitScoreButton" layoutX="274.0" layoutY="325.0" mnemonicParsing="false" onAction="#handleScoreButton" text="Submit" />
+            <Label layoutX="61.0" layoutY="156.0" text="Congratulations, you've solved the dungeon!">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Label layoutX="191.0" layoutY="243.0" text="Leave your name on the leaderboard" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

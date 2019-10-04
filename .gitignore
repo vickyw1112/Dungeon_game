@@ -23,9 +23,17 @@
 hs_err_pid*
 
 out
+bin
 
 # Intellij
 .idea
+*.iml
 
 # Eclipse
 .settings
+classpath
+project
+*.DS_Store
+map
+
+*.ser
